@@ -1,0 +1,32 @@
+application: goristock
+version: alpha
+runtime: python
+api_version: 1
+
+handlers:
+## admin_console
+- url: /admin_console/.*
+  script: $PYTHON_LIB/google/appengine/ext/admin
+  login: admin
+
+## Appstats
+- url: /stats.*
+  script: $PYTHON_LIB/google/appengine/ext/appstats/ui.py
+  secure: always
+  login: admin
+
+## Main WSGI
+- url: .*
+  script: main.py
+  #secure: always
+  #login: admin
+
+inbound_services:
+- xmpp_message
+
+admin_console:
+  pages:
+  - url: /stats
+    name: "Appstats"
+  - url: /admin_console/
+    name: "Admin_console"
