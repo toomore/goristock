@@ -7,7 +7,25 @@ from google.appengine.api import xmpp
 
 #from google.appengine.api import urlfetch
 
-import urllib2,md5,logging,csv
+import urllib2,md5,logging,csv,re,math
+
+def ckinv(oo):
+  """ check the value is date or not """
+  pattern = re.compile(r"[0-9]{2}/[0-9]{2}/[0-9]{2}")
+  b = re.search(pattern, oo[0])
+  try:
+    b.group()
+    return True
+  except:
+    return False
+
+def covstr(s):
+  """ convert string to int or float. """
+  try:
+    ret = int(s)
+  except ValueError:
+    ret = float(s)
+  return ret
 
 ############## webapp Models ###################
 class MainPage(webapp.RequestHandler):
@@ -19,9 +37,13 @@ class MainPage(webapp.RequestHandler):
     self.response.out.write('Go Ri Stock')
     #csv_read.next
 
+    getr = []
     for i in csv_read:
       print i
-    self.response.out.write('<br>%s' % type(csv_read))
+      if ckinv(i):
+        getr.append(covstr(i[1]))
+    print getr
+    print math.fsum(getr)
 
 ############## main Models ###################
 def main():
