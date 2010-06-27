@@ -7,7 +7,7 @@ from google.appengine.api import xmpp
 
 #from google.appengine.api import urlfetch
 from datetime import datetime
-import urllib2,md5,logging,csv,re,math
+import urllib2,logging,csv,re,math
 
 def ckinv(oo):
   """ check the value is date or not """
@@ -27,7 +27,7 @@ def covstr(s):
     ret = float(s)
   return ret
 
-############## webapp Models ###################
+############## webapp Models ##############
 class MainPage(webapp.RequestHandler):
   def get(self):
     #url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY_AVG/STOCK_DAY_AVG2.php?STK_NO=2363&myear=2010&mmon=06&type=csv'
@@ -49,12 +49,21 @@ class MainPage(webapp.RequestHandler):
     print "- Avg: %.2f" % float(math.fsum(getr)/len(getr))
     print "- MA5: %.2f" % float(math.fsum(getr[-5:])/len(getr[-5:]))
 
-############## main Models ###################
+############## Test GoRiStock ##############
+class goritest(webapp.RequestHandler):
+  def get(self):
+    import goristock
+    a = goristock.goristock('2363')
+    print a.list_data
+    print 'GoRiStock'
+
+############## main Models ##############
 def main():
   """ Start up. """
   application = webapp.WSGIApplication(
                                       [
-                                        ('/', MainPage)
+                                        ('/', MainPage),
+                                        ('/goristock', goritest)
                                       ],debug=True)
   run_wsgi_app(application)
 
