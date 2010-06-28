@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 
 from datetime import datetime
-import urllib2,logging,csv,re,math
+import urllib2,logging,csv,re
 
 class goristock(object):
 
@@ -29,6 +29,7 @@ class goristock(object):
     self.url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report2010%(mon)02d/2010%(mon)02d_F3_1_8_%(stock)s.php&type=csv' % {'mon': datetime.today().month,'stock': stock_no}
     self.csv_read = self.fetch_data()
     self.list_data(self.csv_read)
+    logging.info('Fetch %s' % stock_no)
 
   def covstr(self,s):
     """ convert string to int or float. """

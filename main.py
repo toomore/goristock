@@ -26,7 +26,7 @@ from google.appengine.api import xmpp
 
 #from google.appengine.api import urlfetch
 from datetime import datetime
-import urllib2,logging,csv,re,math
+import urllib2,logging,csv,re,uuid
 
 def ckinv(oo):
   """ check the value is date or not """
@@ -63,18 +63,23 @@ class MainPage(webapp.RequestHandler):
       if ckinv(i):
         getr.append(covstr(i[6]))
     print getr
-    print "- Sum: %s" % math.fsum(getr)
+    print "- Sum: %s" % sum(getr)
     print "- Num: %s" % len(getr)
-    print "- Avg: %.2f" % float(math.fsum(getr)/len(getr))
-    print "- MA5: %.2f" % float(math.fsum(getr[-5:])/len(getr[-5:]))
+    print "- Avg: %.2f" % float(sum(getr)/len(getr))
+    print "- MA5: %.2f" % float(sum(getr[-5:])/len(getr[-5:]))
 
 ############## Test GoRiStock ##############
 class goritest(webapp.RequestHandler):
   def get(self):
     import goristock
-    a = goristock.goristock('2363')
-    print a.list_data
+    a = goristock.goristock('2456')
     print 'GoRiStock'
+    print a.raw_data
+    for i in range(5):
+      a = uuid.uuid1()
+      print "UUID: %s" % a
+      print str(a)[:8]
+      print str(a)[9:]
 
 ############## main Models ##############
 def main():
