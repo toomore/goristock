@@ -71,8 +71,15 @@ class MainPage(webapp.RequestHandler):
 ############## Test GoRiStock ##############
 class goritest(webapp.RequestHandler):
   def get(self):
+    if self.request.get('q'):
+      stock_no = self.request.get('q')
+    else:
+      stock_no = 1234
+
+    print 'GoRiStock'
+
     import goristock
-    a = goristock.goristock('2456')
+    a = goristock.goristock(stock_no)
     print 'GoRiStock'
     print a.raw_data
     print a.num_data
