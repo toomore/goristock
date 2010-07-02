@@ -20,15 +20,19 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from datetime import datetime
-import urllib2,logging,csv,re
+from datetime import datetime, timedelta
+import urllib2, logging, csv, re
 
 class goristock(object):
 
   def __init__(self,stock_no):
-    self.url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report2010%(mon)02d/2010%(mon)02d_F3_1_8_%(stock)s.php&type=csv' % {'mon': datetime.today().month,'stock': stock_no}
-    self.csv_read = self.fetch_data()
-    self.list_data(self.csv_read)
+    self.raw_data = []
+    starttime = 0
+    while len(self.raw_data) < 160:
+      self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime))
+      self.raw_data = self.list_data(self.csv_read) + self.raw_data
+      starttime += 1
+
     logging.info('Fetch %s' % stock_no)
 
   def covstr(self,s):
@@ -49,19 +53,22 @@ class goristock(object):
     except:
       return False
 
-  def fetch_data(self):
-    cc = urllib2.urlopen(self.url)
+  def fetch_data(self, stock_no, nowdatetime):
+    url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
+    print url
+    logging.info(url)
+    cc = urllib2.urlopen(url)
     csv_read = csv.reader(cc)
     return csv_read
 
-  def list_data(self,csv_read):
+  def list_data(self, csv_read):
     getr = []
     for i in csv_read:
       if self.ckinv(i):
+        print i
         getr.append(self.covstr(i[6]))
 
-    self.raw_data = getr
-    return self.raw_data
+    return getr
 
   @property
   def num_data(self):

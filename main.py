@@ -75,11 +75,7 @@ class goritest(webapp.RequestHandler):
     a = goristock.goristock('2456')
     print 'GoRiStock'
     print a.raw_data
-    for i in range(5):
-      a = uuid.uuid1()
-      print "UUID: %s" % a
-      print str(a)[:8]
-      print str(a)[9:]
+    print a.num_data
 
 ############## main Models ##############
 def main():
