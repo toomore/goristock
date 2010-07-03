@@ -73,3 +73,26 @@ class goristock(object):
   @property
   def num_data(self):
     return len(self.raw_data)
+
+  @property
+  def sum_data(self):
+    return sum(self.raw_data)
+
+  @property
+  def avg_data(self):
+    return float(self.sum_data/self.num_data)
+
+  def MA(self,days):
+    return float(sum(self.raw_data[-days:]) / days)
+
+  def MAC(self,days):
+    yesterday = self.raw_data[:]
+    yesterday.pop()
+    yes_MA = float(sum(yesterday[-days:]) / days)
+    today_MA = self.MA(days)
+    if today_MA > yes_MA:
+      return '↑'
+    elif today_MA < yes_MA:
+      return '↓'
+    else:
+      return '-'
