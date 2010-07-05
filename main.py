@@ -72,10 +72,16 @@ class MainPage(webapp.RequestHandler):
 class goritest(webapp.RequestHandler):
   def get(self):
     import goristock
-    a = goristock.goristock('2456')
+    try:
+      stock_no = int(self.request.get('q'))
+    except:
+      stock_no = 2618
+    a = goristock.goristock(stock_no)
     print 'GoRiStock'
     print a.raw_data
     print a.num_data
+    print a.stock_no,a.stock_name
+    print a.MA(5),a.MAC(5),a.MA(20),a.MAC(20),a.MA(60),a.MAC(60)
 
 ############## main Models ##############
 def main():

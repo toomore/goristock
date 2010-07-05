@@ -27,6 +27,8 @@ class goristock(object):
 
   def __init__(self,stock_no):
     self.raw_data = []
+    self.stock_name = ''
+    self.stock_no = stock_no
     starttime = 0
     while len(self.raw_data) < 160:
       self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime))
@@ -63,11 +65,17 @@ class goristock(object):
 
   def list_data(self, csv_read):
     getr = []
+    otherinfo = []
     for i in csv_read:
       if self.ckinv(i):
         print i
         getr.append(self.covstr(i[6]))
+      else:
+        otherinfo.append(i[0])
 
+    self.stock_name = otherinfo[0].split(' ')[2].decode('big5').encode('utf-8')
+    print otherinfo
+    print self.stock_name
     return getr
 
   @property
