@@ -34,6 +34,7 @@ class goristock(object):
     self.stock_name = ''
     self.stock_no = stock_no
     self.data_date = []
+    self.stock_range = []
     starttime = 0
 
     try:
@@ -43,6 +44,7 @@ class goristock(object):
         self.raw_data = result['getr'] + self.raw_data
         self.data_date = result['data_date'] + self.data_date
         self.stock_name = result['stock_name']
+        self.stock_range = result['stock_range'] + self.stock_range
         starttime += 1
     except:
       logging.info('Data not enough! %s' % stock_no)
@@ -73,6 +75,7 @@ class goristock(object):
     print url
     logging.info(url)
     cc = urllib2.urlopen(url)
+    #print cc.info().headers
     csv_read = csv.reader(cc)
     return csv_read
 
@@ -80,21 +83,23 @@ class goristock(object):
     """ Put the data into the 'self.raw_data' """
     getr = []
     getdate = []
+    getrange = []
     otherinfo = []
     for i in csv_read:
       if self.ckinv(i):
         print i
         getr.append(self.covstr(i[6]))
-        getdate.append(i[0])
+        getdate.append(i[0].replace(' ',''))
+        getrange.append(i[-2])
       else:
         otherinfo.append(i[0])
 
     stock_name = otherinfo[0].split(' ')[2].decode('big5').encode('utf-8')
-    data_date = getdate
     return_value = {
       'getr': getr,
       'stock_name': stock_name,
-      'data_date': data_date
+      'data_date': getdate,
+      'stock_range': getrange
     }
     print otherinfo
     print stock_name
@@ -131,3 +136,9 @@ class goristock(object):
       return '↓'
     else:
       return '-'
+  def display(self,*arg):
+    """ For simple Demo """
+    print self.stock_name,self.stock_no
+    print self.data_date[-1],self.raw_data[-1],self.stock_range[-1]
+    for i in arg:
+      print 'MA%02s  %s %s' % (i,self.MA(i),self.MAC(i))
