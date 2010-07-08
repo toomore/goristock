@@ -25,7 +25,7 @@ import urllib2, logging, csv, re
 
 class goristock(object):
 
-  def __init__(self,stock_no,data_num = 75):
+  def __init__(self, stock_no, data_num = 75, debug=0):
     """
     stock_no: stock no.
     data_num: default fetch numbers.(Default is 75)
@@ -36,7 +36,7 @@ class goristock(object):
     self.data_date = []
     self.stock_range = []
     starttime = 0
-    self.debug = 0
+    self.debug = debug
 
     try:
       while len(self.raw_data) < data_num:
@@ -52,7 +52,9 @@ class goristock(object):
 
     logging.info('Fetch %s' % stock_no)
 
+##### App def #####
   def debug_print(self, info):
+    """ For debug print. """
     if self.debug:
       print info
     else:
@@ -76,6 +78,16 @@ class goristock(object):
     except:
       return False
 
+  def high_or_low(self, one, two):
+    """ Return ↑↓- for high, low or equal. """
+    if one > two:
+      return '↑'
+    elif one < two:
+      return '↓'
+    else:
+      return '-'
+
+##### main def #####
   def fetch_data(self, stock_no, nowdatetime):
     """ Fetch data from twse.com.tw """
     url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
@@ -137,12 +149,22 @@ class goristock(object):
     yesterday.pop()
     yes_MA = float(sum(yesterday[-days:]) / days)
     today_MA = self.MA(days)
-    if today_MA > yes_MA:
-      return '↑'
-    elif today_MA < yes_MA:
-      return '↓'
-    else:
-      return '-'
+
+    return self.high_or_low(today_MA, yes_MA)
+
+  def cum_serial(self):
+    """ Cumulate serial data
+        !!TEST!!
+    """
+    org = self.raw_data[1:]
+    diff = self.raw_data[:-1]
+    result = []
+    for i in range(len(org)):
+      result.append(self.high_or_low(org[i], diff[i]))
+
+    return result
+
+##### For Demo display #####
   def display(self,*arg):
     """ For simple Demo """
     print self.stock_name,self.stock_no
