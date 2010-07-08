@@ -36,6 +36,7 @@ class goristock(object):
     self.data_date = []
     self.stock_range = []
     starttime = 0
+    self.debug = 0
 
     try:
       while len(self.raw_data) < data_num:
@@ -50,6 +51,12 @@ class goristock(object):
       logging.info('Data not enough! %s' % stock_no)
 
     logging.info('Fetch %s' % stock_no)
+
+  def debug_print(self, info):
+    if self.debug:
+      print info
+    else:
+      pass
 
   def covstr(self,s):
     """ convert string to int or float. """
@@ -72,7 +79,7 @@ class goristock(object):
   def fetch_data(self, stock_no, nowdatetime):
     """ Fetch data from twse.com.tw """
     url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
-    print url
+    self.debug_print(url)
     logging.info(url)
     cc = urllib2.urlopen(url)
     #print cc.info().headers
@@ -87,7 +94,7 @@ class goristock(object):
     otherinfo = []
     for i in csv_read:
       if self.ckinv(i):
-        print i
+        self.debug_print(i)
         getr.append(self.covstr(i[6]))
         getdate.append(i[0].replace(' ',''))
         getrange.append(i[-2])
@@ -101,8 +108,8 @@ class goristock(object):
       'data_date': getdate,
       'stock_range': getrange
     }
-    print otherinfo
-    print stock_name
+    self.debug_print(otherinfo)
+    self.debug_print(stock_name)
     return return_value
 
   @property
