@@ -152,17 +152,55 @@ class goristock(object):
 
     return self.high_or_low(today_MA, yes_MA)
 
-  def cum_serial(self):
-    """ Cumulate serial data
-        !!TEST!!
+  def MA_serial(self,days):
+    """ MA value in list
+    [0] is the times high, low or equal
+    [1] is the MA serial data.
     """
-    org = self.raw_data[1:]
-    diff = self.raw_data[:-1]
+    raw = self.raw_data[:]
+    result = []
+    try:
+      while len(raw) >= days:
+        result.append(float(sum(raw[-days:]) / days))
+        raw.pop()
+        self.debug_print(len(result))
+
+      result.reverse()
+      re = [self.cum_serial(result), result]
+      return re
+    except:
+      return '?'
+
+  def cum_serial(self, raw):
+    """ Cumulate serial data """
+    org = raw[1:]
+    diff = raw[:-1]
     result = []
     for i in range(len(org)):
       result.append(self.high_or_low(org[i], diff[i]))
 
-    return result
+    times = 0
+    try:
+      if result[-1] == result[-2]:
+        signal = result[-1]
+        re_signal = result[:]
+        try:
+          while signal == re_signal[-1]:
+            re_signal.pop()
+            times += 1
+        except:
+          pass
+      else:
+        times += 1
+    except:
+      times = '?'
+
+    if self.debug:
+      for i in result:
+        print i
+
+    self.debug_print(times)
+    return times
 
 ##### For Demo display #####
   def display(self,*arg):
@@ -170,4 +208,4 @@ class goristock(object):
     print self.stock_name,self.stock_no
     print self.data_date[-1],self.raw_data[-1],self.stock_range[-1]
     for i in arg:
-      print 'MA%02s  %s %s' % (i,self.MA(i),self.MAC(i))
+      print 'MA%02s  %.2f %s(%s)' % (i,self.MA(i),self.MAC(i),self.MA_serial(i)[0])
