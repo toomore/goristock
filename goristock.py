@@ -24,11 +24,19 @@ from datetime import datetime, timedelta
 import urllib2, logging, csv, re
 
 class goristock(object):
+  """ Start up from __init__
+      Example:
+        goristock.goristock('stock_no')
 
+      For simple Demo:
+        goristock.goristock('stock_no').display(5,20,60)
+
+      Will display stock last closing price and MA5,MA20,MA60 price.
+  """
   def __init__(self, stock_no, data_num = 75, debug=0):
-    """
-    stock_no: stock no.
-    data_num: default fetch numbers.(Default is 75)
+    """ stock_no: Stock no.
+        data_num: Default fetch numbers. (Default is 75)
+        debug: For debug to print some info about data solution. (Default is 0)
     """
     self.raw_data = []
     self.stock_name = ''
@@ -42,7 +50,7 @@ class goristock(object):
       while len(self.raw_data) < data_num:
         self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime))
         result = self.list_data(self.csv_read)
-        self.raw_data = result['getr'] + self.raw_data
+        self.raw_data = result['stock_price'] + self.raw_data
         self.data_date = result['data_date'] + self.data_date
         self.stock_name = result['stock_name']
         self.stock_range = result['stock_range'] + self.stock_range
@@ -89,7 +97,9 @@ class goristock(object):
 
 ##### main def #####
   def fetch_data(self, stock_no, nowdatetime):
-    """ Fetch data from twse.com.tw """
+    """ Fetch data from twse.com.tw
+        return list.
+    """
     url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
     self.debug_print(url)
     logging.info(url)
@@ -99,7 +109,14 @@ class goristock(object):
     return csv_read
 
   def list_data(self, csv_read):
-    """ Put the data into the 'self.raw_data' """
+    """ Put the data into the 'self.raw_data'
+
+        return dictionary:
+          [stock_price]: Closing price (list)
+          [stock_name]: Stock name (str)
+          [data_date]: Stock date (list)
+          [stock_range]: Stock range price (list)
+    """
     getr = []
     getdate = []
     getrange = []
@@ -115,7 +132,7 @@ class goristock(object):
 
     stock_name = otherinfo[0].split(' ')[2].decode('big5').encode('utf-8')
     return_value = {
-      'getr': getr,
+      'stock_price': getr,
       'stock_name': stock_name,
       'data_date': getdate,
       'stock_range': getrange
@@ -126,25 +143,35 @@ class goristock(object):
 
   @property
   def num_data(self):
-    """ Number of data. """
+    """ Number of data.
+        return int vallue.
+    """
     return len(self.raw_data)
 
   @property
   def sum_data(self):
-    """ Sum of data. """
+    """ Sum of data. 
+        return sum value.
+    """
     return sum(self.raw_data)
 
   @property
   def avg_data(self):
-    """ Average of data. """
+    """ Average of data.
+        return float value.
+    """
     return float(self.sum_data/self.num_data)
 
   def MA(self,days):
-    """ Moving Average with days. """
+    """ Moving Average with days.
+        return float value.
+    """
     return float(sum(self.raw_data[-days:]) / days)
 
   def MAC(self,days):
-    """ Comparing yesterday is high or low. """
+    """ Comparing yesterday is high, low or equal.
+        return ↑,↓ or -
+    """
     yesterday = self.raw_data[:]
     yesterday.pop()
     yes_MA = float(sum(yesterday[-days:]) / days)
@@ -154,8 +181,11 @@ class goristock(object):
 
   def MA_serial(self,days):
     """ MA value in list
-    [0] is the times high, low or equal
-    [1] is the MA serial data.
+        if data enough, will return:
+          [0] is the times high, low or equal
+          [1] is the MA serial data.
+
+        or return '?'
     """
     raw = self.raw_data[:]
     result = []
@@ -172,7 +202,9 @@ class goristock(object):
       return '?'
 
   def cum_serial(self, raw):
-    """ Cumulate serial data """
+    """ Cumulate serial data 
+        and return times(int)
+    """
     org = raw[1:]
     diff = raw[:-1]
     result = []
