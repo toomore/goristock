@@ -43,6 +43,7 @@ class goristock(object):
     self.stock_no = stock_no
     self.data_date = []
     self.stock_range = []
+    self.stock_vol = []
     starttime = 0
     self.debug = debug
 
@@ -54,6 +55,7 @@ class goristock(object):
         self.data_date = result['data_date'] + self.data_date
         self.stock_name = result['stock_name']
         self.stock_range = result['stock_range'] + self.stock_range
+        self.stock_vol = result['stock_vol'] + self.stock_vol
         starttime += 1
     except:
       logging.info('Data not enough! %s' % stock_no)
@@ -120,6 +122,7 @@ class goristock(object):
     getr = []
     getdate = []
     getrange = []
+    getvol = []
     otherinfo = []
     for i in csv_read:
       if self.ckinv(i):
@@ -127,6 +130,7 @@ class goristock(object):
         getr.append(self.covstr(i[6]))
         getdate.append(i[0].replace(' ',''))
         getrange.append(i[-2])
+        getvol.append(int(i[1].replace(',','')))
       else:
         otherinfo.append(i[0])
 
@@ -135,7 +139,8 @@ class goristock(object):
       'stock_price': getr,
       'stock_name': stock_name,
       'data_date': getdate,
-      'stock_range': getrange
+      'stock_range': getrange,
+      'stock_vol': getvol
     }
     self.debug_print(otherinfo)
     self.debug_print(stock_name)
@@ -162,14 +167,15 @@ class goristock(object):
     """
     return float(self.sum_data/self.num_data)
 
+##### Moving Average #####
   def MA(self,days):
-    """ Moving Average with days.
+    """ Price Moving Average with days.
         return float value.
     """
     return float(sum(self.raw_data[-days:]) / days)
 
   def MAC(self,days):
-    """ Comparing yesterday is high, low or equal.
+    """ Comparing yesterday price is high, low or equal.
         return ↑,↓ or -
     """
     yesterday = self.raw_data[:]
@@ -178,6 +184,24 @@ class goristock(object):
     today_MA = self.MA(days)
 
     return self.high_or_low(today_MA, yes_MA)
+
+##### Volume #####
+  def MAVOL(self,days):
+    """ Volume Moving Average with days.
+        return float value.
+    """
+    return float(sum(self.stock_vol[-days:]) / days)
+
+  def MACVOL(self,days):
+    """ Comparing yesterday volume is high, low or equal.
+        return ↑,↓ or -
+    """
+    yesterday = self.stock_vol[:]
+    yesterday.pop()
+    yes_MAVOL = float(sum(yesterday[-days:]) / days)
+    today_MAVOL = self.MAVOL(days)
+
+    return self.high_or_low(today_MAVOL, yes_MAVOL)
 
   def MA_serial(self,days):
     """ MA value in list
@@ -202,7 +226,7 @@ class goristock(object):
       return '?'
 
   def cum_serial(self, raw):
-    """ Cumulate serial data 
+    """ Cumulate serial data
         and return times(int)
     """
     org = raw[1:]
@@ -241,3 +265,5 @@ class goristock(object):
     print self.data_date[-1],self.raw_data[-1],self.stock_range[-1]
     for i in arg:
       print 'MA%02s  %.2f %s(%s)' % (i,self.MA(i),self.MAC(i),self.MA_serial(i)[0])
+    print self.MAVOL(1),self.MACVOL(1)
+    print self.stock_vol
