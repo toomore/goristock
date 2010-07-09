@@ -85,13 +85,31 @@ class goritest(webapp.RequestHandler):
     print '='*40
     print a.display(3,6,18)
 
+############## webapp Models ###################
+class xmpp_page(webapp.RequestHandler):
+  def get(self):
+    xmpp.send_invite('toomore0929@gmail.com','goristock@appspot.com')
+
+class xmpp_pagex(webapp.RequestHandler):
+  def post(self):
+    msg = xmpp.Message(self.request.POST)
+    import goristock
+    g = goristock.goristock(msg.body).XMPP_display(3,6,18)
+    msg.reply(msg.body)
+    remsg = msg.reply(g)
+    #msg.reply(msg.body)
+    logging.info(self.request.POST)
+    logging.info('Msg status: %s' % remsg)
+
 ############## main Models ##############
 def main():
   """ Start up. """
   application = webapp.WSGIApplication(
                                       [
                                         ('/', MainPage),
-                                        ('/goristock', goritest)
+                                        ('/goristock', goritest),
+                                        ('/chat/', xmpp_page),
+                                        ('/_ah/xmpp/message/chat/', xmpp_pagex)
                                       ],debug=True)
   run_wsgi_app(application)
 

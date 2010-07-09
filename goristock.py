@@ -91,11 +91,12 @@ class goristock(object):
   def high_or_low(self, one, two):
     """ Return ↑↓- for high, low or equal. """
     if one > two:
-      return '↑'
+      re = '↑'
     elif one < two:
-      return '↓'
+      re = '↓'
     else:
-      return '-'
+      re = '-'
+    return re
 
 ##### main def #####
   def fetch_data(self, stock_no, nowdatetime):
@@ -267,3 +268,33 @@ class goristock(object):
       print ' - MA%02s  %.2f %s(%s)' % (i,self.MA(i),self.MAC(i),self.MA_serial(i)[0])
     print ' - Volume: %s%s' % (self.MAVOL(1),self.MACVOL(1))
     print self.stock_vol
+
+  def XMPP_display(self,*arg):
+    """ For XMPP Demo """
+
+    MA = ''
+    for i in arg:
+      MAs = 'MA%02s: %.2s %s(%s)\n' % (unicode(i),unicode(self.MA(i)),self.MAC(i).decode('utf-8'),unicode(self.MA_serial(i)[0]))
+      MA = MA + MAs
+
+    vol = 'Volume: %s%s' % (unicode(self.MAVOL(1)),unicode(self.MACVOL(1).decode('utf-8')))
+
+    re = """
+%(stock_name)s %(stock_no)s
+%(stock_date)s %(stock_price)s %(stock_range)s
+%(MA)s %(vol)s
+      """ % {
+                  'stock_name': unicode(self.stock_name.decode('utf-8')),
+                  'stock_no': unicode(self.stock_no),
+                  'stock_date': unicode(self.data_date[-1]),
+                  'stock_price': unicode(self.raw_data[-1]),
+                  'stock_range': unicode(self.stock_range[-1]),
+                  'MA': MA,
+                  'vol': vol
+            }
+
+    #re = unicode(self.stock_name.decode('utf-8'))
+    #re = unicode(self.stock_no) + unicode(self.data_date[-1]) + unicode(self.MAC(3))
+    #re = unicode(self.MAC(3))
+    #re = unicode(self.stock_name.decode('utf-8') + self.stock_no + self.data_date[-1] + self.MAC(3))
+    return re
