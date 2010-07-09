@@ -264,6 +264,6 @@ class goristock(object):
     print self.stock_name,self.stock_no
     print self.data_date[-1],self.raw_data[-1],self.stock_range[-1]
     for i in arg:
-      print 'MA%02s  %.2f %s(%s)' % (i,self.MA(i),self.MAC(i),self.MA_serial(i)[0])
-    print self.MAVOL(1),self.MACVOL(1)
+      print ' - MA%02s  %.2f %s(%s)' % (i,self.MA(i),self.MAC(i),self.MA_serial(i)[0])
+    print ' - Volume: %s%s' % (self.MAVOL(1),self.MACVOL(1))
     print self.stock_vol

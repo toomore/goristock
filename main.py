@@ -82,6 +82,8 @@ class goritest(webapp.RequestHandler):
     print a.num_data
     print a.stock_no,a.stock_name
     print a.MA(5),a.MAC(5),a.MA(20),a.MAC(20),a.MA(60),a.MAC(60)
+    print '='*40
+    print a.display(3,6,18)
 
 ############## main Models ##############
 def main():
