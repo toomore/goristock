@@ -95,7 +95,7 @@ class xmpp_pagex(webapp.RequestHandler):
     msg = xmpp.Message(self.request.POST)
     import goristock
     g = goristock.goristock(msg.body).XMPP_display(3,6,18)
-    msg.reply(msg.body)
+    msg.reply(msg.body + ' analysing ...')
     remsg = msg.reply(g)
     #msg.reply(msg.body)
     logging.info(self.request.POST)

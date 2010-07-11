@@ -49,6 +49,7 @@ class goristock(object):
 
     try:
       while len(self.raw_data) < data_num:
+        # start fetch data.
         self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime))
         result = self.list_data(self.csv_read)
         self.raw_data = result['stock_price'] + self.raw_data
@@ -112,11 +113,11 @@ class goristock(object):
     return csv_read
 
   def list_data(self, csv_read):
-    """ Put the data into the 'self.raw_data'
+    """ Put the data into the 'self.raw_data' and other stock info.
 
         return dictionary:
           [stock_price]: Closing price (list)
-          [stock_name]: Stock name (str)
+          [stock_name]: Stock name (str) and encode form big5 to utf-8
           [data_date]: Stock date (list)
           [stock_range]: Stock range price (list)
     """
@@ -274,23 +275,23 @@ class goristock(object):
 
     MA = ''
     for i in arg:
-      MAs = 'MA%02s: %.2s %s(%s)\n' % (unicode(i),unicode(self.MA(i)),self.MAC(i).decode('utf-8'),unicode(self.MA_serial(i)[0]))
+      MAs = '- MA%02s: %.2f %s(%s)\n' % (unicode(i),self.MA(i),self.MAC(i).decode('utf-8'),unicode(self.MA_serial(i)[0]))
       MA = MA + MAs
 
-    vol = 'Volume: %s%s' % (unicode(self.MAVOL(1)),unicode(self.MACVOL(1).decode('utf-8')))
+    vol = '- Volume: %s%s' % (unicode(self.MAVOL(1)),unicode(self.MACVOL(1).decode('utf-8')))
 
     re = """
-%(stock_name)s %(stock_no)s
-%(stock_date)s %(stock_price)s %(stock_range)s
+%(stock_name)s %(stock_no)s %(stock_date)s
+Today: %(stock_price)s %(stock_range)s
 %(MA)s %(vol)s
       """ % {
-                  'stock_name': unicode(self.stock_name.decode('utf-8')),
-                  'stock_no': unicode(self.stock_no),
-                  'stock_date': unicode(self.data_date[-1]),
-                  'stock_price': unicode(self.raw_data[-1]),
-                  'stock_range': unicode(self.stock_range[-1]),
-                  'MA': MA,
-                  'vol': vol
+              'stock_name': unicode(self.stock_name.decode('utf-8')),
+              'stock_no': unicode(self.stock_no),
+              'stock_date': unicode(self.data_date[-1]),
+              'stock_price': unicode(self.raw_data[-1]),
+              'stock_range': unicode(self.stock_range[-1]),
+              'MA': MA,
+              'vol': vol
             }
 
     #re = unicode(self.stock_name.decode('utf-8'))
