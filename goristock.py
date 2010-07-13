@@ -187,6 +187,10 @@ class goristock(object):
 
     return self.high_or_low(today_MA, yes_MA)
 
+  def MA_serial(self,days):
+    """ see make_serial() """
+    return self.make_serial(self.raw_data,days)
+
 ##### Volume #####
   def MAVOL(self,days):
     """ Volume Moving Average with days.
@@ -205,15 +209,20 @@ class goristock(object):
 
     return self.high_or_low(today_MAVOL, yes_MAVOL)
 
-  def MA_serial(self,days):
-    """ MA value in list
+  def MAVOL_serial(self,days):
+    """ see make_serial() """
+    return self.make_serial(self.stock_vol,days)
+
+##### make serial #####
+  def make_serial(self,data,days):
+    """ make data in list
         if data enough, will return:
-          [0] is the times high, low or equal
-          [1] is the MA serial data.
+          [0] is the times of high, low or equal
+          [1] is the serial of data.
 
         or return '?'
     """
-    raw = self.raw_data[:]
+    raw = data[:]
     result = []
     try:
       while len(raw) >= days:
@@ -267,32 +276,42 @@ class goristock(object):
     print self.data_date[-1],self.raw_data[-1],self.stock_range[-1]
     for i in arg:
       print ' - MA%02s  %.2f %s(%s)' % (i,self.MA(i),self.MAC(i),self.MA_serial(i)[0])
-    print ' - Volume: %s%s' % (self.MAVOL(1),self.MACVOL(1))
+    print ' - Volume: %s%s(%s)' % (self.MAVOL(1),self.MACVOL(1),self.MAVOL_serial(1)[0])
     print self.stock_vol
 
+##### For XMPP Demo display #####
   def XMPP_display(self,*arg):
     """ For XMPP Demo """
 
     MA = ''
     for i in arg:
-      MAs = '- MA%02s: %.2f %s(%s)\n' % (unicode(i),self.MA(i),self.MAC(i).decode('utf-8'),unicode(self.MA_serial(i)[0]))
+      MAs = '- MA%02s: %.2f %s(%s)\n' % (
+        unicode(i),
+        self.MA(i),
+        self.MAC(i).decode('utf-8'),
+        unicode(self.MA_serial(i)[0])
+      )
       MA = MA + MAs
 
-    vol = '- Volume: %s%s' % (unicode(self.MAVOL(1)),unicode(self.MACVOL(1).decode('utf-8')))
+    vol = '- Volume: %s%s(%s)' % (
+      unicode(self.MAVOL(1)),
+      unicode(self.MACVOL(1).decode('utf-8')),
+      unicode(self.MAVOL_serial(1)[0])
+    )
 
     re = """
 %(stock_name)s %(stock_no)s %(stock_date)s
 Today: %(stock_price)s %(stock_range)s
 %(MA)s %(vol)s
-      """ % {
-              'stock_name': unicode(self.stock_name.decode('utf-8')),
-              'stock_no': unicode(self.stock_no),
-              'stock_date': unicode(self.data_date[-1]),
-              'stock_price': unicode(self.raw_data[-1]),
-              'stock_range': unicode(self.stock_range[-1]),
-              'MA': MA,
-              'vol': vol
-            }
+""" % {
+        'stock_name': unicode(self.stock_name.decode('utf-8')),
+        'stock_no': unicode(self.stock_no),
+        'stock_date': unicode(self.data_date[-1]),
+        'stock_price': unicode(self.raw_data[-1]),
+        'stock_range': unicode(self.stock_range[-1]),
+        'MA': MA,
+        'vol': vol
+      }
 
     #re = unicode(self.stock_name.decode('utf-8'))
     #re = unicode(self.stock_no) + unicode(self.data_date[-1]) + unicode(self.MAC(3))

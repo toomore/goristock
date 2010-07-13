@@ -93,10 +93,14 @@ class xmpp_page(webapp.RequestHandler):
 class xmpp_pagex(webapp.RequestHandler):
   def post(self):
     msg = xmpp.Message(self.request.POST)
-    import goristock
-    g = goristock.goristock(msg.body).XMPP_display(3,6,18)
     msg.reply(msg.body + ' analysing ...')
-    remsg = msg.reply(g)
+    try:
+      import goristock
+      g = goristock.goristock(msg.body).XMPP_display(3,6,18)
+      remsg = msg.reply(g)
+    except:
+      remsg = msg.reply('!')
+
     #msg.reply(msg.body)
     logging.info(self.request.POST)
     logging.info('Msg status: %s' % remsg)
