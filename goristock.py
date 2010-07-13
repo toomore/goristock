@@ -251,6 +251,15 @@ class goristock(object):
     #return [day1MAs,day2MAs,serial,cum,self.high_or_low(cum[-1],cum[-2])]
     return [cum,self.high_or_low(cum[-1],cum[-2])]
 
+##### RABC #####
+  @property
+  def RABC(self):
+    """ Return ABC """
+    A = self.raw_data[-3]*2 - self.raw_data[-6]
+    B = self.raw_data[-2]*2 - self.raw_data[-5]
+    C = self.raw_data[-1]*2 - self.raw_data[-4]
+    return '(%.2f,%.2f,%.2f)' % (A,B,C)
+
 ##### make serial #####
   def make_serial(self,data,days):
     """ make data in list
@@ -317,7 +326,7 @@ class goristock(object):
     print ' - Volume: %s %s(%s)' % (self.MAVOL(1),self.MACVOL(1),self.MAVOL_serial(1)[0])
     MAO = self.MAO(3,6)
     print ' - MAO(3-6): %s %s(%s)' % (MAO[0][1][-1], MAO[1], MAO[0][0])
-    print self.stock_vol
+    #print self.stock_vol
 
 ##### For XMPP Demo display #####
   def XMPP_display(self,*arg):
@@ -345,6 +354,7 @@ class goristock(object):
 Today: %(stock_price)s %(stock_range)s
 %(MA)s %(vol)s
 - MAO(3-6): %(MAO_v).2f %(MAO_c)s(%(MAO_times)s)
+- RABC: %(RABC)s
 """ % {
         'stock_name': unicode(self.stock_name.decode('utf-8')),
         'stock_no': unicode(self.stock_no),
@@ -355,7 +365,8 @@ Today: %(stock_price)s %(stock_range)s
         'vol': vol,
         'MAO_v': MAO[0][1][-1],
         'MAO_c': unicode(MAO[1].decode('utf-8')),
-        'MAO_times': unicode(MAO[0][0])
+        'MAO_times': unicode(MAO[0][0]),
+        'RABC': self.RABC
       }
 
     #re = unicode(self.stock_name.decode('utf-8'))
