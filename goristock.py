@@ -219,6 +219,38 @@ class goristock(object):
     """ see make_serial() """
     return self.make_serial(self.stock_vol,days)
 
+##### MAO #####
+  def MAO(self,day1,day2):
+    """ This is MAO(Moving Average Oscillator), not BIAS.
+        It's only 'MAday1 - MAday2'.
+
+        return list:
+        [0] is the times of high, low or equal
+          [0] is times
+          [1] is the MAO data
+        [1] ↑ ↓ or -
+    """
+    day1MA = self.MA_serial(day1)[1]
+    day2MA = self.MA_serial(day2)[1]
+    bw = abs(day1-day2)
+    if len(day1MA) > len(day2MA):
+      day1MAs = day1MA[bw:]
+      day2MAs = day2MA[:]
+    elif len(day1MA) < len(day2MA):
+      day1MAs = day1MA[:]
+      day2MAs = day2MA[bw:]
+    else:
+      day1MAs = day1MA[:]
+      day2MAs = day2MA[:]
+
+    serial = []
+    for i in range(len(day1MAs)):
+      serial.append(day1MAs[i]-day2MAs[i])
+
+    cum = self.make_serial(serial,1)
+    #return [day1MAs,day2MAs,serial,cum,self.high_or_low(cum[-1],cum[-2])]
+    return [cum,self.high_or_low(cum[-1],cum[-2])]
+
 ##### make serial #####
   def make_serial(self,data,days):
     """ make data in list
@@ -282,7 +314,9 @@ class goristock(object):
     print self.data_date[-1],self.raw_data[-1],self.stock_range[-1]
     for i in arg:
       print ' - MA%02s  %.2f %s(%s)' % (i,self.MA(i),self.MAC(i),self.MA_serial(i)[0])
-    print ' - Volume: %s%s(%s)' % (self.MAVOL(1),self.MACVOL(1),self.MAVOL_serial(1)[0])
+    print ' - Volume: %s %s(%s)' % (self.MAVOL(1),self.MACVOL(1),self.MAVOL_serial(1)[0])
+    MAO = self.MAO(3,6)
+    print ' - MAO(3-6): %s %s(%s)' % (MAO[0][1][-1], MAO[1], MAO[0][0])
     print self.stock_vol
 
 ##### For XMPP Demo display #####
@@ -299,16 +333,18 @@ class goristock(object):
       )
       MA = MA + MAs
 
-    vol = '- Volume: %s%s(%s)' % (
+    vol = '- Volume: %s %s(%s)' % (
       unicode(self.MAVOL(1)),
       unicode(self.MACVOL(1).decode('utf-8')),
       unicode(self.MAVOL_serial(1)[0])
     )
 
-    re = """
-%(stock_name)s %(stock_no)s %(stock_date)s
+    MAO = self.MAO(3,6)
+
+    re = """%(stock_name)s %(stock_no)s %(stock_date)s
 Today: %(stock_price)s %(stock_range)s
 %(MA)s %(vol)s
+- MAO(3-6): %(MAO_v).2f %(MAO_c)s(%(MAO_times)s)
 """ % {
         'stock_name': unicode(self.stock_name.decode('utf-8')),
         'stock_no': unicode(self.stock_no),
@@ -316,7 +352,10 @@ Today: %(stock_price)s %(stock_range)s
         'stock_price': unicode(self.raw_data[-1]),
         'stock_range': unicode(self.stock_range[-1]),
         'MA': MA,
-        'vol': vol
+        'vol': vol,
+        'MAO_v': MAO[0][1][-1],
+        'MAO_c': unicode(MAO[1].decode('utf-8')),
+        'MAO_times': unicode(MAO[0][0])
       }
 
     #re = unicode(self.stock_name.decode('utf-8'))
