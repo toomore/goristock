@@ -126,6 +126,7 @@ class goristock(object):
     getrange = []
     getvol = []
     otherinfo = []
+    fetch_data_raw = 1
     for i in csv_read:
       if self.ckinv(i):
         self.debug_print(i)
@@ -135,8 +136,13 @@ class goristock(object):
         getvol.append(int(i[1].replace(',','')))
       else:
         otherinfo.append(i[0])
+      fetch_data_raw += 1
 
-    stock_name = otherinfo[0].split(' ')[2].decode('big5').encode('utf-8')
+    if fetch_data_raw > 5:
+      stock_name = otherinfo[0].split(' ')[2].decode('big5').encode('utf-8')
+    else:
+      pass
+
     return_value = {
       'stock_price': getr,
       'stock_name': stock_name,
