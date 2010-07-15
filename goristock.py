@@ -323,9 +323,10 @@ class goristock(object):
     print self.data_date[-1],self.raw_data[-1],self.stock_range[-1]
     for i in arg:
       print ' - MA%02s  %.2f %s(%s)' % (i,self.MA(i),self.MAC(i),self.MA_serial(i)[0])
-    print ' - Volume: %s %s(%s)' % (self.MAVOL(1),self.MACVOL(1),self.MAVOL_serial(1)[0])
+    print ' - Volume: %s %s(%s)' % (self.MAVOL(1)/1000,self.MACVOL(1),self.MAVOL_serial(1)[0])
     MAO = self.MAO(3,6)
     print ' - MAO(3-6): %s %s(%s)' % (MAO[0][1][-1], MAO[1], MAO[0][0])
+    print ' - RABC: %s' % self.RABC
     #print self.stock_vol
 
 ##### For XMPP Demo display #####
@@ -343,7 +344,7 @@ class goristock(object):
       MA = MA + MAs
 
     vol = '- Volume: %s %s(%s)' % (
-      unicode(self.MAVOL(1)),
+      unicode(self.MAVOL(1)/1000),
       unicode(self.MACVOL(1).decode('utf-8')),
       unicode(self.MAVOL_serial(1)[0])
     )
@@ -352,7 +353,7 @@ class goristock(object):
 
     re = """%(stock_name)s %(stock_no)s %(stock_date)s
 Today: %(stock_price)s %(stock_range)s
-%(MA)s %(vol)s
+%(MA)s%(vol)s
 - MAO(3-6): %(MAO_v).2f %(MAO_c)s(%(MAO_times)s)
 - RABC: %(RABC)s
 """ % {
