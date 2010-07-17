@@ -33,3 +33,17 @@ admin_console:
     name: "Appstats"
   - url: /admin_console/
     name: "Admin_console"
+
+skip_files: |
+ ^(.*/)?(
+ (app\.yaml)|
+ (app\.yml)|
+ (index\.yaml)|
+ (index\.yml)|
+ (#.*#)|
+ (.*~)|
+ (.*\.py[co])|
+ (.*/RCS/.*)|
+ (\..*)|
+ (tests/.*)
+ )$
