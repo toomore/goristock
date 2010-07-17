@@ -93,17 +93,38 @@ class xmpp_page(webapp.RequestHandler):
 class xmpp_pagex(webapp.RequestHandler):
   def post(self):
     msg = xmpp.Message(self.request.POST)
-    msg.reply(msg.body + ' analysing ...')
-    try:
-      import goristock
-      g = goristock.goristock(msg.body).XMPP_display(3,6,18)
-      remsg = msg.reply(g)
-    except:
-      remsg = msg.reply('!')
+    if msg.body.split(' ')[0] == 'search':
+      try:
+        q = msg.body.split(' ')[1]
+        msg.reply("find '%s'" % q)
 
-    #msg.reply(msg.body)
-    logging.info(self.request.POST)
-    logging.info('Msg status: %s' % remsg)
+        from twseno import twseno
+        result = twseno().search(q.encode('utf-8'))
+        re = ''
+        logging.info(q)
+        logging.info(len(result))
+        if len(result):
+          for i in result:
+            re = re + '%s(%s) ' % (result[i],i)
+          logging.info(re)
+          msg.reply(re)
+        else:
+          msg.reply('Did not match any!')
+      except:
+        logging.info('Wrong keyword!')
+        msg.reply("search <keyword>")
+    else:
+      msg.reply(msg.body + ' analysing ...')
+      try:
+        import goristock
+        g = goristock.goristock(msg.body).XMPP_display(3,6,18)
+        remsg = msg.reply(g)
+      except:
+        remsg = msg.reply('!')
+
+      #msg.reply(msg.body)
+      logging.info(self.request.POST)
+      logging.info('Msg status: %s' % remsg)
 
 ############## main Models ##############
 def main():
