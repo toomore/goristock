@@ -14,13 +14,31 @@ class twseno(object):
     """ Search. """
     import re
     pattern = re.compile("%s" % q)
+    result = {}
     for i in self.allstockno:
       b = re.search(pattern, self.allstockno[i])
       try:
         b.group()
-        print i,self.allstockno[i]
+        result[i] = self.allstockno[i]
       except:
         pass
+
+    return result
+
+  def searchbyno(self,q):
+    """ Search by no. """
+    import re
+    pattern = re.compile("%s" % q[0:2])
+    result = {}
+    for i in self.allstockno:
+      b = re.search(pattern, i)
+      try:
+        b.group()
+        result[i] = self.allstockno[i]
+      except:
+        pass
+
+    return result
 
 ##### stock no list #####
 STOCKNO = {'1101':'台泥',
