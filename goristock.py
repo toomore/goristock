@@ -325,7 +325,7 @@ class goristock(object):
       print ' - MA%02s  %.2f %s(%s)' % (i,self.MA(i),self.MAC(i),self.MA_serial(i)[0])
     print ' - Volume: %s %s(%s)' % (self.MAVOL(1)/1000,self.MACVOL(1),self.MAVOL_serial(1)[0])
     MAO = self.MAO(3,6)
-    print ' - MAO(3-6): %s %s(%s)' % (MAO[0][1][-1], MAO[1], MAO[0][0])
+    print ' - MAO(3-6): %.2f %s(%s)' % (MAO[0][1][-1], MAO[1], MAO[0][0])
     print ' - RABC: %s' % self.RABC
     #print self.stock_vol
 
