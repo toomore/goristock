@@ -175,6 +175,12 @@ class goristock(object):
     """
     return float(self.sum_data/self.num_data)
 
+  @property
+  def range_per(self):
+    """ Range percentage """
+    rp = float((self.raw_data[-1] - self.raw_data[-2]) / self.raw_data[-2] * 100)
+    return rp
+
 ##### Moving Average #####
   def MA(self,days):
     """ Price Moving Average with days.
@@ -320,7 +326,7 @@ class goristock(object):
   def display(self,*arg):
     """ For simple Demo """
     print self.stock_name,self.stock_no
-    print self.data_date[-1],self.raw_data[-1],self.stock_range[-1]
+    print '%s %s %s(%+.2f%%)' % (self.data_date[-1],self.raw_data[-1],self.stock_range[-1],self.range_per)
     for i in arg:
       print ' - MA%02s  %.2f %s(%s)' % (i,self.MA(i),self.MAC(i),self.MA_serial(i)[0])
     print ' - Volume: %s %s(%s)' % (self.MAVOL(1)/1000,self.MACVOL(1),self.MAVOL_serial(1)[0])
@@ -352,7 +358,7 @@ class goristock(object):
     MAO = self.MAO(3,6)
 
     re = """%(stock_name)s %(stock_no)s %(stock_date)s
-Today: %(stock_price)s %(stock_range)s
+Today: %(stock_price)s %(stock_range)s(%(range_per)+.2f%%)
 %(MA)s%(vol)s
 - MAO(3-6): %(MAO_v).2f %(MAO_c)s(%(MAO_times)s)
 - RABC: %(RABC)s
@@ -362,6 +368,7 @@ Today: %(stock_price)s %(stock_range)s
         'stock_date': unicode(self.data_date[-1]),
         'stock_price': unicode(self.raw_data[-1]),
         'stock_range': unicode(self.stock_range[-1]),
+        'range_per': self.range_per,
         'MA': MA,
         'vol': vol,
         'MAO_v': MAO[0][1][-1],
