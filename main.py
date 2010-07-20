@@ -130,12 +130,31 @@ class xmpp_pagex(webapp.RequestHandler):
 ############## Task Models ##############
 class task(webapp.RequestHandler):
   def get(self):
-    for i in range(5):
-      Task(url='/taskt',method='POST', params={'log': 'Task', 'no': i}).add()
+    #for i in [2618,1701,2369,8261,2401]:
+    from twseno import twseno
+    for i in twseno().allstock:
+      Task(url='/task_stocks',method='POST', params={'log': 'Task', 'no': i}).add(queue_name='stock')
 
 class taskt(webapp.RequestHandler):
   def post(self):
     logging.info('%s: %s, %s' % (self.request.get('no'), self.request.get('log'), self.request.POST))
+
+class task_stock(webapp.RequestHandler):
+  def post(self):
+    import goristock
+    a = goristock.goristock(self.request.get('no'))
+    body = a.XMPP_display(3,6,18)
+    logging.info(body)
+    xmpp.send_message('toomore0929@gmail.com', body)
+
+class task_stocks(webapp.RequestHandler):
+  def post(self):
+    import goristock
+    a = goristock.goristock(self.request.get('no'))
+    if a.MAC(3) == '↑' and a.MAC(6) == '↑' and a.MAC(18) == '↑':
+      body = a.XMPP_display(3,6,18)
+      logging.info(body)
+      xmpp.send_message('toomore0929@gmail.com', body)
 
 ############## main Models ##############
 def main():
@@ -147,7 +166,9 @@ def main():
                                         ('/chat/', xmpp_page),
                                         ('/_ah/xmpp/message/chat/', xmpp_pagex),
                                         ('/task', task),
-                                        ('/taskt', taskt)
+                                        ('/taskt', taskt),
+                                        ('/task_stock', task_stock),
+                                        ('/task_stocks', task_stocks)
                                       ],debug=True)
   run_wsgi_app(application)
 

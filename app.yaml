@@ -15,6 +15,16 @@ handlers:
   secure: always
   login: admin
 
+- url: /task
+  script: main.py
+  login: admin
+- url: /taskt
+  script: main.py
+  login: admin
+- url: /task_stock
+  script: main.py
+  login: admin
+
 ## Main WSGI
 - url: .*
   script: main.py
