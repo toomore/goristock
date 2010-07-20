@@ -152,9 +152,10 @@ class task_stocks(webapp.RequestHandler):
     import goristock
     a = goristock.goristock(self.request.get('no'))
     if a.MAC(3) == '↑' and a.MAC(6) == '↑' and a.MAC(18) == '↑':
-      body = a.XMPP_display(3,6,18)
-      logging.info(body)
-      xmpp.send_message('toomore0929@gmail.com', body)
+      if a.MAO(3,6)[0][1][-1] < 0 and a.MAO(3,6)[1] == '↑':
+        body = a.XMPP_display(3,6,18)
+        logging.info(body)
+        xmpp.send_message('toomore0929@gmail.com', body)
 
 ############## main Models ##############
 def main():
