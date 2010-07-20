@@ -23,6 +23,7 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import xmpp
+from google.appengine.api.labs.taskqueue import Task 
 
 #from google.appengine.api import urlfetch
 from datetime import datetime
@@ -126,6 +127,16 @@ class xmpp_pagex(webapp.RequestHandler):
       logging.info(self.request.POST)
       logging.info('Msg status: %s' % remsg)
 
+############## Task Models ##############
+class task(webapp.RequestHandler):
+  def get(self):
+    for i in range(5):
+      Task(url='/taskt',method='POST', params={'log': 'Task', 'no': i}).add()
+
+class taskt(webapp.RequestHandler):
+  def post(self):
+    logging.info('%s: %s, %s' % (self.request.get('no'), self.request.get('log'), self.request.POST))
+
 ############## main Models ##############
 def main():
   """ Start up. """
@@ -134,7 +145,9 @@ def main():
                                         ('/', MainPage),
                                         ('/goristock', goritest),
                                         ('/chat/', xmpp_page),
-                                        ('/_ah/xmpp/message/chat/', xmpp_pagex)
+                                        ('/_ah/xmpp/message/chat/', xmpp_pagex),
+                                        ('/task', task),
+                                        ('/taskt', taskt)
                                       ],debug=True)
   run_wsgi_app(application)
 
