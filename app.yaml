@@ -33,6 +33,7 @@ handlers:
 
 inbound_services:
 - xmpp_message
+- mail
 
 derived_file_type:
 - python_precompiled

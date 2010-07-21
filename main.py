@@ -151,11 +151,22 @@ class task_stocks(webapp.RequestHandler):
   def post(self):
     import goristock
     a = goristock.goristock(self.request.get('no'))
+    #mail_body = ''
     if a.MAC(3) == '↑' and a.MAC(6) == '↑' and a.MAC(18) == '↑':
       if a.MAO(3,6)[0][1][-1] < 0 and a.MAO(3,6)[1] == '↑':
         body = a.XMPP_display(3,6,18)
         logging.info(body)
+        #mail_body = mail_body + body
         xmpp.send_message('toomore0929@gmail.com', body)
+    '''
+    if len(mail_body):
+      from google.appengine.api import mail
+      mail.send_mail(
+              sender = "goristock <goristock@appspot.com>",
+              to = "Toomore <toomore0929@gmail.com>",
+              subject = "goristock select.",
+              body = mail_body)
+    '''
 
 ############## main Models ##############
 def main():
