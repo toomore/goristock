@@ -133,7 +133,15 @@ class task(webapp.RequestHandler):
     #for i in [2618,1701,2369,8261,2401]:
     from twseno import twseno
     for i in twseno().allstock:
-      Task(url='/task_stocks',method='POST', params={'log': 'Task', 'no': i}).add(queue_name='stock')
+      Task(
+        url='/task_stocks',
+        method='POST',
+        params={
+          'log': 'Task',
+          'no': i,
+          'd':self.request.get('d')
+        }
+      ).add(queue_name='stock')
 
 class taskt(webapp.RequestHandler):
   def post(self):
@@ -154,10 +162,15 @@ class task_stocks(webapp.RequestHandler):
     #mail_body = ''
     if a.MAC(3) == '↑' and a.MAC(6) == '↑' and a.MAC(18) == '↑':
       if a.MAO(3,6)[0][1][-1] < 0 and a.MAO(3,6)[1] == '↑':
-        body = a.XMPP_display(3,6,18)
+        if self.request.get('d'):
+          body = a.XMPP_display(3,6,18)
+        else:
+          body = a.Task_display
+
         logging.info(body)
         #mail_body = mail_body + body
         xmpp.send_message('toomore0929@gmail.com', body)
+
     '''
     if len(mail_body):
       from google.appengine.api import mail

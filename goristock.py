@@ -375,3 +375,18 @@ Today: %(stock_price)s %(stock_range)s
     #re = unicode(self.MAC(3))
     #re = unicode(self.stock_name.decode('utf-8') + self.stock_no + self.data_date[-1] + self.MAC(3))
     return re
+
+##### For Task overall stock display #####
+  @property
+  def Task_display(self):
+    """ For Task overall stock display """
+    re = """%(stock_name)s %(stock_no)s %(stock_date)s
+Today: %(stock_price)s %(stock_range)s
+=-=-=-=""" % {
+        'stock_name': unicode(self.stock_name.decode('utf-8')),
+        'stock_no': unicode(self.stock_no),
+        'stock_date': unicode(self.data_date[-1]),
+        'stock_price': unicode(self.raw_data[-1]),
+        'stock_range': unicode(self.stock_range[-1]),
+      }
+    return re
