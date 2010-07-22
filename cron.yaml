@@ -1,5 +1,5 @@
 cron:
 - description: Overall stock
   url: /task
-  schedule: every day 14:05
+  schedule: every day 14:35
   timezone: Asia/Taipei
