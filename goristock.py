@@ -225,6 +225,14 @@ class goristock(object):
     """ see make_serial() """
     return self.make_serial(self.stock_vol,days)
 
+  @property
+  def VOLMAX3(self):
+    """ Volume is the max in last 3 days. """
+    if self.stock_vol[-1] > self.stock_vol[-2] and self.stock_vol[-1] > self.stock_vol[-3]:
+      return True
+    else:
+      return False
+
 ##### MAO #####
   def MAO(self,day1,day2):
     """ This is MAO(Moving Average Oscillator), not BIAS.
