@@ -271,7 +271,7 @@ class goristock(object):
 
     cum = self.make_serial(serial,1)
     #return [day1MAs,day2MAs,serial,cum,self.high_or_low(cum[-1],cum[-2])]
-    return [cum,self.high_or_low(day1MAs[-1],day2MAs[-1])]
+    return [cum,self.high_or_low(day1MAs[-1]-day2MAs[-1],day1MAs[-2]-day2MAs[-2])]
 
 ##### RABC #####
   @property
