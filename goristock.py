@@ -99,6 +99,14 @@ class goristock(object):
       re = '-'
     return re
 
+  def goback(self,days = 1):
+    """ Go back days """
+    for i in range(days):
+      self.raw_data.pop()
+      self.data_date.pop()
+      self.stock_range.pop()
+      self.stock_vol.pop()
+
 ##### main def #####
   def fetch_data(self, stock_no, nowdatetime):
     """ Fetch data from twse.com.tw
@@ -263,7 +271,7 @@ class goristock(object):
 
     cum = self.make_serial(serial,1)
     #return [day1MAs,day2MAs,serial,cum,self.high_or_low(cum[-1],cum[-2])]
-    return [cum,self.high_or_low(cum[-1],cum[-2])]
+    return [cum,self.high_or_low(day1MAs[-1],day2MAs[-1])]
 
 ##### RABC #####
   @property
@@ -339,7 +347,7 @@ class goristock(object):
       print ' - MA%02s  %.2f %s(%s)' % (i,self.MA(i),self.MAC(i),self.MA_serial(i)[0])
     print ' - Volume: %s %s(%s)' % (self.MAVOL(1)/1000,self.MACVOL(1),self.MAVOL_serial(1)[0])
     MAO = self.MAO(3,6)
-    print ' - MAO(3-6): %s %s(%s)' % (MAO[0][1][-1], MAO[1], MAO[0][0])
+    print ' - MAO(3-6): %.2f %s(%s)' % (MAO[0][1][-1], MAO[1], MAO[0][0])
     print ' - RABC: %s' % self.RABC
     #print self.stock_vol
 
@@ -389,4 +397,19 @@ Today: %(stock_price)s %(stock_range)s(%(range_per)+.2f%%)
     #re = unicode(self.stock_no) + unicode(self.data_date[-1]) + unicode(self.MAC(3))
     #re = unicode(self.MAC(3))
     #re = unicode(self.stock_name.decode('utf-8') + self.stock_no + self.data_date[-1] + self.MAC(3))
+    return re
+
+##### For Task overall stock display #####
+  @property
+  def Task_display(self):
+    """ For Task overall stock display """
+    re = """%(stock_name)s %(stock_no)s %(stock_date)s
+Today: %(stock_price)s %(stock_range)s
+=-=-=-=""" % {
+        'stock_name': unicode(self.stock_name.decode('utf-8')),
+        'stock_no': unicode(self.stock_no),
+        'stock_date': unicode(self.data_date[-1]),
+        'stock_price': unicode(self.raw_data[-1]),
+        'stock_range': unicode(self.stock_range[-1]),
+      }
     return re
