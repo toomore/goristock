@@ -99,6 +99,14 @@ class goristock(object):
       re = '-'
     return re
 
+  def goback(self,days = 1):
+    """ Go back days """
+    for i in range(days):
+      self.raw_data.pop()
+      self.data_date.pop()
+      self.stock_range.pop()
+      self.stock_vol.pop()
+
 ##### main def #####
   def fetch_data(self, stock_no, nowdatetime):
     """ Fetch data from twse.com.tw
@@ -263,7 +271,7 @@ class goristock(object):
 
     cum = self.make_serial(serial,1)
     #return [day1MAs,day2MAs,serial,cum,self.high_or_low(cum[-1],cum[-2])]
-    return [cum,self.high_or_low(cum[-1],cum[-2])]
+    return [cum,self.high_or_low(day1MAs[-1],day2MAs[-1])]
 
 ##### RABC #####
   @property
