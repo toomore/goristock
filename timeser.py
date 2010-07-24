@@ -24,7 +24,6 @@ def timetest(no):
 
 def overall():
   from twseno import twseno
-
   for i in twseno().allstock:
     #timetest(i)
     try:
@@ -32,4 +31,4 @@ def overall():
       if a.MAO(3,6)[1] == '↑' and (a.MAO(3,6)[0][1][-1] < 0 or ( a.MAO(3,6)[0][1][-1] < 1 and a.MAO(3,6)[0][1][-1] > 0 and a.MAO(3,6)[0][1][-2] < 0 and  a.MAO(3,6)[0][0] == 3)) and a.VOLMAX3:
         print  a.Cmd_display
     except:
-      pass
+      print i
