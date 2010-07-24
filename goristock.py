@@ -413,3 +413,17 @@ Today: %(stock_price)s %(stock_range)s
         'stock_range': unicode(self.stock_range[-1]),
       }
     return re
+
+##### For Local cmd overall stock display #####
+  @property
+  def Cmd_display(self):
+    """ For Task overall stock display """
+    re = "%(stock_no)s %(stock_name)s %(stock_date)s %(stock_price)s %(stock_range)s(%(stock_range_per).2f%%)" % {
+        'stock_name': unicode(self.stock_name.decode('utf-8')),
+        'stock_no': unicode(self.stock_no),
+        'stock_date': unicode(self.data_date[-1]),
+        'stock_price': unicode(self.raw_data[-1]),
+        'stock_range': unicode(self.stock_range[-1]),
+        'stock_range_per': self.range_per
+      }
+    return re
