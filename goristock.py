@@ -92,11 +92,11 @@ class goristock(object):
   def high_or_low(self, one, two):
     """ Return ↑↓- for high, low or equal. """
     if one > two:
-      re = '↑'
+      re = '↑'.decode('utf-8')
     elif one < two:
-      re = '↓'
+      re = '↓'.decode('utf-8')
     else:
-      re = '-'
+      re = '-'.decode('utf-8')
     return re
 
   def goback(self,days = 1):
@@ -184,11 +184,30 @@ class goristock(object):
     """
     return float(self.sum_data/self.num_data)
 
+##### App #####
   @property
   def range_per(self):
     """ Range percentage """
     rp = float((self.raw_data[-1] - self.raw_data[-2]) / self.raw_data[-2] * 100)
     return rp
+
+  @property
+  def KRED(self):
+    """ price is up.
+        return True or False.
+    """
+    if self.range_per > 0:
+      return True
+    else:
+      return False
+
+  @property
+  def PUPTY(self):
+    """ price is up than yesterday. """
+    if self.raw_data[-1] > self.raw_data[-2]:
+      return True
+    else:
+      return False
 
 ##### Moving Average #####
   def MA(self,days):
@@ -361,14 +380,14 @@ class goristock(object):
       MAs = '- MA%02s: %.2f %s(%s)\n' % (
         unicode(i),
         self.MA(i),
-        self.MAC(i).decode('utf-8'),
+        self.MAC(i),
         unicode(self.MA_serial(i)[0])
       )
       MA = MA + MAs
 
     vol = '- Volume: %s %s(%s)' % (
       unicode(self.MAVOL(1)/1000),
-      unicode(self.MACVOL(1).decode('utf-8')),
+      unicode(self.MACVOL(1)),
       unicode(self.MAVOL_serial(1)[0])
     )
 
@@ -389,7 +408,7 @@ Today: %(stock_price)s %(stock_range)s(%(range_per)+.2f%%)
         'MA': MA,
         'vol': vol,
         'MAO_v': MAO[0][1][-1],
-        'MAO_c': unicode(MAO[1].decode('utf-8')),
+        'MAO_c': unicode(MAO[1]),
         'MAO_times': unicode(MAO[0][0]),
         'RABC': self.RABC
       }
