@@ -397,8 +397,7 @@ class goristock(object):
 Today: %(stock_price)s %(stock_range)s(%(range_per)+.2f%%)
 %(MA)s%(vol)s
 - MAO(3-6): %(MAO_v).2f %(MAO_c)s(%(MAO_times)s)
-- RABC: %(RABC)s
-""" % {
+- RABC: %(RABC)s""" % {
         'stock_name': unicode(self.stock_name),
         'stock_no': unicode(self.stock_no),
         'stock_date': unicode(self.data_date[-1]),
@@ -412,6 +411,10 @@ Today: %(stock_price)s %(stock_range)s(%(range_per)+.2f%%)
         'MAO_times': unicode(MAO[0][0]),
         'RABC': self.RABC
       }
+    ## Add Real time stock data in open marker.
+    RT = self.Rt_display
+    if RT:
+      re += '\nNow: ' + RT
 
     #re = unicode(self.stock_name.decode('utf-8'))
     #re = unicode(self.stock_no) + unicode(self.data_date[-1]) + unicode(self.MAC(3))
@@ -438,12 +441,31 @@ Today: %(stock_price)s %(stock_range)s
   @property
   def Cmd_display(self):
     """ For Task overall stock display """
-    re = "%(stock_no)s %(stock_name)s %(stock_date)s %(stock_price)s %(stock_range)s(%(stock_range_per).2f%%)" % {
+    re = "%(stock_no)s %(stock_name)s %(stock_date)s %(stock_price)s %(stock_range)s (%(stock_range_per).2f%%) %(RABC)s" % {
         'stock_name': unicode(self.stock_name),
         'stock_no': unicode(self.stock_no),
         'stock_date': unicode(self.data_date[-1]),
         'stock_price': unicode(self.raw_data[-1]),
         'stock_range': unicode(self.stock_range[-1]),
-        'stock_range_per': self.range_per
+        'stock_range_per': self.range_per,
+        'RABC': self.RABC
       }
     return re
+
+##### For Real time stock display #####
+  @property
+  def Rt_display(self):
+    """ For real time stock display """
+    from realtime import twsk
+    a = twsk(self.stock_no).real
+    if a:
+      re = "%(time)s %(c)s %(range)+.2f(%(pp)+.2f%%) %(value)s" % {
+          'time': a['time'],
+          'c': a['c'],
+          'range': self.covstr(a['range']),
+          'value': a['value'],
+          'pp': self.covstr(a['pp'])
+        }
+      return re
+    else:
+      return a
