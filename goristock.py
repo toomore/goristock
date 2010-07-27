@@ -393,8 +393,8 @@ class goristock(object):
 
     MAO = self.MAO(3,6)
 
-    re = """%(stock_name)s %(stock_no)s %(stock_date)s
-Today: %(stock_price)s %(stock_range)s(%(range_per)+.2f%%)
+    re = """%(stock_name)s %(stock_no)s
+%(stock_date)s: %(stock_price)s %(stock_range)s(%(range_per)+.2f%%)
 %(MA)s%(vol)s
 - MAO(3-6): %(MAO_v).2f %(MAO_c)s(%(MAO_times)s)
 - RABC: %(RABC)s""" % {
@@ -414,7 +414,7 @@ Today: %(stock_price)s %(stock_range)s(%(range_per)+.2f%%)
     ## Add Real time stock data in open marker.
     RT = self.Rt_display
     if RT:
-      re += '\nNow: ' + RT
+      re += '\n' + RT
 
     #re = unicode(self.stock_name.decode('utf-8'))
     #re = unicode(self.stock_no) + unicode(self.data_date[-1]) + unicode(self.MAC(3))
@@ -459,7 +459,7 @@ Today: %(stock_price)s %(stock_range)s
     from realtime import twsk
     a = twsk(self.stock_no).real
     if a:
-      re = "%(time)s %(c)s %(range)+.2f(%(pp)+.2f%%) %(value)s" % {
+      re = "{%(time)s} %(c)s %(range)+.2f(%(pp)+.2f%%) %(value)s" % {
           'time': a['time'],
           'c': a['c'],
           'range': self.covstr(a['range']),
