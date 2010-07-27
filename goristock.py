@@ -411,10 +411,6 @@ class goristock(object):
         'MAO_times': unicode(MAO[0][0]),
         'RABC': self.RABC
       }
-    ## Add Real time stock data in open marker.
-    RT = self.Rt_display
-    if RT:
-      re += '\n' + RT
 
     #re = unicode(self.stock_name.decode('utf-8'))
     #re = unicode(self.stock_no) + unicode(self.data_date[-1]) + unicode(self.MAC(3))
