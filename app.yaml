@@ -24,6 +24,9 @@ handlers:
 - url: /task_stock
   script: main.py
   login: admin
+- url: /cron_mail
+  script: main.py
+  login: admin
 
 ## Main WSGI
 - url: .*

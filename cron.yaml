@@ -3,3 +3,7 @@ cron:
   url: /task
   schedule: every day 14:35
   timezone: Asia/Taipei
+- description: Mail overall stock
+  url: /cron_mail
+  schedule: every day 14:45
+  timezone: Asia/Taipei

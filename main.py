@@ -24,6 +24,7 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import xmpp
 from google.appengine.api.labs.taskqueue import Task
+from google.appengine.api import memcache
 
 #from google.appengine.api import urlfetch
 from datetime import datetime
@@ -175,18 +176,36 @@ class task_stocks(webapp.RequestHandler):
       else:
         body = a.Cmd_display
       logging.info(body)
+
+      mail = memcache.get('mailstock')
+      if mail:
+        logging.info('memcache get: mailstock')
+      else:
+        mail = []
+
+      mail.append(body)
+      memcache.set('mailstock', mail)
+      logging.info('memcache set: mailstock')
+
       #mail_body = mail_body + body
       xmpp.send_message('toomore0929@gmail.com', body)
 
-    '''
-    if len(mail_body):
-      from google.appengine.api import mail
+############## Mails Models ##############
+class cron_mail(webapp.RequestHandler):
+  def get(self):
+    from google.appengine.api import mail
+    if memcache.get('mailstock'):
+      memget = memcache.get('mailstock')
+      mail_body = ''
+      for i in memget:
+        mail_body += i + '\n'
+
       mail.send_mail(
-              sender = "goristock <goristock@appspot.com>",
-              to = "Toomore <toomore0929@gmail.com>",
-              subject = "goristock select.",
-              body = mail_body)
-    '''
+        sender = "goristock <noreply@goristock.appspotmail.com>",
+        to = "Toomore <toomore0929@gmail.com>",
+        subject = "goristock select.",
+        body = mail_body)
+      memcache.delete('mailstock')
 
 ############## main Models ##############
 def main():
@@ -200,7 +219,8 @@ def main():
                                         ('/task', task),
                                         ('/taskt', taskt),
                                         ('/task_stock', task_stock),
-                                        ('/task_stocks', task_stocks)
+                                        ('/task_stocks', task_stocks),
+                                        ('/cron_mail', cron_mail)
                                       ],debug=True)
   run_wsgi_app(application)
 
