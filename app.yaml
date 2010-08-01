@@ -15,6 +15,19 @@ handlers:
   secure: always
   login: admin
 
+- url: /task
+  script: main.py
+  login: admin
+- url: /taskt
+  script: main.py
+  login: admin
+- url: /task_stock
+  script: main.py
+  login: admin
+- url: /cron_mail
+  script: main.py
+  login: admin
+
 ## Main WSGI
 - url: .*
   script: main.py
@@ -23,6 +36,7 @@ handlers:
 
 inbound_services:
 - xmpp_message
+- mail
 
 derived_file_type:
 - python_precompiled

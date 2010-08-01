@@ -51,7 +51,15 @@ class goristock(object):
       while len(self.raw_data) < data_num:
         # start fetch data.
         self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime))
-        result = self.list_data(self.csv_read)
+        try:
+          result = self.list_data(self.csv_read)
+        except:
+          if starttime == 0:
+            starttime += 1
+            self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime))
+            result = self.list_data(self.csv_read)
+          logging.info('In first day of months %s' % stock_no)
+
         self.raw_data = result['stock_price'] + self.raw_data
         self.data_date = result['data_date'] + self.data_date
         self.stock_name = result['stock_name']
@@ -208,6 +216,31 @@ class goristock(object):
       return True
     else:
       return False
+
+  @property
+  def SD(self):
+    import math
+    if len(self.raw_data) >= 45:
+      data = self.raw_data[-45:]
+      data_avg = float(sum(data) / 45)
+      data2 = []
+      for x in data:
+        data2.append((x - data_avg ) ** 2)
+
+      return math.sqrt(sum(data2) / len(data2))
+
+  @property
+  def SDAVG(self):
+    if len(self.raw_data) >= 45:
+      data = self.raw_data[-45:]
+      data_avg = float(sum(data) / 45)
+      return data_avg
+
+  @property
+  def CV(self):
+    if len(self.raw_data) >= 45:
+      data_avg = sum(self.raw_data[-45:]) / 45
+      return self.SD / data_avg
 
 ##### Moving Average #####
   def MA(self,days):

@@ -23,6 +23,8 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import xmpp
+from google.appengine.api.labs.taskqueue import Task
+from google.appengine.api import memcache
 
 #from google.appengine.api import urlfetch
 from datetime import datetime
@@ -126,6 +128,85 @@ class xmpp_pagex(webapp.RequestHandler):
       logging.info(self.request.POST)
       logging.info('Msg status: %s' % remsg)
 
+############## Task Models ##############
+class task(webapp.RequestHandler):
+  def get(self):
+    #for i in [2618,1701,2369,8261,2401]:
+    from twseno import twseno
+    for i in twseno().allstock:
+      Task(
+        url='/task_stocks',
+        method='POST',
+        params={
+          'log': 'Task',
+          'no': i,
+          'd':self.request.get('d')
+        }
+      ).add(queue_name='stock')
+
+class taskt(webapp.RequestHandler):
+  def post(self):
+    logging.info('%s: %s, %s' % (self.request.get('no'), self.request.get('log'), self.request.POST))
+
+class task_stock(webapp.RequestHandler):
+  def post(self):
+    import goristock
+    a = goristock.goristock(self.request.get('no'))
+    body = a.XMPP_display(3,6,18)
+    logging.info(body)
+    xmpp.send_message('toomore0929@gmail.com', body)
+
+class task_stocks(webapp.RequestHandler):
+  def post(self):
+    import goristock
+    a = goristock.goristock(self.request.get('no'))
+    #mail_body = ''
+    '''
+    if a.MAC(3) == '↑' and a.MAC(6) == '↑' and a.MAC(18) == '↑':
+      if a.MAO(3,6)[0][1][-1] < 0 and a.MAO(3,6)[1] == '↑':
+        if self.request.get('d'):
+          body = a.XMPP_display(3,6,18)
+        else:
+          body = a.Task_display
+    '''
+
+    if a.MAO(3,6)[1] == '↑'.decode('utf-8') and (a.MAO(3,6)[0][1][-1] < 0 or ( a.MAO(3,6)[0][1][-1] < 1 and a.MAO(3,6)[0][1][-1] > 0 and a.MAO(3,6)[0][1][-2] < 0 and  a.MAO(3,6)[0][0] == 3)) and a.VOLMAX3 and a.stock_vol[-1] > 1000*1000 and a.raw_data[-1] > 10:
+      if self.request.get('d'):
+        body = a.XMPP_display(3,6,18)
+      else:
+        body = a.Cmd_display
+      logging.info(body)
+
+      mail = memcache.get('mailstock')
+      if mail:
+        logging.info('memcache get: mailstock')
+      else:
+        mail = []
+
+      mail.append(body)
+      memcache.set('mailstock', mail)
+      logging.info('memcache set: mailstock')
+
+      #mail_body = mail_body + body
+      xmpp.send_message('toomore0929@gmail.com', body)
+
+############## Mails Models ##############
+class cron_mail(webapp.RequestHandler):
+  def get(self):
+    from google.appengine.api import mail
+    if memcache.get('mailstock'):
+      memget = memcache.get('mailstock')
+      mail_body = ''
+      for i in memget:
+        mail_body += i + '\n'
+
+      mail.send_mail(
+        sender = "goristock <noreply@goristock.appspotmail.com>",
+        to = "Toomore <toomore0929@gmail.com>",
+        subject = "goristock select.",
+        body = mail_body)
+      memcache.delete('mailstock')
+
 ############## main Models ##############
 def main():
   """ Start up. """
@@ -134,7 +215,12 @@ def main():
                                         ('/', MainPage),
                                         ('/goristock', goritest),
                                         ('/chat/', xmpp_page),
-                                        ('/_ah/xmpp/message/chat/', xmpp_pagex)
+                                        ('/_ah/xmpp/message/chat/', xmpp_pagex),
+                                        ('/task', task),
+                                        ('/taskt', taskt),
+                                        ('/task_stock', task_stock),
+                                        ('/task_stocks', task_stocks),
+                                        ('/cron_mail', cron_mail)
                                       ],debug=True)
   run_wsgi_app(application)
 

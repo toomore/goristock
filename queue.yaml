@@ -1,0 +1,5 @@
+queue:
+- name: default
+  rate: 1/m
+- name: stock
+  rate: 6/s
