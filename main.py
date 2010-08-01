@@ -119,8 +119,20 @@ class xmpp_pagex(webapp.RequestHandler):
       msg.reply(msg.body + ' analysing ...')
       try:
         import goristock
-        g = goristock.goristock(msg.body).XMPP_display(3,6,18)
-        remsg = msg.reply(g)
+        g = goristock.goristock(msg.body)
+        try:
+          XMPP = g.XMPP_display(3,6,18)
+        except:
+          XMPP = 'X！'
+
+        try:
+          ## Add Real time stock data in open marker.
+          RT = g.Rt_display
+          if RT:
+            RT = '\n' + RT
+        except:
+          RT = 'R！'
+        remsg = msg.reply(XMPP + RT)
       except:
         remsg = msg.reply('!')
 
