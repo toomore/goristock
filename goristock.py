@@ -444,15 +444,7 @@ class goristock(object):
         'MAO_times': unicode(MAO[0][0]),
         'RABC': self.RABC
       }
-    ## Add Real time stock data in open marker.
-    RT = self.Rt_display
-    if RT:
-      re += '\nNow: ' + RT
 
-    #re = unicode(self.stock_name.decode('utf-8'))
-    #re = unicode(self.stock_no) + unicode(self.data_date[-1]) + unicode(self.MAC(3))
-    #re = unicode(self.MAC(3))
-    #re = unicode(self.stock_name.decode('utf-8') + self.stock_no + self.data_date[-1] + self.MAC(3))
     return re
 
 ##### For Task overall stock display #####
@@ -474,13 +466,14 @@ Today: %(stock_price)s %(stock_range)s
   @property
   def Cmd_display(self):
     """ For Task overall stock display """
-    re = "%(stock_no)s %(stock_name)s %(stock_date)s %(stock_price)s %(stock_range)s (%(stock_range_per).2f%%) %(RABC)s" % {
+    re = "%(stock_no)s %(stock_name)s %(stock_date)s %(stock_price)s %(stock_range)s %(stock_range_per).2f%% %(RABC)s %(stock_vol)s" % {
         'stock_name': unicode(self.stock_name),
         'stock_no': unicode(self.stock_no),
         'stock_date': unicode(self.data_date[-1]),
         'stock_price': unicode(self.raw_data[-1]),
         'stock_range': unicode(self.stock_range[-1]),
         'stock_range_per': self.range_per,
+        'stock_vol': self.stock_vol[-1]/1000,
         'RABC': self.RABC
       }
     return re
