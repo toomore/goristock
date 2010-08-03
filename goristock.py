@@ -219,6 +219,7 @@ class goristock(object):
 
   @property
   def SD(self):
+    """ Standard Deviation. """
     import math
     if len(self.raw_data) >= 45:
       data = self.raw_data[-45:]
@@ -231,6 +232,7 @@ class goristock(object):
 
   @property
   def SDAVG(self):
+    """ the last 45 days average in SD. """
     if len(self.raw_data) >= 45:
       data = self.raw_data[-45:]
       data_avg = float(sum(data) / 45)
@@ -238,6 +240,7 @@ class goristock(object):
 
   @property
   def CV(self):
+    """ Coefficient of Variation. """
     if len(self.raw_data) >= 45:
       data_avg = sum(self.raw_data[-45:]) / 45
       return self.SD / data_avg
