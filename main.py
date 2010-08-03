@@ -125,13 +125,17 @@ class xmpp_pagex(webapp.RequestHandler):
         except:
           XMPP = 'X！'
 
-        try:
-          ## Add Real time stock data in open marker.
-          RT = g.Rt_display
-          if RT:
-            RT = '\n' + RT
-        except:
-          RT = 'R！'
+        if g.TimeinOpen:
+          try:
+            ## Add Real time stock data in open marker.
+            RT = g.Rt_display
+            if RT:
+              RT = '\n' + RT
+          except:
+            RT = 'R！'
+        else:
+          RT = ''
+
         remsg = msg.reply(XMPP + RT)
       except:
         remsg = msg.reply('!')

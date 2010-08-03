@@ -245,6 +245,16 @@ class goristock(object):
       data_avg = sum(self.raw_data[-45:]) / 45
       return self.SD / data_avg
 
+  @property
+  def TimeinOpen(self):
+    """ In open market time. """
+    import time
+    now = time.gmtime().tm_hour + time.gmtime(8*60*60).tm_hour
+    if now >= 9 and now <= 14:
+      return True
+    else:
+      return False
+
 ##### Moving Average #####
   def MA(self,days):
     """ Price Moving Average with days.
