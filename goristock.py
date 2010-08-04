@@ -229,6 +229,8 @@ class goristock(object):
         data2.append((x - data_avg ) ** 2)
 
       return math.sqrt(sum(data2) / len(data2))
+    else:
+      return 0
 
   @property
   def SDAVG(self):
@@ -237,6 +239,8 @@ class goristock(object):
       data = self.raw_data[-45:]
       data_avg = float(sum(data) / 45)
       return data_avg
+    else:
+      return 0
 
   @property
   def CV(self):
@@ -244,6 +248,8 @@ class goristock(object):
     if len(self.raw_data) >= 45:
       data_avg = sum(self.raw_data[-45:]) / 45
       return self.SD / data_avg
+    else:
+      return 0
 
   @property
   def TimeinOpen(self):
