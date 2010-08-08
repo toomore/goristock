@@ -1,5 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# From http://github.com/toomore/tw-stock
 import urllib2,csv,random,logging
 
 def covstr(s):

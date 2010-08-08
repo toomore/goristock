@@ -37,6 +37,14 @@ class goristock(object):
     """ stock_no: Stock no.
         data_num: Default fetch numbers. (Default is 75)
         debug: For debug to print some info about data solution. (Default is 0)
+
+        property:
+          self.raw_data = [list]
+          self.stock_name = str()
+          self.stock_no = str()
+          self.data_date = [list]
+          self.stock_range = [list]
+          self.stock_vol = [list]
     """
     self.raw_data = []
     self.stock_name = ''
@@ -54,6 +62,7 @@ class goristock(object):
         try:
           result = self.list_data(self.csv_read)
         except:
+          # In first day of months will fetch no data.
           if starttime == 0:
             starttime += 1
             self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime))
