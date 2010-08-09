@@ -1,0 +1,9 @@
+cron:
+- description: Overall stock
+  url: /task
+  schedule: every mon,tue,wed,thu,fri 14:35
+  timezone: Asia/Taipei
+- description: Mail overall stock
+  url: /cron_mail
+  schedule: every mon,tue,wed,thu,fri 14:45
+  timezone: Asia/Taipei

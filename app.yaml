@@ -4,6 +4,12 @@ runtime: python
 api_version: 1
 
 handlers:
+## Favion url.
+- url: /favicon\.ico
+  static_files: static/images/favicon.ico
+  upload: static/images/favicon.ico
+  mime_type: image/x-icon
+
 ## admin_console
 - url: /admin_console/.*
   script: $PYTHON_LIB/google/appengine/ext/admin
@@ -15,6 +21,19 @@ handlers:
   secure: always
   login: admin
 
+- url: /task
+  script: main.py
+  login: admin
+- url: /taskt
+  script: main.py
+  login: admin
+- url: /task_stock
+  script: main.py
+  login: admin
+- url: /cron_mail
+  script: main.py
+  login: admin
+
 ## Main WSGI
 - url: .*
   script: main.py
@@ -23,6 +42,7 @@ handlers:
 
 inbound_services:
 - xmpp_message
+- mail
 
 derived_file_type:
 - python_precompiled
@@ -33,3 +53,17 @@ admin_console:
     name: "Appstats"
   - url: /admin_console/
     name: "Admin_console"
+
+skip_files: |
+ ^(.*/)?(
+ (app\.yaml)|
+ (app\.yml)|
+ (index\.yaml)|
+ (index\.yml)|
+ (#.*#)|
+ (.*~)|
+ (.*\.py[co])|
+ (.*/RCS/.*)|
+ (\..*)|
+ (tests/.*)
+ )$
