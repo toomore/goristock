@@ -25,6 +25,8 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import xmpp
 from google.appengine.api.labs.taskqueue import Task
 from google.appengine.api import memcache
+from google.appengine.api import users
+from google.appengine.ext.webapp.util import login_required
 
 #from google.appengine.api import urlfetch
 from datetime import datetime
@@ -88,9 +90,13 @@ class goritest(webapp.RequestHandler):
     print a.display(3,6,18)
 
 ############## webapp Models ###################
-class xmpp_page(webapp.RequestHandler):
+class xmpp_invite(webapp.RequestHandler):
+  @login_required
   def get(self):
-    xmpp.send_invite('toomore0929@gmail.com','goristock@appspot.com')
+    umail = users.get_current_user().email()
+    xmpp.send_invite(umail, 'goristock@appspot.com')
+
+    self.response.out.write('%s invited.' % umail)
 
 class xmpp_pagex(webapp.RequestHandler):
   def post(self):
@@ -230,7 +236,7 @@ def main():
                                       [
                                         ('/', MainPage),
                                         ('/goristock', goritest),
-                                        ('/chat/', xmpp_page),
+                                        ('/chat/', xmpp_invite),
                                         ('/_ah/xmpp/message/chat/', xmpp_pagex),
                                         ('/task', task),
                                         ('/taskt', taskt),
