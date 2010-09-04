@@ -118,7 +118,7 @@ class goristock(object):
 
   def goback(self,days = 1):
     """ Go back days """
-    for i in range(days):
+    for i in xrange(days):
       self.raw_data.pop()
       self.data_date.pop()
       self.stock_range.pop()
@@ -347,7 +347,7 @@ class goristock(object):
       day2MAs = day2MA[:]
 
     serial = []
-    for i in range(len(day1MAs)):
+    for i in xrange(len(day1MAs)):
       serial.append(day1MAs[i]-day2MAs[i])
 
     cum = self.make_serial(serial,1)
@@ -393,7 +393,7 @@ class goristock(object):
     org = raw[1:]
     diff = raw[:-1]
     result = []
-    for i in range(len(org)):
+    for i in xrange(len(org)):
       result.append(self.high_or_low(org[i], diff[i]))
 
     times = 0
