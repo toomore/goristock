@@ -219,6 +219,7 @@ class cron_mail(webapp.RequestHandler):
     if memcache.get('mailstock'):
       memget = memcache.get('mailstock')
       mail_body = ''
+      memget = sorted(memget)
       for i in memget:
         mail_body += i + '\n'
 
