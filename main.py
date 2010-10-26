@@ -29,7 +29,7 @@ from google.appengine.api import users
 from google.appengine.ext.webapp.util import login_required
 
 #from google.appengine.api import urlfetch
-from datetime import datetime
+from datetime import datetime,timedelta
 import urllib2,logging,csv,re,uuid
 
 def ckinv(oo):
@@ -224,9 +224,9 @@ class cron_mail(webapp.RequestHandler):
         mail_body += i + '\n'
 
       mail.send_mail(
-        sender = "goristock <noreply@goristock.appspotmail.com>",
-        to = "Toomore <toomore0929@gmail.com>",
-        subject = "goristock select.",
+        sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
+        to = "goristock-daily-report@googlegroups.com",
+        subject = "goristock %s selected." % str(datetime.today() + timedelta(seconds=60*60*8)).split(' ')[0],
         body = mail_body)
       memcache.delete('mailstock')
 
