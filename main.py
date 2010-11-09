@@ -229,6 +229,9 @@ class cron_mail(webapp.RequestHandler):
         subject = "goristock %s selected." % str(datetime.today() + timedelta(seconds=60*60*8)).split(' ')[0],
         body = mail_body)
       memcache.delete('mailstock')
+      logging.info(mail_body)
+    else:
+      logging.info('memcache -> mailstock is fault.')
 
 ############## main Models ##############
 def main():
