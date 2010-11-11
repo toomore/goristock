@@ -95,8 +95,8 @@ class xmpp_invite(webapp.RequestHandler):
   def get(self):
     umail = users.get_current_user().email()
     xmpp.send_invite(umail, 'goristock@appspot.com')
-
-    self.response.out.write('%s invited.' % umail)
+    ## todo: send a guild mail to the first time invited user.
+    self.response.out.write('%s invited. Please check out your GTalk.' % umail)
 
 class xmpp_pagex(webapp.RequestHandler):
   def post(self):
@@ -121,6 +121,15 @@ class xmpp_pagex(webapp.RequestHandler):
       except:
         logging.info('Wrong keyword!')
         msg.reply("search <keyword>")
+    elif msg.body.split(' ')[0] == 'help': ## for help reply.
+      msg.reply('Hold on! Wait a mount!')
+    elif msg.body.split(' ')[0] == 'info': ## for info reply.
+      msg.reply('To: %s(%s)' % (msg.to.split('/')[0],msg.to.split('/')[1]))
+      msg.reply('Sender: %s(%s)' % (msg.sender.split('/')[0],msg.sender.split('/')[1]))
+      msg.reply('arg: %s' % msg.arg)
+      msg.reply('command: %s' % type(msg.command))
+      msg.reply('body: %s' % msg.body)
+      msg.reply('EQ: %s' % str(msg.arg == msg.body))
     else:
       msg.reply(msg.body + ' analysing ...')
       try:
@@ -243,11 +252,10 @@ def main():
                                         ('/chat/', xmpp_invite),
                                         ('/_ah/xmpp/message/chat/', xmpp_pagex),
                                         ('/task', task),
-                                        ('/taskt', taskt),
                                         ('/task_stock', task_stock),
                                         ('/task_stocks', task_stocks),
                                         ('/cron_mail', cron_mail)
-                                      ],debug=True)
+                                      ],debug=True) ## unlist: taskt,
   run_wsgi_app(application)
 
 if __name__ == '__main__':
