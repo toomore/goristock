@@ -20,17 +20,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.api import xmpp
-from google.appengine.api.labs.taskqueue import Task
+## GAE lib
+from google.appengine.api import mail
 from google.appengine.api import memcache
 from google.appengine.api import users
+from google.appengine.api import xmpp
+from google.appengine.api.labs.taskqueue import Task
+from google.appengine.ext import webapp
 from google.appengine.ext.webapp.util import login_required
-
+from google.appengine.ext.webapp.util import run_wsgi_app
 #from google.appengine.api import urlfetch
-from datetime import datetime,timedelta
-import urllib2,logging,csv,re,uuid
+
+## Python lib
+from datetime import datetime
+from datetime import timedelta
+
+import urllib2
+import logging
+import csv
+import re
+
+## custom lib
+import goristock
+from all_portf import all_portf
+from twseno import twseno
 
 def ckinv(oo):
   """ check the value is date or not """
@@ -75,7 +88,6 @@ class MainPage(webapp.RequestHandler):
 ############## Test GoRiStock ##############
 class goritest(webapp.RequestHandler):
   def get(self):
-    import goristock
     try:
       stock_no = int(self.request.get('q'))
     except:
@@ -133,7 +145,6 @@ class xmpp_pagex(webapp.RequestHandler):
     else:
       msg.reply(msg.body + ' analysing ...')
       try:
-        import goristock
         g = goristock.goristock(msg.body)
         try:
           XMPP = g.XMPP_display(3,6,18)
@@ -163,7 +174,6 @@ class xmpp_pagex(webapp.RequestHandler):
 class task(webapp.RequestHandler):
   def get(self):
     #for i in [2618,1701,2369,8261,2401]:
-    from twseno import twseno
     for i in twseno().allstock:
       Task(
         url='/task_stocks',
@@ -181,7 +191,6 @@ class taskt(webapp.RequestHandler):
 
 class task_stock(webapp.RequestHandler):
   def post(self):
-    import goristock
     a = goristock.goristock(self.request.get('no'))
     body = a.XMPP_display(3,6,18)
     logging.info(body)
@@ -189,7 +198,6 @@ class task_stock(webapp.RequestHandler):
 
 class task_stocks(webapp.RequestHandler):
   def post(self):
-    import goristock
     a = goristock.goristock(self.request.get('no'))
     #mail_body = ''
     '''
@@ -201,7 +209,7 @@ class task_stocks(webapp.RequestHandler):
           body = a.Task_display
     '''
 
-    if a.MAO(3,6)[1] == '↑'.decode('utf-8') and (a.MAO(3,6)[0][1][-1] < 0 or ( a.MAO(3,6)[0][1][-1] < 1 and a.MAO(3,6)[0][1][-1] > 0 and a.MAO(3,6)[0][1][-2] < 0 and  a.MAO(3,6)[0][0] == 3)) and a.VOLMAX3 and a.stock_vol[-1] > 1000*1000 and a.raw_data[-1] > 10:
+    if all_portf(a).ck_portf_001():
       if self.request.get('d'):
         body = a.XMPP_display(3,6,18)
       else:
@@ -224,7 +232,6 @@ class task_stocks(webapp.RequestHandler):
 ############## Mails Models ##############
 class cron_mail(webapp.RequestHandler):
   def get(self):
-    from google.appengine.api import mail
     if memcache.get('mailstock'):
       memget = memcache.get('mailstock')
       mail_body = ''
@@ -242,20 +249,47 @@ class cron_mail(webapp.RequestHandler):
     else:
       logging.info('memcache -> mailstock is fault.')
 
+class cron_mail_test(webapp.RequestHandler):
+  def get(self):
+    if memcache.get('mailstock'):
+      memget = memcache.get('mailstock')
+      mail_body = ''
+      memget = sorted(memget)
+      for i in memget:
+        mail_body += i + '\n'
+
+      mail.send_mail(
+        sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
+        to = "toomore0929@gmail.com",
+        subject = "[TEST] GORISTOCK %s SELECTED." % str(datetime.today() + timedelta(seconds=60*60*8)).split(' ')[0],
+        body = mail_body)
+      memcache.delete('mailstock')
+      logging.info(mail_body)
+    else:
+      logging.info('memcache -> mailstock is fault.')
+
+############## flush Models ##############
+class flush(webapp.RequestHandler):
+  def get(self):
+    m = memcache.flush_all()
+    self.response.out.write('%s<br>%s' % (m, memcache.get_stats()))
+
 ############## main Models ##############
 def main():
   """ Start up. """
   application = webapp.WSGIApplication(
-                                      [
-                                        ('/', MainPage),
-                                        ('/goristock', goritest),
-                                        ('/chat/', xmpp_invite),
-                                        ('/_ah/xmpp/message/chat/', xmpp_pagex),
-                                        ('/task', task),
-                                        ('/task_stock', task_stock),
-                                        ('/task_stocks', task_stocks),
-                                        ('/cron_mail', cron_mail)
-                                      ],debug=True) ## unlist: taskt,
+                [
+                  ('/', MainPage),
+                  ('/goristock', goritest),
+                  ('/chat/', xmpp_invite),
+                  ('/_ah/xmpp/message/chat/', xmpp_pagex),
+                  ('/task', task),
+                  ('/task_stock', task_stock),
+                  ('/task_stocks', task_stocks),
+                  ('/cron_mail', cron_mail),
+                  ('/cron_mail_test', cron_mail_test),
+                  ('/flu', flush)
+                ],debug=True) ## unlist: taskt,
   run_wsgi_app(application)
 
 if __name__ == '__main__':
