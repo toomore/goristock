@@ -1,5 +1,5 @@
 application: goristock
-version: alpha
+version: mem
 runtime: python
 api_version: 1
 
@@ -46,6 +46,9 @@ handlers:
 inbound_services:
 - xmpp_message
 - mail
+
+builtins:
+- appstats: on
 
 derived_file_type:
 - python_precompiled

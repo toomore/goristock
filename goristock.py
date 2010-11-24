@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from google.appengine.api import memcache
 from datetime import datetime, timedelta
 import urllib2, logging, csv, re
 
@@ -58,14 +59,14 @@ class goristock(object):
     try:
       while len(self.raw_data) < data_num:
         # start fetch data.
-        self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime))
+        self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime), starttime)
         try:
           result = self.list_data(self.csv_read)
         except:
           # In first day of months will fetch no data.
           if starttime == 0:
             starttime += 1
-            self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime))
+            self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime), starttime)
             result = self.list_data(self.csv_read)
           logging.info('In first day of months %s' % stock_no)
 
@@ -125,17 +126,33 @@ class goristock(object):
       self.stock_vol.pop()
 
 ##### main def #####
-  def fetch_data(self, stock_no, nowdatetime):
+  def fetch_data(self, stock_no, nowdatetime, firsttime = 1):
     """ Fetch data from twse.com.tw
         return list.
     """
     url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
     self.debug_print(url)
     logging.info(url)
-    cc = urllib2.urlopen(url)
     #print cc.info().headers
-    csv_read = csv.reader(cc)
+
+    # set memcache expire
+    if firsttime == 0:
+      expire = 60
+    else:
+      expire = 120
+
+    ## get memcache
+    stkm = memcache.get('%(stock)s%(year)d%(mon)02d' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no})
+    if stkm:
+      csv_read = csv.reader(stkm)
+    else:
+      cc = urllib2.urlopen(url)
+      cc_read = cc.readlines()
+      csv_read = csv.reader(cc_read)
+      memcache.set('%(stock)s%(year)d%(mon)02d' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}, cc_read, expire)
+
     return csv_read
+
 
   def list_data(self, csv_read):
     """ Put the data into the 'self.raw_data' and other stock info.

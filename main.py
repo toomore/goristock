@@ -96,10 +96,12 @@ class goritest(webapp.RequestHandler):
     print 'GoRiStock'
     print a.raw_data
     print a.num_data
-    print a.stock_no,a.stock_name
-    print a.MA(5),a.MAC(5),a.MA(20),a.MAC(20),a.MA(60),a.MAC(60)
+    print a.data_date
+    #print a.stock_no,a.stock_name
+    print '%s' % memcache.get_stats()
+    #print a.MA(5),a.MAC(5),a.MA(20),a.MAC(20),a.MA(60),a.MAC(60)
     print '='*40
-    print a.display(3,6,18)
+    #print a.display(3,6,18)
 
 ############## webapp Models ###################
 class xmpp_invite(webapp.RequestHandler):
