@@ -136,10 +136,19 @@ class goristock(object):
     #print cc.info().headers
 
     # set memcache expire
-    if firsttime == 0:
-      expire = 60
+    now = datetime.today() + timedelta(hours = 8)
+    if now.hour >= 14 and now.minute >= 30:
+      addday = 1
     else:
-      expire = 120
+      addday = 0
+    endtime = datetime(now.year, now.month, now.day + addday, 13, 25)
+
+    if firsttime == 0:
+      expire = (endtime - datetime.today()).seconds
+      print expire
+    else:
+      expire = 0
+      print expire
 
     ## get memcache
     stkm = memcache.get('%(stock)s%(year)d%(mon)02d' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no})
