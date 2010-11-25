@@ -20,9 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+## GAE lib
 from google.appengine.api import memcache
-from datetime import datetime, timedelta
-import urllib2, logging, csv, re
+
+## Python lib
+from datetime import datetime
+from datetime import timedelta
+import csv
+import logging
+import math
+import re
+import time
+import urllib2
+
+## custom lib
+from realtime import twsk
 
 class goristock(object):
   """ Start up from __init__
@@ -257,7 +269,6 @@ class goristock(object):
   @property
   def SD(self):
     """ Standard Deviation. """
-    import math
     if len(self.raw_data) >= 45:
       data = self.raw_data[-45:]
       data_avg = float(sum(data) / 45)
@@ -291,7 +302,6 @@ class goristock(object):
   @property
   def TimeinOpen(self):
     """ In open market time. """
-    import time
     now = time.gmtime().tm_hour + time.gmtime(8*60*60).tm_hour
     if now >= 9 and now <= 14:
       return True
@@ -535,19 +545,26 @@ Today: %(stock_price)s %(stock_range)s
     return re
 
 ##### For Real time stock display #####
-  @property
-  def Rt_display(self):
-    """ For real time stock display """
-    from realtime import twsk
-    a = twsk(self.stock_no).real
-    if a:
-      re = "{%(time)s} %(c)s %(range)+.2f(%(pp)+.2f%%) %(value)s" % {
-          'time': a['time'],
-          'c': a['c'],
-          'range': self.covstr(a['range']),
-          'value': a['value'],
-          'pp': self.covstr(a['pp'])
-        }
-      return re
-    else:
-      return a
+def covstr(s):
+  """ convert string to int or float. """
+  try:
+    ret = int(s)
+  except ValueError:
+    ret = float(s)
+  return ret
+
+def Rt_display(stock_no):
+  """ For real time stock display """
+  a = twsk(stock_no).real
+  if a:
+    re = "{%(time)s} %(stock_no)s %(c)s %(range)+.2f(%(pp)+.2f%%) %(value)s" % {
+        'stock_no': stock_no,
+        'time': a['time'],
+        'c': a['c'],
+        'range': covstr(a['range']),
+        'value': a['value'],
+        'pp': covstr(a['pp'])
+      }
+    return re
+  else:
+    return a

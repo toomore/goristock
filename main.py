@@ -146,6 +146,11 @@ class xmpp_pagex(webapp.RequestHandler):
       msg.reply('EQ: %s' % str(msg.arg == msg.body))
     elif msg.body.split(' ')[0] == 'time': ## for time reply.
       msg.reply(datetime.today())
+    elif msg.body.split(' ')[0] == 'rl': ## Only reply realtime
+      try:
+        msg.reply(goristock.Rt_display(msg.body.split(' ')[1]))
+      except:
+        msg.reply('RL!')
     else:
       msg.reply(msg.body + ' analysing ...')
 
@@ -158,7 +163,7 @@ class xmpp_pagex(webapp.RequestHandler):
         if g.TimeinOpen:
           try:
             ## Add Real time stock data in open marker.
-            RT = g.Rt_display
+            RT = goristock.Rt_display(msg.body)
             if RT:
               RT = '\n' + RT
           except:
