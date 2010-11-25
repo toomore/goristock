@@ -156,11 +156,12 @@ class goristock(object):
     endtime = datetime(now.year, now.month, now.day + addday, 13, 25)
 
     if firsttime == 0:
-      expire = (endtime - datetime.today()).seconds
-      print expire
+      if endtime <= datetime.today():
+        expire = 0
+      else:
+        expire = (endtime - datetime.today()).seconds
     else:
       expire = 0
-      print expire
 
     ## get memcache
     memname = '%(stock)s%(year)d%(mon)02d' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
