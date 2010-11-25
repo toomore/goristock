@@ -49,6 +49,7 @@ inbound_services:
 
 builtins:
 - appstats: on
+- admin_redirect: on
 
 derived_file_type:
 - python_precompiled
