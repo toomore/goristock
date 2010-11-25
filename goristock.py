@@ -151,17 +151,19 @@ class goristock(object):
       print expire
 
     ## get memcache
-    stkm = memcache.get('%(stock)s%(year)d%(mon)02d' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no})
+    memname = '%(stock)s%(year)d%(mon)02d' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
+    stkm = memcache.get(memname)
     if stkm:
       csv_read = csv.reader(stkm)
+      logging.info('#MemcacheGet: %s' % memname)
     else:
       cc = urllib2.urlopen(url)
       cc_read = cc.readlines()
       csv_read = csv.reader(cc_read)
-      memcache.set('%(stock)s%(year)d%(mon)02d' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}, cc_read, expire)
+      if memcache.set(memname, cc_read, expire):
+        logging.info('#MemcacheAdd: %s' % memname)
 
     return csv_read
-
 
   def list_data(self, csv_read):
     """ Put the data into the 'self.raw_data' and other stock info.
