@@ -122,19 +122,34 @@ class xmpp_pagex(webapp.RequestHandler):
 
         from twseno import twseno
         result = twseno().search(q.encode('utf-8'))
-        re = ''
+        ret = ''
         logging.info(q)
         logging.info(len(result))
         if len(result):
           for i in result:
-            re = re + '%s(%s) ' % (result[i],i)
-          logging.info(re)
-          msg.reply(re)
+            ret = ret + '%s(%s) ' % (result[i],i)
+          logging.info(ret)
+          msg.reply(ret)
         else:
           msg.reply('Did not match any!')
       except:
         logging.info('Wrong keyword!')
         msg.reply("search <keyword>")
+    elif msg.body.split(' ')[0] == 'cal':
+      if msg.body.split(' ')[1] == 'buy':
+        cost = float(msg.body.split(' ')[2]) * 1000
+        fee = cost * 0.001425
+        msg.reply('手續費：$%d, 應付金額：$%d' % (fee, fee + cost))
+      elif msg.body.split(' ')[1] == 'sell':
+        sell = float(msg.body.split(' ')[2]) * 1000
+        fee = sell * 0.001425
+        tax = sell * 0.003
+        msg.reply('手續費：$%d, 證交稅：$%d, 應收金額：$%d' % (fee, tax, sell - fee - tax))
+      else:
+        rr = re.sub(r'cal', '', msg.body)
+        rr = re.sub(r'[\^]', '**', rr)
+        rr = re.sub(r'[^0-9\.\+\-\*\/\(\)]', '', rr)
+        msg.reply('%s = %s' % (rr, eval(rr + '* 1.0')))
     elif msg.body.split(' ')[0] == 'help': ## for help reply.
       msg.reply('Hold on! Wait a mount!')
     elif msg.body.split(' ')[0] == 'info': ## for info reply.
