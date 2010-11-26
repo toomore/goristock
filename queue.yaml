@@ -3,3 +3,5 @@ queue:
   rate: 1/m
 - name: stock
   rate: 6/s
+- name: premem
+  rate: 3/s

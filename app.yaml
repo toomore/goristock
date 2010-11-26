@@ -33,6 +33,12 @@ handlers:
 - url: /cron_mail_test
   script: main.py
   login: admin
+- url: /stpremem
+  script: main.py
+  login: admin
+- url: /premem
+  script: main.py
+  login: admin
 - url: /flush
   script: main.py
   login: admin

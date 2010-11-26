@@ -238,6 +238,23 @@ class task_stocks(webapp.RequestHandler):
       #mail_body = mail_body + body
       xmpp.send_message('toomore0929@gmail.com', body)
 
+############## prememcache Models ##############
+class stpremem(webapp.RequestHandler):
+  def get(self):
+    for i in twseno().allstock:
+      Task(
+        url='/premem',
+        method='POST',
+        params={
+          'log': 'PreMem',
+          'no': i,
+        }
+      ).add(queue_name='premem')
+
+class premem(webapp.RequestHandler):
+  def post(self):
+    goristock.goristock(self.request.get('no'))
+
 ############## Mails Models ##############
 class cron_mail(webapp.RequestHandler):
   def get(self):
@@ -297,6 +314,8 @@ def main():
                   ('/task_stocks', task_stocks),
                   ('/cron_mail', cron_mail),
                   ('/cron_mail_test', cron_mail_test),
+                  ('/stpremem', stpremem),
+                  ('/premem', premem),
                   ('/flu', flush)
                 ],debug=True) ## unlist: taskt,
   run_wsgi_app(application)
