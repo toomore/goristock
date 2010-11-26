@@ -157,7 +157,7 @@ class goristock(object):
 
     if firsttime == 0:
       if endtime <= datetime.today():
-        expire = 0
+        expire = 0.001 ## always update.
       else:
         expire = (endtime - datetime.today()).seconds
     else:
