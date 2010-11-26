@@ -20,8 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from datetime import datetime, timedelta
-import urllib2, logging, csv, re
+## GAE lib
+from google.appengine.api import memcache
+
+## Python lib
+from datetime import datetime
+from datetime import timedelta
+import csv
+import logging
+import math
+import re
+import time
+import urllib2
+
+## custom lib
+from realtime import twsk
 
 class goristock(object):
   """ Start up from __init__
@@ -58,14 +71,14 @@ class goristock(object):
     try:
       while len(self.raw_data) < data_num:
         # start fetch data.
-        self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime))
+        self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime), starttime)
         try:
           result = self.list_data(self.csv_read)
         except:
           # In first day of months will fetch no data.
           if starttime == 0:
             starttime += 1
-            self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime))
+            self.csv_read = self.fetch_data(stock_no, datetime.today() - timedelta(days = 30 * starttime), starttime)
             result = self.list_data(self.csv_read)
           logging.info('In first day of months %s' % stock_no)
 
@@ -118,23 +131,51 @@ class goristock(object):
 
   def goback(self,days = 1):
     """ Go back days """
-    for i in range(days):
+    for i in xrange(days):
       self.raw_data.pop()
       self.data_date.pop()
       self.stock_range.pop()
       self.stock_vol.pop()
 
 ##### main def #####
-  def fetch_data(self, stock_no, nowdatetime):
+  def fetch_data(self, stock_no, nowdatetime, firsttime = 1):
     """ Fetch data from twse.com.tw
         return list.
     """
     url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
     self.debug_print(url)
     logging.info(url)
-    cc = urllib2.urlopen(url)
     #print cc.info().headers
-    csv_read = csv.reader(cc)
+
+    # set memcache expire
+    now = datetime.today() + timedelta(hours = 8)
+    if now.hour >= 14 and now.minute >= 30:
+      addday = 1
+    else:
+      addday = 0
+    endtime = datetime(now.year, now.month, now.day + addday, 13, 25)
+
+    if firsttime == 0:
+      if endtime <= datetime.today():
+        expire = 0
+      else:
+        expire = (endtime - datetime.today()).seconds
+    else:
+      expire = 0
+
+    ## get memcache
+    memname = '%(stock)s%(year)d%(mon)02d' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
+    stkm = memcache.get(memname)
+    if stkm:
+      csv_read = csv.reader(stkm)
+      logging.info('#MemcacheGet: %s' % memname)
+    else:
+      cc = urllib2.urlopen(url)
+      cc_read = cc.readlines()
+      csv_read = csv.reader(cc_read)
+      if memcache.set(memname, cc_read, expire):
+        logging.info('#MemcacheAdd: %s' % memname)
+
     return csv_read
 
   def list_data(self, csv_read):
@@ -229,7 +270,6 @@ class goristock(object):
   @property
   def SD(self):
     """ Standard Deviation. """
-    import math
     if len(self.raw_data) >= 45:
       data = self.raw_data[-45:]
       data_avg = float(sum(data) / 45)
@@ -263,7 +303,6 @@ class goristock(object):
   @property
   def TimeinOpen(self):
     """ In open market time. """
-    import time
     now = time.gmtime().tm_hour + time.gmtime(8*60*60).tm_hour
     if now >= 9 and now <= 14:
       return True
@@ -347,7 +386,7 @@ class goristock(object):
       day2MAs = day2MA[:]
 
     serial = []
-    for i in range(len(day1MAs)):
+    for i in xrange(len(day1MAs)):
       serial.append(day1MAs[i]-day2MAs[i])
 
     cum = self.make_serial(serial,1)
@@ -393,7 +432,7 @@ class goristock(object):
     org = raw[1:]
     diff = raw[:-1]
     result = []
-    for i in range(len(org)):
+    for i in xrange(len(org)):
       result.append(self.high_or_low(org[i], diff[i]))
 
     times = 0
@@ -507,19 +546,26 @@ Today: %(stock_price)s %(stock_range)s
     return re
 
 ##### For Real time stock display #####
-  @property
-  def Rt_display(self):
-    """ For real time stock display """
-    from realtime import twsk
-    a = twsk(self.stock_no).real
-    if a:
-      re = "{%(time)s} %(c)s %(range)+.2f(%(pp)+.2f%%) %(value)s" % {
-          'time': a['time'],
-          'c': a['c'],
-          'range': self.covstr(a['range']),
-          'value': a['value'],
-          'pp': self.covstr(a['pp'])
-        }
-      return re
-    else:
-      return a
+def covstr(s):
+  """ convert string to int or float. """
+  try:
+    ret = int(s)
+  except ValueError:
+    ret = float(s)
+  return ret
+
+def Rt_display(stock_no):
+  """ For real time stock display """
+  a = twsk(stock_no).real
+  if a:
+    re = "{%(time)s} %(stock_no)s %(c)s %(range)+.2f(%(pp)+.2f%%) %(value)s" % {
+        'stock_no': stock_no,
+        'time': a['time'],
+        'c': a['c'],
+        'range': covstr(a['range']),
+        'value': a['value'],
+        'pp': covstr(a['pp'])
+      }
+    return re
+  else:
+    return a

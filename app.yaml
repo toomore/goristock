@@ -1,5 +1,5 @@
 application: goristock
-version: alpha
+version: mem
 runtime: python
 api_version: 1
 
@@ -24,13 +24,22 @@ handlers:
 - url: /task
   script: main.py
   login: admin
-- url: /taskt
-  script: main.py
-  login: admin
 - url: /task_stock
   script: main.py
   login: admin
 - url: /cron_mail
+  script: main.py
+  login: admin
+- url: /cron_mail_test
+  script: main.py
+  login: admin
+- url: /stpremem
+  script: main.py
+  login: admin
+- url: /premem
+  script: main.py
+  login: admin
+- url: /flush
   script: main.py
   login: admin
 
@@ -43,6 +52,10 @@ handlers:
 inbound_services:
 - xmpp_message
 - mail
+
+builtins:
+- appstats: on
+- admin_redirect: on
 
 derived_file_type:
 - python_precompiled

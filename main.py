@@ -20,15 +20,30 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-from google.appengine.ext import webapp
-from google.appengine.ext.webapp.util import run_wsgi_app
+## GAE lib
+from google.appengine.api import mail
+from google.appengine.api import memcache
+from google.appengine.api import users
 from google.appengine.api import xmpp
 from google.appengine.api.labs.taskqueue import Task
-from google.appengine.api import memcache
-
+from google.appengine.ext import webapp
+from google.appengine.ext.webapp.util import login_required
+from google.appengine.ext.webapp.util import run_wsgi_app
 #from google.appengine.api import urlfetch
+
+## Python lib
 from datetime import datetime
-import urllib2,logging,csv,re,uuid
+from datetime import timedelta
+
+import urllib2
+import logging
+import csv
+import re
+
+## custom lib
+import goristock
+from all_portf import all_portf
+from twseno import twseno
 
 def ckinv(oo):
   """ check the value is date or not """
@@ -73,7 +88,6 @@ class MainPage(webapp.RequestHandler):
 ############## Test GoRiStock ##############
 class goritest(webapp.RequestHandler):
   def get(self):
-    import goristock
     try:
       stock_no = int(self.request.get('q'))
     except:
@@ -82,15 +96,21 @@ class goritest(webapp.RequestHandler):
     print 'GoRiStock'
     print a.raw_data
     print a.num_data
-    print a.stock_no,a.stock_name
-    print a.MA(5),a.MAC(5),a.MA(20),a.MAC(20),a.MA(60),a.MAC(60)
+    print a.data_date
+    #print a.stock_no,a.stock_name
+    print '%s' % memcache.get_stats()
+    #print a.MA(5),a.MAC(5),a.MA(20),a.MAC(20),a.MA(60),a.MAC(60)
     print '='*40
-    print a.display(3,6,18)
+    #print a.display(3,6,18)
 
 ############## webapp Models ###################
-class xmpp_page(webapp.RequestHandler):
+class xmpp_invite(webapp.RequestHandler):
+  @login_required
   def get(self):
-    xmpp.send_invite('toomore0929@gmail.com','goristock@appspot.com')
+    umail = users.get_current_user().email()
+    xmpp.send_invite(umail, 'goristock@appspot.com')
+    ## todo: send a guild mail to the first time invited user.
+    self.response.out.write('%s invited. Please check out your GTalk.' % umail)
 
 class xmpp_pagex(webapp.RequestHandler):
   def post(self):
@@ -115,28 +135,43 @@ class xmpp_pagex(webapp.RequestHandler):
       except:
         logging.info('Wrong keyword!')
         msg.reply("search <keyword>")
+    elif msg.body.split(' ')[0] == 'help': ## for help reply.
+      msg.reply('Hold on! Wait a mount!')
+    elif msg.body.split(' ')[0] == 'info': ## for info reply.
+      msg.reply('To: %s(%s)' % (msg.to.split('/')[0],msg.to.split('/')[1]))
+      msg.reply('Sender: %s(%s)' % (msg.sender.split('/')[0],msg.sender.split('/')[1]))
+      msg.reply('arg: %s' % msg.arg)
+      msg.reply('command: %s' % type(msg.command))
+      msg.reply('body: %s' % msg.body)
+      msg.reply('EQ: %s' % str(msg.arg == msg.body))
+    elif msg.body.split(' ')[0] == 'time': ## for time reply.
+      msg.reply(datetime.today())
+    elif msg.body.split(' ')[0] == 'rl': ## Only reply realtime
+      try:
+        msg.reply(goristock.Rt_display(msg.body.split(' ')[1]))
+      except:
+        msg.reply('RL!')
     else:
       msg.reply(msg.body + ' analysing ...')
+
       try:
-        import goristock
         g = goristock.goristock(msg.body)
         try:
           XMPP = g.XMPP_display(3,6,18)
         except:
           XMPP = 'X！'
-
         if g.TimeinOpen:
           try:
             ## Add Real time stock data in open marker.
-            RT = g.Rt_display
+            RT = goristock.Rt_display(msg.body)
             if RT:
               RT = '\n' + RT
           except:
             RT = 'R！'
         else:
           RT = ''
-
         remsg = msg.reply(XMPP + RT)
+
       except:
         remsg = msg.reply('!')
 
@@ -148,7 +183,6 @@ class xmpp_pagex(webapp.RequestHandler):
 class task(webapp.RequestHandler):
   def get(self):
     #for i in [2618,1701,2369,8261,2401]:
-    from twseno import twseno
     for i in twseno().allstock:
       Task(
         url='/task_stocks',
@@ -166,7 +200,6 @@ class taskt(webapp.RequestHandler):
 
 class task_stock(webapp.RequestHandler):
   def post(self):
-    import goristock
     a = goristock.goristock(self.request.get('no'))
     body = a.XMPP_display(3,6,18)
     logging.info(body)
@@ -174,7 +207,6 @@ class task_stock(webapp.RequestHandler):
 
 class task_stocks(webapp.RequestHandler):
   def post(self):
-    import goristock
     a = goristock.goristock(self.request.get('no'))
     #mail_body = ''
     '''
@@ -186,7 +218,7 @@ class task_stocks(webapp.RequestHandler):
           body = a.Task_display
     '''
 
-    if a.MAO(3,6)[1] == '↑'.decode('utf-8') and (a.MAO(3,6)[0][1][-1] < 0 or ( a.MAO(3,6)[0][1][-1] < 1 and a.MAO(3,6)[0][1][-1] > 0 and a.MAO(3,6)[0][1][-2] < 0 and  a.MAO(3,6)[0][0] == 3)) and a.VOLMAX3 and a.stock_vol[-1] > 1000*1000 and a.raw_data[-1] > 10:
+    if all_portf(a).ck_portf_001():
       if self.request.get('d'):
         body = a.XMPP_display(3,6,18)
       else:
@@ -206,38 +238,86 @@ class task_stocks(webapp.RequestHandler):
       #mail_body = mail_body + body
       xmpp.send_message('toomore0929@gmail.com', body)
 
+############## prememcache Models ##############
+class stpremem(webapp.RequestHandler):
+  def get(self):
+    for i in twseno().allstock:
+      Task(
+        url='/premem',
+        method='POST',
+        params={
+          'log': 'PreMem',
+          'no': i,
+        }
+      ).add(queue_name='premem')
+
+class premem(webapp.RequestHandler):
+  def post(self):
+    goristock.goristock(self.request.get('no'))
+
 ############## Mails Models ##############
 class cron_mail(webapp.RequestHandler):
   def get(self):
-    from google.appengine.api import mail
     if memcache.get('mailstock'):
       memget = memcache.get('mailstock')
       mail_body = ''
+      memget = sorted(memget)
       for i in memget:
         mail_body += i + '\n'
 
       mail.send_mail(
-        sender = "goristock <noreply@goristock.appspotmail.com>",
-        to = "Toomore <toomore0929@gmail.com>",
-        subject = "goristock select.",
+        sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
+        to = "goristock-daily-report@googlegroups.com",
+        subject = "goristock %s selected." % str(datetime.today() + timedelta(seconds=60*60*8)).split(' ')[0],
         body = mail_body)
       memcache.delete('mailstock')
+      logging.info(mail_body)
+    else:
+      logging.info('memcache -> mailstock is fault.')
+
+class cron_mail_test(webapp.RequestHandler):
+  def get(self):
+    if memcache.get('mailstock'):
+      memget = memcache.get('mailstock')
+      mail_body = ''
+      memget = sorted(memget)
+      for i in memget:
+        mail_body += i + '\n'
+
+      mail.send_mail(
+        sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
+        to = "toomore0929@gmail.com",
+        subject = "[TEST] GORISTOCK %s SELECTED." % str(datetime.today() + timedelta(seconds=60*60*8)).split(' ')[0],
+        body = mail_body)
+      memcache.delete('mailstock')
+      logging.info(mail_body)
+    else:
+      logging.info('memcache -> mailstock is fault.')
+
+############## flush Models ##############
+class flush(webapp.RequestHandler):
+  def get(self):
+    m = memcache.flush_all()
+    self.response.out.write('%s<br>%s' % (m, memcache.get_stats()))
 
 ############## main Models ##############
 def main():
   """ Start up. """
   application = webapp.WSGIApplication(
-                                      [
-                                        ('/', MainPage),
-                                        ('/goristock', goritest),
-                                        ('/chat/', xmpp_page),
-                                        ('/_ah/xmpp/message/chat/', xmpp_pagex),
-                                        ('/task', task),
-                                        ('/taskt', taskt),
-                                        ('/task_stock', task_stock),
-                                        ('/task_stocks', task_stocks),
-                                        ('/cron_mail', cron_mail)
-                                      ],debug=True)
+                [
+                  ('/', MainPage),
+                  ('/goristock', goritest),
+                  ('/chat/', xmpp_invite),
+                  ('/_ah/xmpp/message/chat/', xmpp_pagex),
+                  ('/task', task),
+                  ('/task_stock', task_stock),
+                  ('/task_stocks', task_stocks),
+                  ('/cron_mail', cron_mail),
+                  ('/cron_mail_test', cron_mail_test),
+                  ('/stpremem', stpremem),
+                  ('/premem', premem),
+                  ('/flu', flush)
+                ],debug=True) ## unlist: taskt,
   run_wsgi_app(application)
 
 if __name__ == '__main__':

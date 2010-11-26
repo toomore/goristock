@@ -26,40 +26,53 @@ def overall(goback = 0, case = 1):
   from twseno import twseno
   for i in twseno().allstock:
     #timetest(i)
-    if case == 1:
-      try:
-        a = goristock(i)
-        if goback:
-          a.goback(goback)
+    try:
+      if case == 1:
+        try:
+          a = goristock(i)
+          if goback:
+            a.goback(goback)
 
-        if a.MAO(3,6)[1] == '↑'.decode('utf-8') and (a.MAO(3,6)[0][1][-1] < 0 or ( a.MAO(3,6)[0][1][-1] < 1 and a.MAO(3,6)[0][1][-1] > 0 and a.MAO(3,6)[0][1][-2] < 0 and a.MAO(3,6)[0][0] == 3)) and a.VOLMAX3 and a.stock_vol[-1] > 1000*1000 and a.raw_data[-1] > 10:
-          #print a.Cmd_display
-          print 'buy-: ' + oop(a)
-        elif a.MAO(3,6)[1] == '↓'.decode('utf-8') and a.MAO(3,6)[0][1][-1] > 0 and a.MAO(3,6)[0][0] <= 3:
-          print 'sell: ' + oop(a)
-      except:
-        print i
+          if a.MAO(3,6)[1] == '↑'.decode('utf-8') and (a.MAO(3,6)[0][1][-1] < 0 or ( a.MAO(3,6)[0][1][-1] < 1 and a.MAO(3,6)[0][1][-1] > 0 and a.MAO(3,6)[0][1][-2] < 0 and a.MAO(3,6)[0][0] == 3)) and a.VOLMAX3 and a.stock_vol[-1] > 1000*1000 and a.raw_data[-1] > 10:
+            #print a.Cmd_display
+            print 'buy-: ' + oop(a)
+          elif a.MAO(3,6)[1] == '↓'.decode('utf-8') and a.MAO(3,6)[0][1][-1] > 0 and a.MAO(3,6)[0][0] <= 3:
+            print 'sell: ' + oop(a)
+        except KeyboardInterrupt:
+          print '::KeyboardInterrupt'
+          break
+        except IndexError:
+          print i
 
-    elif case == 2:
-      try:
-        a = goristock(i)
-        if goback:
-          a.goback(goback)
+      elif case == 2:
+        try:
+          a = goristock(i)
+          if goback:
+            a.goback(goback)
 
-        if a.MAO(3,6)[1] == '↑'.decode('utf-8') and (a.MAO(3,6)[0][1][-1] < 0 or ( a.MAO(3,6)[0][1][-1] < 1 and a.MAO(3,6)[0][1][-1] > 0 and a.MAO(3,6)[0][1][-2] < 0 and a.MAO(3,6)[0][0] == 3)) and a.stock_vol[-1] >= 1000*1000 and a.raw_data[-1] > 10 and (sum(a.stock_vol[-45:])/45) <= 1000*1000:
-          #print a.Cmd_display
-          print 'buy-: ' + oop(a)
-      except:
-        print i
+          if a.MAO(3,6)[1] == '↑'.decode('utf-8') and (a.MAO(3,6)[0][1][-1] < 0 or ( a.MAO(3,6)[0][1][-1] < 1 and a.MAO(3,6)[0][1][-1] > 0 and a.MAO(3,6)[0][1][-2] < 0 and a.MAO(3,6)[0][0] == 3)) and a.stock_vol[-1] >= 1000*1000 and a.raw_data[-1] > 10 and (sum(a.stock_vol[-45:])/45) <= 1000*1000:
+            #print a.Cmd_display
+            print 'buy-: ' + oop(a)
+        except KeyboardInterrupt:
+          print '::KeyboardInterrupt'
+          break
+        except IndexError:
+          print i
 
-    elif case == 3:
-      try:
-        a = goristock(i)
-        if goback:
-          a.goback(goback)
+      elif case == 3:
+        try:
+          a = goristock(i)
+          if goback:
+            a.goback(goback)
 
-        if a.MA(3) > a.raw_data[-1] and a.MA(6) <= a.raw_data[-1] and a.MA(6) > a.MA(18):
-          #print a.Cmd_display
-          print 'buy-: ' + oop(a)
-      except:
-        print i
+          if a.MA(3) > a.raw_data[-1] and a.MA(6) <= a.raw_data[-1] and a.MA(6) > a.MA(18):
+            #print a.Cmd_display
+            print 'buy-: ' + oop(a)
+        except KeyboardInterrupt:
+          print '::KeyboardInterrupt'
+          break
+        except IndexError:
+          print i
+    except KeyboardInterrupt:
+      print 'KeyboardInterrupt'
+      break
