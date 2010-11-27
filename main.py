@@ -151,7 +151,7 @@ class xmpp_pagex(webapp.RequestHandler):
         rr = re.sub(r'[\^]', '**', rr)
         rr = re.sub(r'[^0-9\.\+\-\*\/\(\)]', '', rr)
         rrp = re.sub(r'\/', '*1.0/', rr)
-        msg.reply('%s = %s' % (rr, eval(rrp)))
+        msg.reply('%s = %s' % (rr.replace('**', '^'), eval(rrp)))
     elif msg.body.split(' ')[0] == 'news': ## search news.
       try:
         rsz = msg.body.split(' ')[2]
@@ -163,7 +163,7 @@ class xmpp_pagex(webapp.RequestHandler):
       else:
         msg.reply(gnews(msg.body.split(' ')[1].encode('utf-8'), rsz = rsz).x())
     elif msg.body.split(' ')[0] == 'help': ## for help reply.
-      msg.reply('Hold on! Wait a mount!')
+      msg.reply('請參閱說明文件 http://bit.ly/gVeHIG')
     elif msg.body.split(' ')[0] == 'info': ## for info reply.
       msg.reply('To: %s(%s)' % (msg.to.split('/')[0],msg.to.split('/')[1]))
       msg.reply('Sender: %s(%s)' % (msg.sender.split('/')[0],msg.sender.split('/')[1]))
