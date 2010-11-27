@@ -149,7 +149,8 @@ class xmpp_pagex(webapp.RequestHandler):
         rr = re.sub(r'cal', '', msg.body)
         rr = re.sub(r'[\^]', '**', rr)
         rr = re.sub(r'[^0-9\.\+\-\*\/\(\)]', '', rr)
-        msg.reply('%s = %s' % (rr, eval(rr + '* 1.0')))
+        rrp = re.sub(r'\/', '*1.0/', rr)
+        msg.reply('%s = %s' % (rr, eval(rrp)))
     elif msg.body.split(' ')[0] == 'help': ## for help reply.
       msg.reply('Hold on! Wait a mount!')
     elif msg.body.split(' ')[0] == 'info': ## for info reply.
