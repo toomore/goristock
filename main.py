@@ -44,6 +44,7 @@ import re
 import goristock
 from all_portf import all_portf
 from twseno import twseno
+from gnews import gnews
 
 def ckinv(oo):
   """ check the value is date or not """
@@ -151,6 +152,16 @@ class xmpp_pagex(webapp.RequestHandler):
         rr = re.sub(r'[^0-9\.\+\-\*\/\(\)]', '', rr)
         rrp = re.sub(r'\/', '*1.0/', rr)
         msg.reply('%s = %s' % (rr, eval(rrp)))
+    elif msg.body.split(' ')[0] == 'news': ## search news.
+      try:
+        rsz = msg.body.split(' ')[2]
+        msg.reply(rsz)
+      except:
+        rsz = 4
+      if msg.body.split(' ')[1] == 'top':
+        msg.reply(gnews('', 'b', rsz).x())
+      else:
+        msg.reply(gnews(msg.body.split(' ')[1].encode('utf-8'), rsz = rsz).x())
     elif msg.body.split(' ')[0] == 'help': ## for help reply.
       msg.reply('Hold on! Wait a mount!')
     elif msg.body.split(' ')[0] == 'info': ## for info reply.
