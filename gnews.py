@@ -3,6 +3,9 @@
 # http://code.google.com/apis/newssearch/v1/jsondevguide.html
 
 import urllib, urllib2
+import time, datetime
+from datetime import timedelta
+
 try:
   import simplejson as json
 except:
@@ -33,6 +36,12 @@ class gnews(object):
   def x(self):
     rt = ''
     for i in self.j['responseData']['results']:
-      rt += '\r\n' + i['titleNoFormatting'] + '\r\n'
+      rt += '\r\n' + i['titleNoFormatting'] + '-' + i['publisher'] + '-' + self.covdate(i['publishedDate']) + '\r\n'
       rt += i['unescapedUrl']
     return rt
+
+  def covdate(self, timestring):
+    #timestring = "Sat, 27 Nov 2010 23:14:42"
+    time_format = "%a, %d %b %Y %H:%M:%S"
+    a = datetime.datetime.fromtimestamp(time.mktime(time.strptime(timestring[:-6], time_format)))
+    return str(a + timedelta(hours = 16))
