@@ -1,0 +1,102 @@
+a {
+        color:#0000CC;
+        text-decoration: none;}
+a:hover{
+        color:#6666dd}
+body{
+        font-family: arial;
+        margin: 0;
+        padding: 0;}
+input,select {
+        font-size:12pt;
+        font-family: arial;
+        font-weight: bold;
+        padding:6px;
+        margin:4px;
+        color:#446655;}
+.desc {
+        float: left;
+        margin: 1px;
+        font-size:10pt;
+        padding: 1px;}
+.descr {
+        float: right;
+        margin: 1px;
+        padding: 1px;
+        font-size:10pt;
+        color:#778899;}
+.rdu {
+        font-size:10pt;}
+.rdu a {
+        color:#ddeedd;
+        text-decoration: none;}
+.rdu a:hover{
+        color:#4444bb;
+        font-weight: bold;}
+.wall img{
+        border:0px;
+        width:86px;}
+.con {
+        font-size:10pt;}
+.mimg{
+        vertical-align:middle;
+        border:0px;}
+.app{
+        width:195;
+        text-align:right;}
+.userinfo{
+        font-size:18pt;}
+.frichart{
+        width:100%;}
+.top {
+        border-top:1px #C9D7F1 solid;
+        }
+.sdiv {
+        float:left;
+        margin: 5px;
+        padding: 4px;
+        border:1px #ccaadd dashed;
+        width:90px;
+        font-size:10pt;
+        text-overflow : ellipsis;
+        overflow : hidden;}
+.sdiv img{
+        width:90;
+        border:0px}
+.massresult{
+        text-align:left;
+        font-size:10pt;
+        background:#eeddcc;
+        border: 1px #cba solid;
+        padding:15px;
+        margin:15px;}
+.txttips{
+        width:380px;
+        text-align:left;
+        font-size:10pt;
+        background:#cfc;
+        border: 1px #0c0 solid;
+        padding:15px;
+        margin:15px;}
+.tips{
+        width:400px;
+        font-size:10pt;
+        background:#ded;
+        border: 1px #bcb solid;
+        padding:5px;
+        margin:5px;}
+.aboutable td{
+        border-bottom:1px #990066 solid;}
+.langtable{
+        font-size:16pt;
+        background:#eeeeff;
+        padding:14px;
+        margin:14px;}
+.langtable td{
+        border-bottom:1px #aabbaa solid;}
+.foot {clear:both;}
+.footdesc{
+        font-size:9pt;
+        text-align:right;
+}
+.cc {clear:both;}

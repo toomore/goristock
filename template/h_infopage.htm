@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=UTF-8" />
+        <title>{% block titlename %}{% endblock %}goristock 台灣股市分析機器人</title>
+        <meta name="description" content="利用 GAE 計算分析台灣股市各股投資策略">
+        <meta name="keywords" content="台灣股市,投資策略,機器人,Google App Engine,XMPP"> 
+        <link rel="stylesheet" type="text/css" href="/css/css.css">
+    </head>
+    <body>
+        <div class="cc">
+                <div class="desc">
+                  <a href="/">goristock 台灣股市分析機器人</a> - <a href="/getinvite">索取邀請函</a>
+                     / <a target="_blank" href="http://bit.ly/gVeHIG">使用說明</a>
+                     / <a target="_blank" href="https://docs.google.com/present/view?id=dft5qcw9_95hd66b9dj">如何運作</a>
+                </div>
+                <div class="descr">
+                  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://goristock.appspot.com/" data-count="horizontal" data-via="toomore">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+                  <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fgoristock.appspot.com%2F&amp;layout=button_count&amp;show_faces=true&amp;width=60&amp;action=like&amp;colorscheme=light&amp;height=10" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:60px; height:20px;" allowTransparency="true"></iframe>
+                   {{ tv.umail }} <img src="/images/favicon.ico">
+                </div>
+        </div>
+        <div class="cc top"></div>
+        <div class="desc">{% block userinfo %}{% endblock %}</div>
+        <div class="cc">
+        <table width="100%" height="70%">
+            <tr align="center">
+                <td align="center" valign="middle">
+                    <div class="con">{% block content %}{% endblock %}</div>
+                </td>
+            </tr>
+        </table>
+        <div class="foot">{% block foot %}{% endblock %}</div>
+    </body>
+    {% include "h_analytics.htm" %}
+</html>
+

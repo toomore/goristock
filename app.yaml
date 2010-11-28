@@ -10,6 +10,20 @@ handlers:
   upload: static/images/favicon.ico
   mime_type: image/x-icon
 
+## Images files.
+- url: /images
+  static_dir: static/images
+- url: /images/(.*)
+  static_files: static/images/\1
+  upload: static/images/(.*)
+
+## CSS
+- url: /css
+  static_dir: static/css
+- url: /css/(.*)
+  static_files: static/css/\1
+  upload: static/css/(.*)
+
 ## admin_console
 - url: /admin_console/.*
   script: $PYTHON_LIB/google/appengine/ext/admin

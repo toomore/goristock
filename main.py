@@ -27,6 +27,7 @@ from google.appengine.api import users
 from google.appengine.api import xmpp
 from google.appengine.api.labs.taskqueue import Task
 from google.appengine.ext import webapp
+from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
 from google.appengine.ext.webapp.util import run_wsgi_app
 #from google.appengine.api import urlfetch
@@ -67,6 +68,9 @@ def covstr(s):
 ############## webapp Models ##############
 class MainPage(webapp.RequestHandler):
   def get(self):
+    self.response.out.write(template.render('./template/hh_index.htm',{}))
+
+    """
     #url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY_AVG/STOCK_DAY_AVG2.php?STK_NO=2363&myear=2010&mmon=06&type=csv'
     ''' 日期/成交股數/成交金額/開盤價/最高價/最低價/收盤價/漲跌價差/成交筆數 '''
     url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report2010%(mon)02d/2010%(mon)02d_F3_1_8_%(stock)s.php&type=csv' % {'mon': datetime.today().month,'stock': '2363'}
@@ -85,6 +89,7 @@ class MainPage(webapp.RequestHandler):
     print "- Num: %s" % len(getr)
     print "- Avg: %.2f" % float(sum(getr)/len(getr))
     print "- MA5: %.2f" % float(sum(getr[-5:])/len(getr[-5:]))
+    """
 
 ############## Test GoRiStock ##############
 class goritest(webapp.RequestHandler):
@@ -105,13 +110,20 @@ class goritest(webapp.RequestHandler):
     #print a.display(3,6,18)
 
 ############## webapp Models ###################
+class getinvite(webapp.RequestHandler):
+  def get(self):
+    self.response.out.write(template.render('./template/hh_getinvite.htm',{}))
+
 class xmpp_invite(webapp.RequestHandler):
   @login_required
   def get(self):
     umail = users.get_current_user().email()
-    xmpp.send_invite(umail, 'goristock@appspot.com')
+    xmpp.send_invite(umail)
+    xmpp.send_message('toomore0929@gmail.com', '#NEWUSER %s' % umail)
+    logging.info('#NEWUSER %s' % umail)
     ## todo: send a guild mail to the first time invited user.
-    self.response.out.write('%s invited. Please check out your GTalk.' % umail)
+    tv = {'umail': umail}
+    self.response.out.write(template.render('./template/hh_invite.htm',{'tv': tv}))
 
 class xmpp_pagex(webapp.RequestHandler):
   def post(self):
@@ -121,7 +133,6 @@ class xmpp_pagex(webapp.RequestHandler):
         q = msg.body.split(' ')[1]
         msg.reply("find '%s'" % q)
 
-        from twseno import twseno
         result = twseno().search(q.encode('utf-8'))
         ret = ''
         logging.info(q)
@@ -198,13 +209,12 @@ class xmpp_pagex(webapp.RequestHandler):
         else:
           RT = ''
         remsg = msg.reply(XMPP + RT)
-
       except:
         remsg = msg.reply('!')
-
-      #msg.reply(msg.body)
-      logging.info(self.request.POST)
       logging.info('Msg status: %s' % remsg)
+      #msg.reply(msg.body)
+    logging.info(self.request.POST)
+    logging.info(msg.body)
 
 ############## Task Models ##############
 class task(webapp.RequestHandler):
@@ -327,6 +337,11 @@ class flush(webapp.RequestHandler):
     m = memcache.flush_all()
     self.response.out.write('%s<br>%s' % (m, memcache.get_stats()))
 
+############## redirect Models ##############
+class rewrite(webapp.RequestHandler):
+  def get(self):
+    self.redirect('/')
+
 ############## main Models ##############
 def main():
   """ Start up. """
@@ -334,7 +349,8 @@ def main():
                 [
                   ('/', MainPage),
                   ('/goristock', goritest),
-                  ('/chat/', xmpp_invite),
+                  ('/getinvite', getinvite),
+                  ('/invite', xmpp_invite),
                   ('/_ah/xmpp/message/chat/', xmpp_pagex),
                   ('/task', task),
                   ('/task_stock', task_stock),
@@ -343,7 +359,8 @@ def main():
                   ('/cron_mail_test', cron_mail_test),
                   ('/stpremem', stpremem),
                   ('/premem', premem),
-                  ('/flu', flush)
+                  ('/flu', flush),
+                  ('/.*', rewrite)
                 ],debug=True) ## unlist: taskt,
   run_wsgi_app(application)
 
