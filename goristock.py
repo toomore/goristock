@@ -149,11 +149,11 @@ class goristock(object):
 
     # set memcache expire
     now = datetime.today() + timedelta(hours = 8)
-    if now.hour >= 14 and now.minute >= 30:
+    if now >= datetime(now.year, now.month, now.day, 14, 30):
       addday = 1
     else:
       addday = 0
-    endtime = datetime(now.year, now.month, now.day + addday, 13, 25)
+    endtime = datetime(now.year, now.month, now.day, 13, 25) + timedelta(days = addday)
     logging.info('endtime: %s' % str(endtime))
 
     if firsttime == 0:
