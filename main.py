@@ -165,14 +165,21 @@ class xmpp_pagex(webapp.RequestHandler):
         msg.reply('%s = %s' % (rr.replace('**', '^'), eval(rrp)))
     elif msg.body.split(' ')[0] == 'news': ## search news.
       try:
-        rsz = msg.body.split(' ')[2]
-        msg.reply(rsz)
+        if int(msg.body.split(' ')[-1]) in range(1,9):
+          keyword = ' '.join(i.encode('utf-8') for i in msg.body.split(' ')[1:-1])
+          rsz = msg.body.split(' ')[-1]
+        else:
+          rsz = 4
+          keyword = msg.body.split(' ')[1].encode('utf-8')
       except:
         rsz = 4
+        keyword = ' '.join(i.encode('utf-8') for i in msg.body.split(' ')[1:])
       if msg.body.split(' ')[1] == 'top':
         msg.reply(gnews('', 'b', rsz).x())
       else:
-        msg.reply(gnews(msg.body.split(' ')[1].encode('utf-8'), rsz = rsz).x())
+        msg.reply(gnews(keyword, rsz = rsz).x())
+      logging.info('keyword: %s' % keyword)
+      logging.info('rsz: %s' % rsz)
     elif msg.body.split(' ')[0] == 'help': ## for help reply.
       msg.reply('請參閱說明文件 http://bit.ly/gVeHIG')
     elif msg.body.split(' ')[0] == 'info': ## for info reply.
