@@ -196,6 +196,9 @@ class xmpp_pagex(webapp.RequestHandler):
         msg.reply(goristock.Rt_display(msg.body.split(' ')[1]))
       except:
         msg.reply('RL!')
+    elif msg.body.split(' ')[0] == 'tw': ## reply real-time twse
+      rev = goristock.TW_display()
+      msg.reply('{%s %s}\r\n加權指數：%s (%s)\r\n成交金額：%s 億' % (rev['0']['time'], rev['1']['time'], rev['1']['value'], rev['1']['range'], rev['200']['v2']))
     else:
       msg.reply(msg.body + ' analysing ...')
 

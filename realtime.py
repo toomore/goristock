@@ -69,3 +69,19 @@ class twsk(object):
       return re
     except:
       return False
+
+class twsew:
+  def __init__(self):
+    self.weight = {}
+    page = urllib2.urlopen('http://mis.tse.com.tw/data/TSEIndex.csv?r=%s' % random.randrange(1,10000))
+    reader = csv.reader(page)
+
+    for i in reader:
+      if len(i):
+        if '-' in i[3]:
+          ud = False
+        else:
+          ud = True
+        self.weight[i[0]] = {'no':i[0], 'time':i[1], 'value':i[2], 'range':i[3], 'ud': ud}
+
+    self.weight['200']['v2'] = int(self.weight['200']['value'].replace(',','')) / 100000000

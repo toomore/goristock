@@ -35,6 +35,7 @@ import urllib2
 
 ## custom lib
 from realtime import twsk
+from realtime import twsew
 
 class goristock(object):
   """ Start up from __init__
@@ -571,3 +572,8 @@ def Rt_display(stock_no):
     return re
   else:
     return a
+
+def TW_display():
+  """ For real time TWSE display """
+  a = twsew().weight
+  return a
