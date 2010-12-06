@@ -25,7 +25,7 @@ from google.appengine.api import mail
 from google.appengine.api import memcache
 from google.appengine.api import users
 from google.appengine.api import xmpp
-from google.appengine.api.labs.taskqueue import Task
+from google.appengine.api.taskqueue import Task
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
