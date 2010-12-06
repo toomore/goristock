@@ -60,6 +60,9 @@ class goristock(object):
           self.data_date = [list]
           self.stock_range = [list]
           self.stock_vol = [list]
+          self.stock_open = [list]
+          self.stock_h = [list]
+          self.stock_l = [list]
     """
     self.raw_data = []
     self.stock_name = ''
@@ -67,6 +70,9 @@ class goristock(object):
     self.data_date = []
     self.stock_range = []
     self.stock_vol = []
+    self.stock_open = []
+    self.stock_h = []
+    self.stock_l = []
     starttime = 0
     self.debug = debug
 
@@ -89,6 +95,9 @@ class goristock(object):
         self.stock_name = result['stock_name']
         self.stock_range = result['stock_range'] + self.stock_range
         self.stock_vol = result['stock_vol'] + self.stock_vol
+        self.stock_open = result['stock_open'] + self.stock_open
+        self.stock_h = result['stock_h'] + self.stock_h
+        self.stock_l = result['stock_l'] + self.stock_l
         starttime += 1
     except:
       logging.info('Data not enough! %s' % stock_no)
@@ -192,11 +201,18 @@ class goristock(object):
           [stock_name]: Stock name (str) and encode form big5 to utf-8
           [data_date]: Stock date (list)
           [stock_range]: Stock range price (list)
+          [stock_vol]: Stock Volue (list)
+          [stock_open]: Stock open price (list)
+          [stock_h]: Stock high price (list)
+          [stock_l]: Stock low price (list)
     """
     getr = []
     getdate = []
     getrange = []
     getvol = []
+    getopen = []
+    geth = []
+    getl = []
     otherinfo = []
     fetch_data_raw = 1
     for i in csv_read:
@@ -206,6 +222,9 @@ class goristock(object):
         getdate.append(i[0].replace(' ',''))
         getrange.append(i[-2])
         getvol.append(int(i[1].replace(',','')))
+        getopen.append(self.covstr(i[3]))
+        geth.append(self.covstr(i[4]))
+        getl.append(self.covstr(i[5]))
       else:
         otherinfo.append(i[0])
       fetch_data_raw += 1
@@ -221,7 +240,10 @@ class goristock(object):
       'stock_name': stock_name,
       'data_date': getdate,
       'stock_range': getrange,
-      'stock_vol': getvol
+      'stock_vol': getvol,
+      'stock_open': getopen,
+      'stock_h': geth,
+      'stock_l': getl
     }
     self.debug_print(otherinfo)
     self.debug_print(stock_name)
