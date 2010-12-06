@@ -255,16 +255,6 @@ class task_stock(webapp.RequestHandler):
 class task_stocks(webapp.RequestHandler):
   def post(self):
     a = goristock.goristock(self.request.get('no'))
-    #mail_body = ''
-    '''
-    if a.MAC(3) == '↑' and a.MAC(6) == '↑' and a.MAC(18) == '↑':
-      if a.MAO(3,6)[0][1][-1] < 0 and a.MAO(3,6)[1] == '↑':
-        if self.request.get('d'):
-          body = a.XMPP_display(3,6,18)
-        else:
-          body = a.Task_display
-    '''
-
     if all_portf(a).ck_portf_001():
       if self.request.get('d'):
         body = a.XMPP_display(3,6,18)
@@ -282,7 +272,6 @@ class task_stocks(webapp.RequestHandler):
       memcache.set('mailstock', mail)
       logging.info('memcache set: mailstock')
 
-      #mail_body = mail_body + body
       xmpp.send_message('toomore0929@gmail.com', body)
 
 ############## prememcache Models ##############
