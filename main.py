@@ -273,6 +273,10 @@ class task_stocks(webapp.RequestHandler):
       logging.info('memcache set: mailstock')
 
       xmpp.send_message('toomore0929@gmail.com', body)
+    else:
+      body = a.Cmd_display
+      xmpp.send_message('toomore0929@gmail.com', '#test: %s' % body)
+
 
 ############## prememcache Models ##############
 class stpremem(webapp.RequestHandler):

@@ -29,6 +29,7 @@ from datetime import timedelta
 import csv
 import logging
 import math
+import random
 import re
 import time
 import urllib2
@@ -143,7 +144,7 @@ class goristock(object):
     """ Fetch data from twse.com.tw
         return list.
     """
-    url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
+    url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv&r=%(rand)s' % {'year': nowdatetime.year, 'mon': nowdatetime.month, 'stock': stock_no, 'rand': random.randrange(1,10000)}
     self.debug_print(url)
     logging.info(url)
     #print cc.info().headers
