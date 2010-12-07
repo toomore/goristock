@@ -1,0 +1,29 @@
+{% extends "h_infopage.htm" %}
+
+{% block titlename %}API - {% endblock %}
+
+{% block javascript %}
+        <script type="text/javascript" src="/css/syntax/scripts/shCore.js"></script>
+        <script type="text/javascript" src="/css/syntax/scripts/shBrushJScript.js"></script>
+        <link type="text/css" rel="stylesheet" href="/css/syntax/styles/shCoreDefault.css"/>
+        <script type="text/javascript">SyntaxHighlighter.all();</script>
+{% endblock %}
+
+{% block content %}
+<pre class="brush: js;">
+{
+  "stock_no": "8261",
+  "stock_name": "富鼎",
+  "stock_range": "-0.20",
+  "stock_vol": 540,
+  "stock_date": "99/12/07",
+  "stock_range_per": -0.665557404326,
+  "RABC": "(31.80,30.70,30.50)",
+  "stock_price": 29.85
+}
+</pre>
+{% endblock %}
+
+{% block foot %}
+{% include "h_desc.htm" %}
+{% endblock %}

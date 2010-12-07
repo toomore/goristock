@@ -28,6 +28,10 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 import goapi
 
 ############## webapp Models ##############
+class apidoc(webapp.RequestHandler):
+  def get(self):
+    self.response.out.write(template.render('./template/hh_api.htm',{}))
+
 class stock_j(webapp.RequestHandler):
   def get(self):
     reapi = goapi.goapi(self.request.get('q')).stock_j
@@ -43,14 +47,21 @@ class weight(webapp.RequestHandler):
     reapi = goapi.weight()
     self.response.out.write(template.render('./template/api.htm',{'reapi': reapi}))
 
+############## redirect Models ##############
+class rewrite(webapp.RequestHandler):
+  def get(self):
+    self.redirect('/API')
+
 ############## main Models ##############
 def main():
   """ Start up. """
   application = webapp.WSGIApplication(
                 [
-                  ('/API/', stock_j),
+                  ('/API', apidoc),
+                  ('/API/stock', stock_j),
                   ('/API/real', stock_real),
-                  ('/API/weight', weight)
+                  ('/API/weight', weight),
+                  ('/API.*', rewrite)
                 ],debug=True)
   run_wsgi_app(application)
 

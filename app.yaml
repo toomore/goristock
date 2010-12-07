@@ -40,7 +40,7 @@ handlers:
   login: admin
 
 ## API
-- url: /API/.*
+- url: /API.*
   script: main_api.py
 
 ## Main WSGI

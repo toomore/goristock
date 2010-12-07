@@ -5,6 +5,7 @@
         <meta name="description" content="利用 GAE 計算分析台灣股市各股投資策略">
         <meta name="keywords" content="台灣股市,投資策略,機器人,Google App Engine,XMPP"> 
         <link rel="stylesheet" type="text/css" href="/css/css.css">
+{% block javascript %}{% endblock %}
     </head>
     <body>
         <div class="cc">
@@ -29,7 +30,7 @@
                 </td>
             </tr>
         </table>
-        <div class="foot">{% block foot %}{% endblock %}</div>
+        <div class="foot descr">{% block foot %}{% endblock %}</div>
     </body>
     {% include "h_analytics.htm" %}
 </html>

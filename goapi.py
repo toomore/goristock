@@ -35,7 +35,7 @@ class goapi(object):
   def stock_j(self):
     stock = goristock.goristock(self.stock_no)
     re = {
-        'stock_name': (stock.stock_name), ## OU
+        'stock_name': stock.stock_name, ## OU
         'stock_no': stock.stock_no, ## OU
         'stock_date': stock.data_date[-1], ## OU
         'stock_price': stock.raw_data[-1], ## OU
