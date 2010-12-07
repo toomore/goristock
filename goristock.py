@@ -169,7 +169,7 @@ class goristock(object):
 
     if firsttime == 0:
       if endtime <= now:
-        expire = False ## always update.
+        expire = 'ALUP' ## always update.
       else:
         expire = (endtime - now).seconds
     else:
@@ -186,7 +186,7 @@ class goristock(object):
       cc = urllib2.urlopen(url)
       cc_read = cc.readlines()
       csv_read = csv.reader(cc_read)
-      if expire != False:
+      if expire != 'ALUP':
         memcache.set(memname, cc_read, expire)
       memcache.set('time%s' % memname, '%s %s' % (now, expire))
       logging.info('#MemcacheAdd: %s' % memname)
