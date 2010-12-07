@@ -39,6 +39,10 @@ handlers:
   script: main.py
   login: admin
 
+## API
+- url: /API/.*
+  script: main_api.py
+
 ## Main WSGI
 - url: .*
   script: main.py
