@@ -1,13 +1,13 @@
 cron:
 - description: Overall stock
-  url: /task
+  url: /ad/task
   schedule: every mon,tue,wed,thu,fri 14:35
   timezone: Asia/Taipei
 - description: Mail overall stock
-  url: /cron_mail
+  url: /ad/cron_mail
   schedule: every mon,tue,wed,thu,fri 14:45
   timezone: Asia/Taipei
 - description: PreMemcache stock
-  url: /stpremem
+  url: /ad/stpremem
   schedule: every 4 hours synchronized
   timezone: Asia/Taipei

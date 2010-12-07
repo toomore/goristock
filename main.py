@@ -232,7 +232,7 @@ class task(webapp.RequestHandler):
     #for i in [2618,1701,2369,8261,2401]:
     for i in twseno().allstock:
       Task(
-        url='/task_stocks',
+        url='/ad/task_stocks',
         method='POST',
         params={
           'log': 'Task',
@@ -283,7 +283,7 @@ class stpremem(webapp.RequestHandler):
   def get(self):
     for i in twseno().allstock:
       Task(
-        url='/premem',
+        url='/ad/premem',
         method='POST',
         params={
           'log': 'PreMem',
@@ -355,14 +355,14 @@ def main():
                   ('/getinvite', getinvite),
                   ('/invite', xmpp_invite),
                   ('/_ah/xmpp/message/chat/', xmpp_pagex),
-                  ('/task', task),
-                  ('/task_stock', task_stock),
-                  ('/task_stocks', task_stocks),
-                  ('/cron_mail', cron_mail),
-                  ('/cron_mail_test', cron_mail_test),
-                  ('/stpremem', stpremem),
-                  ('/premem', premem),
-                  ('/flu', flush),
+                  ('/ad/task', task),
+                  ('/ad/task_stock', task_stock), ## out of work
+                  ('/ad/task_stocks', task_stocks),
+                  ('/ad/cron_mail', cron_mail),
+                  ('/ad/cron_mail_test', cron_mail_test),
+                  ('/ad/stpremem', stpremem),
+                  ('/ad/premem', premem),
+                  ('/ad/flu', flush),
                   ('/.*', rewrite)
                 ],debug=True) ## unlist: taskt,
   run_wsgi_app(application)
