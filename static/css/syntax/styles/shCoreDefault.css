@@ -33,7 +33,7 @@
   height: auto !important;
   left: auto !important;
   line-height: 1.1em !important;
-  margin: 0 !important;
+  margin: 3 !important;
   outline: 0 !important;
   overflow: visible !important;
   padding: 0 !important;
@@ -44,7 +44,7 @@
   vertical-align: baseline !important;
   width: auto !important;
   box-sizing: content-box !important;
-  font-family: "Consolas", "Bitstream Vera Sans Mono", "Courier New", Courier, monospace !important;
+  font-family: monospace !important;
   font-weight: normal !important;
   font-style: normal !important;
   font-size: 1em !important;

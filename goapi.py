@@ -42,6 +42,9 @@ class goapi(object):
         'stock_range': stock.stock_range[-1], ## OU
         'stock_range_per': stock.range_per,
         'stock_vol': stock.stock_vol[-1]/1000,
+        'stock_open': stock.stock_open[-1],
+        'stock_h': stock.stock_h[-1],
+        'stock_l': stock.stock_l[-1],
         'RABC': stock.RABC
       }
     return json.dumps(re)

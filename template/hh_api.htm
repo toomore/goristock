@@ -4,26 +4,268 @@
 
 {% block javascript %}
         <script type="text/javascript" src="/css/syntax/scripts/shCore.js"></script>
-        <script type="text/javascript" src="/css/syntax/scripts/shBrushJScript.js"></script>
+        <script type="text/javascript" src="/css/syntax/scripts/shBrushPython.js"></script>
         <link type="text/css" rel="stylesheet" href="/css/syntax/styles/shCoreDefault.css"/>
         <script type="text/javascript">SyntaxHighlighter.all();</script>
 {% endblock %}
 
+{% block foot %}
+{% include "h_desc.htm" %}
+{% endblock %}
+
 {% block content %}
-<pre class="brush: js;">
+<div class="apitips">
+
+<h1>goristock API</h1>
+<h2>/API/stock</h2>
+<div class="apiscr">各股資訊</div>
+<dl>
+  <dt>Required parameters：</dt>
+    <dd><b>q</b>：股票代碼</dd>
+  <dt>Return attributes：</dt>
+    <dd><b>stock_no</b>：股票代碼</dd>
+    <dd><b>stock_name</b>：股票名稱</dd>
+    <dd><b>stock_date</b>：日期</dd>
+    <dd><b>stock_range</b>：漲跌</dd>
+    <dd><b>stock_vol</b>：成交張數</dd>
+    <dd><b>stock_open</b>：開盤價</dd>
+    <dd><b>stock_h</b>：最高價</dd>
+    <dd><b>stock_l</b>：最低價</dd>
+    <dd><b>stock_price</b>：收盤價</dd>
+    <dd><b>stock_range_per</b>：漲跌幅（百分比）</dd>
+    <dd><b>RABC</b>：多空轉折點</dd>
+  <dt>Example：</dt>
+<pre class="brush: py;">
+# /API/stock?q=8261
+
 {
   "stock_no": "8261",
   "stock_name": "富鼎",
+  "stock_date": "99/12/07",
   "stock_range": "-0.20",
   "stock_vol": 540,
-  "stock_date": "99/12/07",
-  "stock_range_per": -0.665557404326,
+  "stock_open": 30.2,
+  "stock_h": 30.35
+  "stock_l": 29.8,
+  "stock_price": 29.85,
   "RABC": "(31.80,30.70,30.50)",
-  "stock_price": 29.85
+  "stock_range_per": -0.665557404326,
 }
 </pre>
-{% endblock %}
+</dl>
+<h2>/API/real</h2>
+<div class="apiscr">各股即時盤資訊</div>
+<dl>
+  <dt>Required parameters：</dt>
+    <dd><b>q</b>：股票代碼</dd>
+  <dt>Return attributes：</dt>
+    <dd><b>no</b>：股票代碼</dd>
+    <dd><b>name</b>：股票名稱</dd>
+    <dd><b>time</b>：時間</dd>
+    <dd><b>range</b>：漲跌</dd>
+    <dd><b>ranges</b>：漲跌標示，True：漲，False：跌</dd>
+    <dd><b>stock_vol</b>：成交張數</dd>
+    <dd><b>open</b>：開盤價</dd>
+    <dd><b>max</b>：漲停價</dd>
+    <dd><b>min</b>：跌停價</dd>
+    <dd><b>h</b>：最高價</dd>
+    <dd><b>l</b>：最低價</dd>
+    <dd><b>c</b>：收盤價</dd>
+    <dd><b>pp</b>：漲跌幅（百分比）</dd>
+    <dd><b>unch</b>：平盤價（漲停價、跌停價之平均）</dd>
+    <dd><b>pvalue</b>：當盤成交數量</dd>
+    <dd><b>top5sell</b>：最佳五檔揭示賣價價量資訊，[[價格,數量], ...]</dd>
+    <dd><b>top5buy</b>：最佳五檔揭示買價價量資訊，[[價格,數量], ...]</dd>
+    <dd><b>crosspic</b>：K 線圖（單日）</dd>
+  <dt>Example：</dt>
+<pre class="brush: py;">
+# /API/real?q=8261
 
-{% block foot %}
-{% include "h_desc.htm" %}
+{
+  "pp": "-0.67",
+  "name": "富鼎",
+  "open": "30.2",
+  "no": "8261",
+  "c": "29.85",
+  "max": "32.15",
+  "min": "27.95",
+  "l": "29.8",
+  "value": "535",
+  "ranges": false,
+  "range": "-0.2",
+  "top5sell": [
+      [
+          "29.95",
+          "4"
+      ],
+      [
+          "30",
+          "9"
+      ],
+      [
+          "30.05",
+          "16"
+      ],
+      [
+          "30.1",
+          "13"
+      ],
+      [
+          "30.15",
+          "2"
+      ]
+  ],
+  "time": "13:30:16",
+  "crosspic": "http://chart.apis.google.com/chart?
+    chs=20x40&cht=lc&chd=t1:0,0,0|0,30.35,0|0,29.85,0|0,30.2,0|0,29.8,0&
+    chds=29.8,30.35&chm=F,,1,1:4,20",
+  "top5buy": [
+      [
+          "29.65",
+          "8"
+      ],
+      [
+          "29.7",
+          "14"
+      ],
+      [
+          "29.75",
+          "13"
+      ],
+      [
+          "29.8",
+          "45"
+      ],
+      [
+          "29.85",
+          "21"
+      ]
+  ],
+  "h": "30.35",
+  "unch": "30.05",
+  "pvalue": "57"
+}
+</pre>
+<dt>Reference：</dt>
+  <dd><a href="http://mis.tse.com.tw/stock_best5.html?stockId=1101">基本市況報導網站 - 最佳五檔價量資訊揭示</a></dd>
+</dl>
+<h2>/API/weight</h2>
+<div class="apiscr">大盤即時盤資訊</div>
+除了回傳大盤資訊外，也回傳各類股資訊。
+<dl>
+  <dt>Return：</dt>
+    <dd><b>Key1</b>：類股分類</dd>
+    <dd><b>Key2</b>：</dd>
+  <dl>
+    <dt>Key1：</dt>
+      <dd><b>0</b>：基本資訊</dd>
+      <dd><b>1</b>：加權股價指數</dd>
+      <dd><b>2</b>：未含金融保險股指數</dd>
+      <dd><b>3</b>：未含電子股指數</dd>
+      <dd><b>4</b>：化學類指數</dd>
+      <dd><b>5</b>：生技醫療類指數</dd>
+      <dd><b>6</b>：水泥窯製類指數</dd>
+      <dd><b>7</b>：食品類指數</dd>
+      <dd><b>8</b>：塑膠化工類指數</dd>
+      <dd><b>9</b>：紡織纖維類指數</dd>
+      <dd><b>10</b>：機電類指數</dd>
+      <dd><b>11</b>：造紙類指數</dd>
+      <dd><b>12</b>：建材營造類指數</dd>
+      <dd><b>13</b>：（無資訊）</dd>
+      <dd><b>14</b>：金融保險類指數</dd>
+      <dd><b>15</b>：汽車類指數</dd>
+      <dd><b>16</b>：食品類指數（同 7）</dd>
+      <dd><b>17</b>：塑膠類指數</dd>
+      <dd><b>18</b>：紡織纖維類指數（同 9）</dd>
+      <dd><b>19</b>：電機機械類指數</dd>
+      <dd><b>20</b>：電器電纜類指數</dd>
+      <dd><b>21</b>：化學生技醫療類指數</dd>
+      <dd><b>22</b>：玻璃陶瓷類指數</dd>
+      <dd><b>23</b>：造紙類指數（同 11）</dd>
+      <dd><b>24</b>：鋼鐵類指數</dd>
+      <dd><b>25</b>：橡膠類指數</dd>
+      <dd><b>26</b>：汽車類指數</dd>
+      <dd><b>27</b>：電子類指數</dd>
+      <dd><b>28</b>：建材營造類指數（同 12）</dd>
+      <dd><b>29</b>：航運類指數</dd>
+      <dd><b>30</b>：觀光類指數</dd>
+      <dd><b>31</b>：金融保險類指數（同 14）</dd>
+      <dd><b>32</b>：貿易百貨類指數</dd>
+      <dd><b>33</b>：其他類指數</dd>
+      <dd><b>34</b>：未含金融電子股指數</dd>
+      <dd><b>35</b>：油電燃氣類指數</dd>
+      <dd><b>36</b>：半導體類指數</dd>
+      <dd><b>37</b>：電腦及週邊設備類指數</dd>
+      <dd><b>38</b>：光電類指數</dd>
+      <dd><b>39</b>：通信網路類指數</dd>
+      <dd><b>40</b>：電子零組件類指數</dd>
+      <dd><b>41</b>：電子通路類指數</dd>
+      <dd><b>42</b>：資訊服務類指數</dd>
+      <dd><b>43</b>：其他電子類指數</dd>
+      <dd><b>50</b>：臺灣50指數</dd>
+      <dd><b>51</b>：臺灣中型100指數</dd>
+      <dd><b>52</b>：臺灣資訊科技指數</dd>
+      <dd><b>53</b>：臺灣發達指數</dd>
+      <dd><b>54</b>：臺灣高股息指數</dd>
+      <dd><b>110</b>：總委買數量（value）、筆數（range）</dd>
+      <dd><b>111</b>：總委賣數量（value）、筆數（range）</dd>
+      <dd><b>120</b>：基金委買數量（value）、筆數（range）</dd>
+      <dd><b>121</b>：基金委賣數量（value）、筆數（range）</dd>
+      <dd><b>130</b>：總漲停委買數量（value）、筆數（range）</dd>
+      <dd><b>131</b>：總漲停委賣數量（value）、筆數（range）</dd>
+      <dd><b>140</b>：總跌停委買數量（value）、筆數（range）</dd>
+      <dd><b>141</b>：總跌停委賣數量（value）、筆數（range）</dd>
+      <dd><b>150</b>：基金漲停委買數量（value）、筆數（range）</dd>
+      <dd><b>151</b>：基金漲停委賣數量（value）、筆數（range）</dd>
+      <dd><b>160</b>：基金跌停委買數量（value）、筆數（range）</dd>
+      <dd><b>161</b>：基金跌停委賣數量（value）、筆數（range）</dd>
+      <dd><b>200</b>：成交金額</dd>
+      <dd><b>201</b>：成交數量</dd>
+    <dt>Key2：</dt>
+      <dd><b>ud</b>：股票代碼</dd>
+      <dd><b>range</b>：漲跌</dd>
+      <dd><b>time</b>：時間</dd>
+      <dd><b>value</b>：成交金額</dd>
+      <dd><b>no</b>：類股分類</dd>
+    <dt>Key2（option）：</dt>
+      <dd><b>v2</b>：成交金額（億，只在類股分類 200 中有值）</dd>
+  </dl>
+  <dt>Example：</dt>
+<pre class="brush: py;">
+# /API/weight
+
+{
+  "0": {
+      "ud": true,
+      "range": "",
+      "time": "2010/12/08",
+      "value": "",
+      "no": "0"
+  },
+  "1": {
+      "ud": true,
+      "range": "7.16",
+      "time": "11:05:00",
+      "value": "8711.55",
+      "no": "1"
+  },
+  "2": {
+      "ud": true,
+      "range": "13.51",
+      "time": "11:05:00",
+      "value": "7428.95",
+      "no": "2"
+  },
+      "3": {
+      "ud": false,
+      "range": "-23.98",
+      "time": "11:05:00",
+      "value": "12789.37",
+      "no": "3"
+  },
+  ...(略)
+}
+</pre>
+</dl>
+</div>
 {% endblock %}

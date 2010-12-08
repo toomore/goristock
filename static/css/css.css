@@ -100,3 +100,35 @@ input,select {
         text-align:right;
 }
 .cc {clear:both;}
+
+.apitips h2{
+        font-size:14pt;
+        color: #338;
+        font-weight: bold;
+        background:#eef;
+        border: 1px #ccd solid;
+        padding: 5px;
+        margin: 50px 0px 0px 0px;}
+.apitips .apiscr{
+        font-size:12pt;
+        color: #383;
+        font-weight: bold;
+        background:#efe;
+        border: 1px #cdc solid;
+        padding: 5px;
+        margin: 15px 0px 0px 15px;}
+.apitips{
+        font-family: monospace;
+        text-align:left;
+        font-size:10pt;
+        padding:15px;
+        margin:15px;}
+
+.apitips b{
+        color: #383;
+}
+.apitips dl{
+        margin: 0px 0px 0px 15px;}
+.apitips dt{
+        font-weight: bold;
+        margin: 15px 0px 0px 0px;}
