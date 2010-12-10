@@ -68,7 +68,13 @@ def covstr(s):
 ############## webapp Models ##############
 class MainPage(webapp.RequestHandler):
   def get(self):
-    self.response.out.write(template.render('./template/hh_index.htm',{}))
+    hh_index = memcache.get('hh_index')
+    if hh_index:
+      pass
+    else:
+      hh_index = template.render('./template/hh_index.htm',{})
+      memcache.set('hh_index', hh_index, 60*60*6)
+    self.response.out.write(hh_index)
 
     """
     #url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY_AVG/STOCK_DAY_AVG2.php?STK_NO=2363&myear=2010&mmon=06&type=csv'
@@ -112,7 +118,13 @@ class goritest(webapp.RequestHandler):
 ############## webapp Models ###################
 class getinvite(webapp.RequestHandler):
   def get(self):
-    self.response.out.write(template.render('./template/hh_getinvite.htm',{}))
+    hh_getinvite = memcache.get('hh_getinvite')
+    if hh_getinvite:
+      pass
+    else:
+      hh_getinvite = template.render('./template/hh_getinvite.htm',{})
+      memcache.set('hh_getinvite', hh_getinvite, 60*60*6)
+    self.response.out.write(hh_getinvite)
 
 class xmpp_invite(webapp.RequestHandler):
   @login_required
@@ -201,13 +213,13 @@ class xmpp_pagex(webapp.RequestHandler):
       msg.reply('{%s %s}\r\n加權指數：%s (%s)\r\n成交金額：%s 億' % (rev['0']['time'], rev['1']['time'], rev['1']['value'], rev['1']['range'], rev['200']['v2']))
     else:
       msg.reply(msg.body + ' analysing ...')
-
       try:
         g = goristock.goristock(msg.body)
         try:
           XMPP = g.XMPP_display(3,6,18)
         except:
           XMPP = 'X！'
+        remsg = msg.reply(XMPP)
         if g.TimeinOpen:
           try:
             ## Add Real time stock data in open marker.
@@ -216,9 +228,10 @@ class xmpp_pagex(webapp.RequestHandler):
               RT = '\n' + RT
           except:
             RT = 'R！'
+          remsg = msg.reply(RT)
         else:
           RT = ''
-        remsg = msg.reply(XMPP + RT)
+        #remsg = msg.reply(XMPP + RT) ## spread for reply speed.
       except:
         remsg = msg.reply('!')
       logging.info('Msg status: %s' % remsg)
@@ -267,15 +280,18 @@ class task_stocks(webapp.RequestHandler):
         logging.info('memcache get: mailstock')
       else:
         mail = []
-
       mail.append(body)
       memcache.set('mailstock', mail)
-      logging.info('memcache set: mailstock')
-
       xmpp.send_message('toomore0929@gmail.com', body)
+      logging.info('memcache set: mailstock')
     else:
-      body = a.Cmd_display
-      xmpp.send_message('toomore0929@gmail.com', '#test: %s' % body)
+      mailtotest = memcache.get('mailtotest')
+      if mailtotest:
+        pass
+      else:
+        mailtotest = []
+      mailtotest.append('#test: %s' % a.Cmd_display)
+      memcache.set('mailtotest', mailtotest)
 
 
 ############## prememcache Models ##############
@@ -319,17 +335,23 @@ class cron_mail_test(webapp.RequestHandler):
   def get(self):
     if memcache.get('mailstock'):
       memget = memcache.get('mailstock')
+      mailtotest = memcache.get('mailtotest')
       mail_body = ''
+      mailtotest_body = ''
       memget = sorted(memget)
+      mailtotest = sorted(mailtotest)
       for i in memget:
         mail_body += i + '\n'
+      for i in mailtotest:
+        mailtotest_body += i + '\n'
 
       mail.send_mail(
         sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
         to = "toomore0929@gmail.com",
         subject = "[TEST] GORISTOCK %s SELECTED." % str(datetime.today() + timedelta(seconds=60*60*8)).split(' ')[0],
-        body = mail_body)
+        body = mail_body + '='*20 + '\n' + mailtotest_body)
       memcache.delete('mailstock')
+      memcache.delete('mailtotest')
       logging.info(mail_body)
     else:
       logging.info('memcache -> mailstock is fault.')

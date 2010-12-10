@@ -153,7 +153,7 @@ class goristock(object):
     """ Fetch data from twse.com.tw
         return list.
     """
-    url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv&r=%(rand)s' % {'year': nowdatetime.year, 'mon': nowdatetime.month, 'stock': stock_no, 'rand': random.randrange(1,10000)}
+    url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv&r=%(rand)s' % {'year': nowdatetime.year, 'mon': nowdatetime.month, 'stock': stock_no, 'rand': random.randrange(1,1000000)}
     self.debug_print(url)
     logging.info(url)
     #print cc.info().headers
@@ -187,8 +187,10 @@ class goristock(object):
       cc_read = cc.readlines()
       csv_read = csv.reader(cc_read)
       if expire != 'ALUP':
-        memcache.set(memname, cc_read, expire)
-      memcache.set('time%s' % memname, '%s %s' % (now, expire))
+        memcache.add(memname, cc_read, expire)
+      else:
+        memcache.delete(memname)
+      memcache.add('time%s' % memname, '%s %s' % (now, expire))
       logging.info('#MemcacheAdd: %s' % memname)
 
     return csv_read
