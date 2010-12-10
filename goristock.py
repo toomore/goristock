@@ -164,7 +164,7 @@ class goristock(object):
       addday = 1
     else:
       addday = 0
-    endtime = datetime(now.year, now.month, now.day, 13, 25) + timedelta(days = addday)
+    endtime = datetime(now.year, now.month, now.day, 14, 00) + timedelta(days = addday) ## change from 13:35 to 14:00
     logging.info('endtime: %s' % str(endtime))
 
     if firsttime == 0:

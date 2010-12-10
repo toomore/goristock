@@ -225,7 +225,7 @@ class xmpp_pagex(webapp.RequestHandler):
             ## Add Real time stock data in open marker.
             RT = goristock.Rt_display(msg.body)
             if RT:
-              RT = '\n' + RT
+              RT = RT
           except:
             RT = 'R！'
           remsg = msg.reply(RT)

@@ -11,7 +11,3 @@ cron:
   url: /ad/stpremem
   schedule: every 6 hours synchronized
   timezone: Asia/Taipei
-- description: PreMemcache stock after close
-  url: /ad/stpremem
-  schedule: every mon,tue,wed,thu,fri 13:45
-  timezone: Asia/Taipei
