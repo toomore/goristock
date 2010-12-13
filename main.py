@@ -354,12 +354,34 @@ class cron_mail_test(webapp.RequestHandler):
       memcache.delete('mailtotest')
       logging.info(mail_body)
     else:
-      logging.info('memcache -> mailstock is fault.')
+      mailtotest = memcache.get('mailtotest')
+      mailtotest_body = ''
+      mailtotest = sorted(mailtotest)
+      for i in mailtotest:
+        mailtotest_body += i + '\n'
+
+      mail.send_mail(
+        sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
+        to = "toomore0929@gmail.com",
+        subject = "[TEST] GORISTOCK %s SELECTED." % str(datetime.today() + timedelta(seconds=60*60*8)).split(' ')[0],
+        body = mailtotest_body)
+      memcache.delete('mailtotest')
+      logging.info('memcache -> mailstock is empty.')
 
 ############## flush Models ##############
 class flush(webapp.RequestHandler):
   def get(self):
     m = memcache.flush_all()
+    self.response.out.write('%s<br>%s' % (m, memcache.get_stats()))
+
+class flush_lsdata(webapp.RequestHandler):
+  def get(self):
+    nowdatetime = datetime.today()
+    memlist = []
+    for i in twseno().allstock:
+      memlist.append('%(stock)s%(year)d%(mon)02d' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': i})
+
+    m = memcache.delete_multi(memlist)
     self.response.out.write('%s<br>%s' % (m, memcache.get_stats()))
 
 ############## redirect Models ##############
@@ -385,6 +407,7 @@ def main():
                   ('/ad/stpremem', stpremem),
                   ('/ad/premem', premem),
                   ('/ad/flu', flush),
+                  ('/ad/fluls', flush_lsdata),
                   ('/.*', rewrite)
                 ],debug=True) ## unlist: taskt,
   run_wsgi_app(application)
