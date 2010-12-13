@@ -147,6 +147,9 @@ class goristock(object):
       self.data_date.pop()
       self.stock_range.pop()
       self.stock_vol.pop()
+      self.stock_open.pop()
+      self.stock_h.pop()
+      self.stock_l.pop()
 
 ##### main def #####
   def fetch_data(self, stock_no, nowdatetime, firsttime = 1):
