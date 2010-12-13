@@ -21,7 +21,11 @@
 # THE SOFTWARE.
 
 ## GAE lib
-from google.appengine.api import memcache
+try:
+  import memcache as MEM
+  memcache = MEM.Client(['127.0.0.1:11211'], debug=0)
+except:
+  from google.appengine.api import memcache
 
 ## Python lib
 from datetime import datetime
@@ -37,6 +41,8 @@ import urllib2
 ## custom lib
 from realtime import twsk
 from realtime import twsew
+
+TIMEZONE = 8
 
 class goristock(object):
   """ Start up from __init__
@@ -162,7 +168,7 @@ class goristock(object):
     #print cc.info().headers
 
     # set memcache expire
-    now = datetime.today() + timedelta(hours = 8)
+    now = datetime.today() + timedelta(hours = TIMEZONE)
     if now >= datetime(now.year, now.month, now.day, 14, 30):
       addday = 1
     else:
@@ -336,7 +342,7 @@ class goristock(object):
   @property
   def TimeinOpen(self):
     """ In open market time. """
-    now = time.gmtime().tm_hour + time.gmtime(8*60*60).tm_hour
+    now = time.gmtime().tm_hour + time.gmtime(TIMEZONE * 60 * 60).tm_hour
     if now >= 9 and now <= 14:
       return True
     else:
