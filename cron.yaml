@@ -11,3 +11,7 @@ cron:
   url: /ad/stpremem
   schedule: every 6 hours synchronized
   timezone: Asia/Taipei
+- description: Flush the first month memcache
+  url: /ad/fluls
+  schedule: every mon,tue,wed,thu,fri 14:33
+  timezone: Asia/Taipei
