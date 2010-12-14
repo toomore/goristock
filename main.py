@@ -309,7 +309,29 @@ class stpremem(webapp.RequestHandler):
 
 class premem(webapp.RequestHandler):
   def post(self):
+    nowdatetime = datetime.today()
+    url = "http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY.php?myear=%(year)d&mmon=%(mon)02d&STK_NO=%(stock)s" % {'year': nowdatetime.year, 'mon': nowdatetime.month, 'stock': self.request.get('no')}
+    urllib2.urlopen(url)
     goristock.goristock(self.request.get('no'))
+
+############## anti-server cache Models ##############
+class stantisercache(webapp.RequestHandler):
+  def get(self):
+    for i in twseno().allstock:
+      Task(
+        url='/ad/antisercah',
+        method='POST',
+        params={
+          'log': 'antisercah',
+          'no': i,
+        }
+      ).add(queue_name='premem')
+
+class antisercah(webapp.RequestHandler):
+  def post(self):
+    nowdatetime = datetime.today()
+    url = "http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY.php?myear=%(year)d&mmon=%(mon)02d&STK_NO=%(stock)s" % {'year': nowdatetime.year, 'mon': nowdatetime.month, 'stock': self.request.get('no')}
+    urllib2.urlopen(url)
 
 ############## Mails Models ##############
 class cron_mail(webapp.RequestHandler):
@@ -406,6 +428,8 @@ def main():
                   ('/ad/cron_mail_test', cron_mail_test),
                   ('/ad/stpremem', stpremem),
                   ('/ad/premem', premem),
+                  ('/ad/stantisercache', stantisercache),
+                  ('/ad/antisercah', antisercah),
                   ('/ad/flu', flush),
                   ('/ad/fluls', flush_lsdata),
                   ('/.*', rewrite)

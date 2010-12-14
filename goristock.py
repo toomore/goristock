@@ -169,7 +169,7 @@ class goristock(object):
 
     # set memcache expire
     now = datetime.today() + timedelta(hours = TIMEZONE)
-    if now >= datetime(now.year, now.month, now.day, 14, 30):
+    if now >= datetime(now.year, now.month, now.day, 14, 45):
       addday = 1
     else:
       addday = 0
