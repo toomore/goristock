@@ -115,6 +115,17 @@ class goritest(webapp.RequestHandler):
     print '='*40
     #print a.display(3,6,18)
 
+############## How it work - webapp Models ###################
+class howitwork(webapp.RequestHandler):
+  def get(self):
+    hh_howitwork = memcache.get('hh_howitwork')
+    if hh_howitwork:
+      pass
+    else:
+      hh_howitwork = template.render('./template/hh_howitwork.htm',{})
+      memcache.set('hh_howitwork', hh_howitwork, 60*60*6)
+    self.response.out.write(hh_howitwork)
+
 ############## webapp Models ###################
 class getinvite(webapp.RequestHandler):
   def get(self):
@@ -420,6 +431,7 @@ def main():
                   ('/goristock', goritest),
                   ('/getinvite', getinvite),
                   ('/invite', xmpp_invite),
+                  ('/howitwork', howitwork),
                   ('/_ah/xmpp/message/chat/', xmpp_pagex),
                   ('/ad/task', task),
                   ('/ad/task_stock', task_stock), ## out of work

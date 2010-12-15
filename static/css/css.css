@@ -7,6 +7,9 @@ body{
         font-family: arial;
         margin: 0;
         padding: 0;}
+sup{
+        color: #955;
+}
 input,select {
         font-size:12pt;
         font-family: arial;
