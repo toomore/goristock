@@ -41,6 +41,19 @@ class gnews(object):
       })
     )
     self.j = json.loads(a.read())
+    self.formatre = {}
+    l = 0
+    for i in self.j['responseData']['results']:
+      self.formatre.update(
+        {l:
+          {'title': i['titleNoFormatting'],
+           'publisher': i['publisher'],
+           'publisheddate': self.covdate(i['publishedDate']),
+           'url': i['unescapedUrl']
+          }
+        }
+      )
+      l += 1
 
   def p(self):
     print self.j['responseData']['cursor']['estimatedResultCount']
@@ -54,9 +67,8 @@ class gnews(object):
 
   def x(self):
     rt = ''
-    for i in self.j['responseData']['results']:
-      rt += '\r\n' + i['titleNoFormatting'] + '-' + i['publisher'] + '-' + self.covdate(i['publishedDate']) + '\r\n'
-      rt += i['unescapedUrl']
+    for i in self.formatre:
+      rt += '\r\n%(title)s - %(publisher)s - %(publisheddate)s\r\n%(url)s' % self.formatre[i]
     return rt
 
   def covdate(self, timestring):
