@@ -19,10 +19,15 @@
 
 <h1>goristock API</h1>
 <div class="apiscrss">
-  <i>
-  API 版本：v0.1pre<br>
-  文件最後更新時間：2010-12-08
-  </i>
+<pre class="brush: plain;">
+  API 版本：v0.1pre
+
+  文件最後更新時間
+  - 2010-12-16
+    - Add Error Report.
+  - 2010-12-08
+    - First published.
+</pre>
 </div>
 <div class="apiscrs">
 目錄
@@ -63,13 +68,15 @@
     <dl>
       <dt>URL：</dt>
         <dd>
-<pre class="brush: plain;">
+<pre class="brush: py;">
+## 所呼叫的 API 網址範例
 /API/stock?q=8261
 </pre>
         </dd>
-      <dt>JSON output</dt>
+      <dt>JSON output：</dt>
         <dd>
 <pre class="brush: py;">
+## 回傳的結果，JSON 格式
 {
   "stock_no": "8261",
   "stock_name": "富鼎",
@@ -82,6 +89,15 @@
   "stock_price": 29.85,
   "RABC": "(31.80,30.70,30.50)",
   "stock_range_per": -0.665557404326,
+}
+</pre>
+        </dd>
+      <dt>Error report：</dt>
+        <dd>
+<pre class="brush: py;">
+## 輸入格式錯誤或是無法處理資料時，將會回傳 'ERRORREPORT' 錯誤訊息。
+{
+  "ERRORREPORT": "Can't fetch stock data."
 }
 </pre>
         </dd>
@@ -115,13 +131,15 @@
     <dl>
       <dt>URL：</dt>
         <dd>
-<pre class="brush: plain;">
+<pre class="brush: py;">
+## 所呼叫的 API 網址範例
 /API/real?q=8261
 </pre>
         </dd>
       <dt>JSON output：</dt>
         <dd>
 <pre class="brush: py;">
+## 回傳的結果，JSON 格式
 {
   "pp": "-0.67",
   "name": "富鼎",
@@ -185,6 +203,15 @@
   "h": "30.35",
   "unch": "30.05",
   "pvalue": "57"
+}
+</pre>
+        </dd>
+      <dt>Error report：</dt>
+        <dd>
+<pre class="brush: py;">
+## 輸入格式錯誤或是無法處理資料時，將會回傳 'ERRORREPORT' 錯誤訊息。
+{
+  "ERRORREPORT": "Can't fetch real stock data."
 }
 </pre>
         </dd>
@@ -279,13 +306,15 @@
     <dl>
       <dt>URL：</dt>
         <dd>
-<pre class="brush: plain;">
+<pre class="brush: py;">
+## 所呼叫的 API 網址範例，這裡不需要指定參數。
 /API/weight
 </pre>
        </dd>
       <dt>JSON output：</dt>
         <dd>
 <pre class="brush: py;">
+## 回傳的結果，JSON 格式
 {
   "0": {
       "ud": true,
@@ -316,6 +345,15 @@
       "no": "3"
   },
   ...(略)
+}
+</pre>
+        </dd>
+      <dt>Error report：</dt>
+        <dd>
+<pre class="brush: py;">
+## 輸入格式錯誤或是無法處理資料時，將會回傳 'ERRORREPORT' 錯誤訊息。
+{
+  "ERRORREPORT": "Can't fetch weight data."
 }
 </pre>
         </dd>

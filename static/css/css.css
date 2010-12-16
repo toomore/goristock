@@ -115,18 +115,22 @@ input,select {
         width: auto;
         font-weight: bold;
         background:#eef;
-        border: 1px #ccd solid;
+        border: 2px #ccd solid;
         padding: 5px;
-        margin: 50px 0px 0px 0px;}
+        margin: 50px 0px 0px 0px;
+        -moz-border-radius: 5 5 5 5 !important;
+        -webkit-border-radius: 5 5 5 5 !important;}
 .apitips .apiscr{
         font-size:12pt;
         color: #383;
         width: auto;
         font-weight: bold;
         background:#efe;
-        border: 1px #cdc solid;
+        border: 2px #cdc solid;
         padding: 5px;
-        margin: 15px 0px 0px 15px;}
+        margin: 15px 0px 0px 15px;
+        -moz-border-radius: 5 5 5 5 !important;
+        -webkit-border-radius: 5 5 5 5 !important;}
 .apitips .apiscrs{
         width: auto;
         padding: 5px;
