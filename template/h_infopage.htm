@@ -19,17 +19,28 @@
     </head>
     <body>
         <div class="cc">
-              <div class="desc">
-                  <a href="/">goristock 台灣股市分析機器人</a> - <a href="/getinvite">索取邀請函</a>
-                     / <a target="_blank" href="http://bit.ly/gVeHIG">使用說明</a>
-                     / <a href="/howitwork">如何運作</a>
-                     / <a href="/API">API<sup>alpha</sup></a>
-                </div>
-                <div class="descr">
-                   {{ tv.umail }} <img src="/images/favicon.ico">
+          <div class="desc">
+            <div class="descmenu">
+              <ul>
+                <li><a href="/">goristock 台灣股市分析機器人</a></li>
+                <li><a href="/getinvite">索取邀請函</a></li>
+                <li><a target="_blank" href="http://bit.ly/gVeHIG">使用說明</a></li>
+                <li><a href="/howitwork">如何運作</a></li>
+              </ul>
+            </div>
+            <div calss="descr">
+              <div class="descmenur">
+                <ul>
+                  <li>{{ tv.umail }}</li>
+                  <li><img src="/images/favicon.ico"></li>
+                  <li><a href="/dev">Dev</a></li>
+                  <li><a href="/API">API</a></li>
+                </ul>
               </div>
+            </div>
+          </div>
         </div>
-        <div class="cc top"></div>
+        <div class="cc"></div>
         <div class="desc">{% block userinfo %}{% endblock %}</div>
         <div class="cc">
         <table width="100%" height="70%">
@@ -39,7 +50,7 @@
                 </td>
             </tr>
         </table>
-        <div class="foot descr">{% block foot %}{% endblock %}</div>
+        <div class="foot footdesc">{% block foot %}{% endblock %}</div>
     </body>
     {% include "h_analytics.htm" %}
 </html>

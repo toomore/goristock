@@ -4,10 +4,11 @@ a {
 a:hover{
         color:#6666dd}
 body{
-        font-family: arial;
+        font-family: 'Arial';
         margin: 0;
         padding: 0;}
 sup{
+        font-size: 8pt;
         color: #955;
 }
 input,select {
@@ -18,16 +19,35 @@ input,select {
         margin:4px;
         color:#446655;}
 .desc {
+        padding-bottom: 20px;
+}
+.descmenu {
         float: left;
-        margin: 1px;
+}
+.descmenu ul, .descmenur ul{
+        margin-top: -4px;
+}
+.descmenu li, .descmenur li{
+        vertical-align:middle;
+        display: inline-block;
+        font-weight: bold;
+        padding: 10px 0px;
         font-size:10pt;
-        padding: 1px;}
-.descr {
+}
+.descmenu li a, .descmenur li a {
+        color: #044;
+        padding: 10px;
+        background-color: #eef;
+        -moz-border-radius: 0 0 8 8 !important;
+        -webkit-border-radius: 0 0 8 8 !important;
+}
+.descmenu li a:hover, .descmenur li a:hover {
+        background-color: #ffe;
+        color: #889;
+}
+.descmenur{
         float: right;
-        margin: 1px;
-        padding: 1px;
-        font-size:10pt;
-        color:#778899;}
+}
 .rdu {
         font-size:10pt;}
 .rdu a {
@@ -52,7 +72,7 @@ input,select {
 .frichart{
         width:100%;}
 .top {
-        border-top:1px #C9D7F1 solid;
+        border-top: 1px #C9D7F1 solid;
         }
 .sdiv {
         float:left;
@@ -97,10 +117,18 @@ input,select {
         margin:14px;}
 .langtable td{
         border-bottom:1px #aabbaa solid;}
-.foot {clear:both;}
+.foot {
+        clear:both;
+}
 .footdesc{
-        font-size:9pt;
-        text-align:right;
+        font-size: 9pt;
+        text-align: center;
+        color: #667;
+        padding: 5px;
+        margin-top: 20px;
+        border-top: 2px #cdf solid;
+        background-color: #eef;
+
 }
 .cc {clear:both;}
 
