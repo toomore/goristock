@@ -19,14 +19,16 @@
 
 <h1>goristock API</h1>
 <div class="apiscrss">
-  <i>
-  API 版本：v0.1pre<br>
-  文件最後更新時間：2010-12-08
-  </i>
+  <a href="http://twitter.com/share" class="twitter-share-button" data-url="http://goristock.appspot.com/" data-count="horizontal" data-via="toomore">Tweet</a><script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+  <iframe src="http://www.facebook.com/plugins/like.php?href=http%3A%2F%2Fgoristock.appspot.com%2F&amp;layout=button_count&amp;show_faces=true&amp;width=100&amp;action=like&amp;colorscheme=light&amp;height=10" scrolling="no" frameborder="0" style="border:none; overflow:hidden; width:100px; height:20px;" allowTransparency="true"></iframe>
 </div>
 <div class="apiscrs">
 目錄
 <ul>
+<li><a href="#apiv">API 版本紀錄</a></li>
+  <ul>
+    <li>版本紀錄</li>
+  </ul>
 <li><a href="#apistock">/API/stock</a></li>
   <ul>
     <li>各股資訊</li>
@@ -40,8 +42,28 @@
   <ul>
     <li>大盤即時盤資訊</li>
   </ul>
+<li><a href="#apiliststock">/API/liststock</a></li>
+  <ul>
+    <li>上市公司列表</li>
+  </ul>
+<li><a href="#apisearchstock">/API/searchstock</a></li>
+  <ul>
+    <li>搜尋上市公司</li>
+  </ul>
 </ul>
 </div>
+<h2><a name="apiv"></a>API 版本紀錄</h2>
+<pre class="brush: plain;">
+  API 版本：v0.1pre
+
+  文件最後更新時間
+  - 2010-12-16
+    - Add Error Report.
+    - Add /API/liststock
+    - Add /API/searchstock
+  - 2010-12-08
+    - First published.
+</pre>
 <h2><a name="apistock"></a>/API/stock</h2>
 <div class="apiscr">各股資訊</div>
 <dl>
@@ -63,13 +85,15 @@
     <dl>
       <dt>URL：</dt>
         <dd>
-<pre class="brush: plain;">
+<pre class="brush: py;">
+## 所呼叫的 API 網址範例
 /API/stock?q=8261
 </pre>
         </dd>
-      <dt>JSON output</dt>
+      <dt>JSON output：</dt>
         <dd>
 <pre class="brush: py;">
+## 回傳的結果，JSON 格式
 {
   "stock_no": "8261",
   "stock_name": "富鼎",
@@ -82,6 +106,15 @@
   "stock_price": 29.85,
   "RABC": "(31.80,30.70,30.50)",
   "stock_range_per": -0.665557404326,
+}
+</pre>
+        </dd>
+      <dt>Error report：</dt>
+        <dd>
+<pre class="brush: py;">
+## 輸入格式錯誤或是無法處理資料時，將會回傳 'ERRORREPORT' 錯誤訊息。
+{
+  "ERRORREPORT": "Can't fetch stock data."
 }
 </pre>
         </dd>
@@ -115,13 +148,15 @@
     <dl>
       <dt>URL：</dt>
         <dd>
-<pre class="brush: plain;">
+<pre class="brush: py;">
+## 所呼叫的 API 網址範例
 /API/real?q=8261
 </pre>
         </dd>
       <dt>JSON output：</dt>
         <dd>
 <pre class="brush: py;">
+## 回傳的結果，JSON 格式
 {
   "pp": "-0.67",
   "name": "富鼎",
@@ -188,6 +223,15 @@
 }
 </pre>
         </dd>
+      <dt>Error report：</dt>
+        <dd>
+<pre class="brush: py;">
+## 輸入格式錯誤或是無法處理資料時，將會回傳 'ERRORREPORT' 錯誤訊息。
+{
+  "ERRORREPORT": "Can't fetch real stock data."
+}
+</pre>
+        </dd>
     </dl>
 <dt>Reference：</dt>
   <dd><a href="http://mis.tse.com.tw/stock_best5.html?stockId=1101">基本市況報導網站 - 最佳五檔價量資訊揭示</a></dd>
@@ -198,7 +242,7 @@
 除了回傳大盤資訊外，也回傳各類股資訊。
 </div>
 <dl>
-  <dt>Return：</dt>
+  <dt>Return attributes：</dt>
     <dd><b>Key1</b>：類股分類</dd>
     <dd><b>Key2</b>：包含代碼、時間、漲跌、金額...等資訊</dd>
   <dl>
@@ -279,13 +323,15 @@
     <dl>
       <dt>URL：</dt>
         <dd>
-<pre class="brush: plain;">
+<pre class="brush: py;">
+## 所呼叫的 API 網址範例，這裡不需要指定參數。
 /API/weight
 </pre>
        </dd>
       <dt>JSON output：</dt>
         <dd>
 <pre class="brush: py;">
+## 回傳的結果，JSON 格式
 {
   "0": {
       "ud": true,
@@ -316,6 +362,120 @@
       "no": "3"
   },
   ...(略)
+}
+</pre>
+        </dd>
+      <dt>Error report：</dt>
+        <dd>
+<pre class="brush: py;">
+## 輸入格式錯誤或是無法處理資料時，將會回傳 'ERRORREPORT' 錯誤訊息。
+{
+  "ERRORREPORT": "Can't fetch weight data."
+}
+</pre>
+        </dd>
+    </dl>
+</dl>
+<h2><a name="apiliststock"></a>/API/liststock</h2>
+<div class="apiscr">上市公司列表</div>
+<dl>
+  <dt>Return attributes：</dt>
+    <dd><b>n</b>：列表公司的數量</dd>
+    <dd><b>last_update</b>：列表最後更新時間</dd>
+    <dd><b>stocklist</b>：公司列表資訊。{'代碼','名稱'}</dd>
+</dl>
+<dl>
+  <dt>Example：</dt>
+      <dl>
+        <dt>URL：</dt>
+          <dd>
+<pre class="brush: py;">
+## 所呼叫的 API 網址範例，這裡不需要指定參數。
+/API/liststock
+</pre>
+         </dd>
+        <dt>JSON output：</dt>
+          <dd>
+<pre class="brush: py;">
+## 回傳的結果，JSON 格式
+{
+  "n": 752,
+  "last_update": "2010-12-13",
+  "stocklist": {
+    "1101": "台泥",
+    "1102": "亞泥",
+    "1103": "嘉泥",
+    "1104": "環泥",
+    "1108": "幸福",
+    "1109": "信大",
+    "1110": "東泥",
+    "....": "..."
+  }
+}
+</pre>
+</dd>
+      <dt>Error report：</dt>
+        <dd>
+<pre class="brush: py;">
+## 輸入格式錯誤或是無法處理資料時，將會回傳 'ERRORREPORT' 錯誤訊息。
+{
+  "ERRORREPORT": "Return Error."
+}
+</pre>
+        </dd>
+    </dl>
+</dl>
+<h2><a name="apisearchstock"></a>/API/searchstock</h2>
+<div class="apiscr">搜尋上市公司</div>
+<dl>
+  <dt>Required parameters：</dt>
+    <dd><b>q</b>：欲搜尋關鍵字</dd>
+  <dt>Return attributes：</dt>
+    <dd><b>n</b>：搜尋結果數量，當數值為 0 時，代表沒有搜尋結果。</dd>
+    <dd><b>result</b>：公司列表資訊。{'代碼','名稱'}，沒有搜尋結果會以 {} 表示。</dd>
+</dl>
+<dl>
+  <dt>Example：</dt>
+      <dl>
+        <dt>URL：</dt>
+          <dd>
+<pre class="brush: py;">
+## 所呼叫的 API 網址範例，搜尋上市公司中有 "美" 之關鍵字。
+/API/searchstock?q=美
+</pre>
+         </dd>
+        <dt>JSON output：</dt>
+          <dd>
+<pre class="brush: py;">
+## 回傳的結果，JSON 格式
+{
+  "n": 9,
+  "result": {
+    "1532": "勤美",
+    "1731": "美吾華",
+    "2020": "美亞",
+    "2358": "美格",
+    "2439": "美律",
+    "2442": "美齊",
+    "2477": "美隆電",
+    "3481": "奇美電",
+    "9914": "美利達"
+  }
+}
+
+## 無搜尋結果，JSON 格式
+{
+  "n": 0,
+  "result": {}
+}
+</pre>
+</dd>
+      <dt>Error report：</dt>
+        <dd>
+<pre class="brush: py;">
+## 如果沒有輸入關鍵字會回傳
+{
+  "ERRORREPORT": "No keyword."
 }
 </pre>
         </dd>

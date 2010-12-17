@@ -53,10 +53,13 @@
 }
 
 .syntaxhighlighter {
+  border: 3px #cde solid;
+  -moz-border-radius: 5 !important;
+  -webkit-border-radius: 5 !important;
   width: 100% !important;
   margin: 1em 0 1em 0 !important;
   position: relative !important;
-  overflow: auto !important;
+  overflow: hidden !important;
   font-size: 1em !important;
 }
 .syntaxhighlighter.source {

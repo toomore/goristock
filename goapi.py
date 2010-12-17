@@ -26,6 +26,7 @@ except:
 
 import goristock
 import realtime
+import twseno
 
 class goapi(object):
   def __init__(self, stock_no):
@@ -33,25 +34,58 @@ class goapi(object):
 
   @property
   def stock_j(self):
-    stock = goristock.goristock(self.stock_no)
-    re = {
-        'stock_name': stock.stock_name, ## OU
-        'stock_no': stock.stock_no, ## OU
-        'stock_date': stock.data_date[-1], ## OU
-        'stock_price': stock.raw_data[-1], ## OU
-        'stock_range': stock.stock_range[-1], ## OU
-        'stock_range_per': stock.range_per,
-        'stock_vol': stock.stock_vol[-1]/1000,
-        'stock_open': stock.stock_open[-1],
-        'stock_h': stock.stock_h[-1],
-        'stock_l': stock.stock_l[-1],
-        'RABC': stock.RABC
-      }
+    try:
+      stock = goristock.goristock(self.stock_no)
+      re = {
+          'stock_name': stock.stock_name, ## OU
+          'stock_no': stock.stock_no, ## OU
+          'stock_date': stock.data_date[-1], ## OU
+          'stock_price': stock.raw_data[-1], ## OU
+          'stock_range': stock.stock_range[-1], ## OU
+          'stock_range_per': stock.range_per,
+          'stock_vol': stock.stock_vol[-1]/1000,
+          'stock_open': stock.stock_open[-1],
+          'stock_h': stock.stock_h[-1],
+          'stock_l': stock.stock_l[-1],
+          'RABC': stock.RABC
+        }
+    except:
+      re = {'ERRORREPORT': "Can't fetch stock data."}
     return json.dumps(re)
 
   @property
   def stock_real(self):
-    return json.dumps(realtime.twsk(self.stock_no).real)
+    try:
+      re = realtime.twsk(self.stock_no).real
+    except:
+      re = {'ERRORREPORT': "Can't fetch real stock data."}
+    return json.dumps(re)
 
 def weight():
-  return json.dumps(realtime.twsew().weight)
+  try:
+    re = realtime.twsew().weight
+  except:
+    re = {'ERRORREPORT': "Can't fetch weight data."}
+  return json.dumps(re)
+
+def stocklist():
+  stock_list = twseno.twseno().allstockno
+  re_st = {}
+  for i in stock_list:
+    re_st.update({i: stock_list[i].decode('utf-8')})
+  re = {'stocklist': re_st, 'n': len(stock_list)}
+  re.update({'last_update': twseno.twseno().last_update})
+  return json.dumps(re)
+
+def searchstock(q):
+  q = q.encode('utf-8').replace(' ','')
+  if q:
+    rq = twseno.twseno().search(q)
+    re_se ={}
+    for i in rq:
+      re_se.update({i: rq[i].decode('utf-8')})
+    re = {'result': re_se, 'n': len(rq)}
+    return json.dumps(re)
+  else:
+    re = {'ERRORREPORT': "No keyword."}
+    return json.dumps(re)
