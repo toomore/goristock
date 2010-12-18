@@ -1,0 +1,37 @@
+{% extends "h_infopage.htm" %}
+
+{% block titlename %}Dev - {% endblock %}
+
+{% block foot %}
+{% include "h_desc.htm" %}
+{% endblock %}
+
+{% block content %}
+<div class="apitips">
+  <h1>Dev</h1>
+  <h2>Source Code</h2>
+    <div class="apiscrs">
+      本專案的原始檔案放置在 <a href="https://github.com/toomore/goristock">github</a>，利用 <a href="http://zh.wikipedia.org/zh-tw/Git">git</a> 作為版本控制，有興趣研究的，也可以 fork 本專案。
+      <ul>
+        <li>goristock → <a href="https://github.com/toomore/goristock">https://github.com/toomore/goristock</a></li>
+      </ul>
+    </div>
+  <h2>參與討論與錯誤回報</h2>
+    <div class="apiscrs">
+      關於開發的問題可以訂閱此郵件列表（Mail list）
+      <ul>
+        <li>goristock-dev → <a href="https://groups.google.com/group/goristock-dev">https://groups.google.com/group/goristock-dev</a></li>
+      </ul>
+      發現程式有問題或是想建議新功能，也可以提供一個 issue，列為未來可能開發的目標。
+      <ul>
+        <li>Issues → <a href="https://github.com/toomore/goristock/issues">https://github.com/toomore/goristock/issues</a>（需要 github 帳號）</li>
+      </ul>
+    </div>
+  <h2>預定行事曆</h2>
+    <div class="apiscrs">
+      <center>
+      <iframe src="http://www.google.com/calendar/embed?src=darjdcs2e7fl83cha6b8h2aops%40group.calendar.google.com&ctz=Asia/Taipei" style="border: 0" width="750" height="350" frameborder="0" scrolling="no"></iframe>
+      </center>
+    </div>
+</div>
+{% endblock %}

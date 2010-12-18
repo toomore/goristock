@@ -126,6 +126,17 @@ class howitwork(webapp.RequestHandler):
       memcache.set('hh_howitwork', hh_howitwork, 60*60*6)
     self.response.out.write(hh_howitwork)
 
+############## dev - webapp Models ###################
+class getindev(webapp.RequestHandler):
+  def get(self):
+    hh_dev = memcache.get('hh_dev')
+    if hh_dev:
+      pass
+    else:
+      hh_dev = template.render('./template/hh_dev.htm',{})
+      memcache.set('hh_dev', hh_dev, 60*60*6)
+    self.response.out.write(hh_dev)
+
 ############## webapp Models ###################
 class getinvite(webapp.RequestHandler):
   def get(self):
@@ -432,6 +443,7 @@ def main():
                   ('/getinvite', getinvite),
                   ('/invite', xmpp_invite),
                   ('/howitwork', howitwork),
+                  ('/dev', getindev),
                   ('/_ah/xmpp/message/chat/', xmpp_pagex),
                   ('/ad/task', task),
                   ('/ad/task_stock', task_stock), ## out of work
