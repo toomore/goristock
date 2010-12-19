@@ -4,7 +4,7 @@ a {
 a:hover{
         color:#6666dd}
 body{
-        font-family: 'Arial';
+        font-family: 'Droid Sans Fallback','微軟正黑體','Arial';
         margin: 0;
         padding: 0;}
 sup{
@@ -100,14 +100,18 @@ input,select {
         background:#cfc;
         border: 1px #0c0 solid;
         padding:15px;
-        margin:15px;}
+        margin:15px;
+        -moz-border-radius: 5 !important;
+        -webkit-border-radius: 5 !important;}
 .tips{
         width:400px;
         font-size:10pt;
         background:#ded;
         border: 1px #bcb solid;
         padding:5px;
-        margin:5px;}
+        margin:5px;
+        -moz-border-radius: 5 !important;
+        -webkit-border-radius: 5 !important;}
 .aboutable td{
         border-bottom:1px #990066 solid;}
 .langtable{
@@ -133,7 +137,6 @@ input,select {
 .cc {clear:both;}
 
 .apitips{
-        font-family: monospace;
         text-align:left;
         width: 80%;
         font-size:10pt;}
