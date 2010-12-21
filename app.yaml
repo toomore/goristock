@@ -10,6 +10,20 @@ handlers:
   upload: static/images/favicon.ico
   mime_type: image/x-icon
 
+## Images files.
+- url: /images
+  static_dir: static/images
+- url: /images/(.*)
+  static_files: static/images/\1
+  upload: static/images/(.*)
+
+## CSS
+- url: /css
+  static_dir: static/css
+- url: /css/(.*)
+  static_files: static/css/\1
+  upload: static/css/(.*)
+
 ## admin_console
 - url: /admin_console/.*
   script: $PYTHON_LIB/google/appengine/ext/admin
@@ -21,27 +35,13 @@ handlers:
   secure: always
   login: admin
 
-- url: /task
+- url: /ad/.*
   script: main.py
   login: admin
-- url: /task_stock
-  script: main.py
-  login: admin
-- url: /cron_mail
-  script: main.py
-  login: admin
-- url: /cron_mail_test
-  script: main.py
-  login: admin
-- url: /stpremem
-  script: main.py
-  login: admin
-- url: /premem
-  script: main.py
-  login: admin
-- url: /flush
-  script: main.py
-  login: admin
+
+## API
+- url: /API.*
+  script: main_api.py
 
 ## Main WSGI
 - url: .*
@@ -56,9 +56,7 @@ inbound_services:
 builtins:
 - appstats: on
 - admin_redirect: on
-
-derived_file_type:
-- python_precompiled
+- datastore_admin: on
 
 admin_console:
   pages:

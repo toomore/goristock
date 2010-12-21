@@ -1,0 +1,25 @@
+{% extends "h_infopage.htm" %}
+
+{% block titlename %}寄送邀請函說明 - {% endblock %}
+{% block content %}
+<table>
+  <tr>
+    <td><img src="/images/index.png"></td>
+    <td align="center">
+      <div class="txttips">
+      此程式是利用 <a target="_blank" href="http://zh.wikipedia.org/zh-tw/XMPP">XMPP</a> 技術，所以可以透過 Gmail 的 GTalk（即時通訊）交談，
+      簡單來說它是一個會回應的機器人。將此機器人加入，需要登入您的 Google 帳號以驗證有效的 Mail。
+      <br><br>
+      登入頁面會引導到加密的 Google 登入頁面，所以不用擔心相關訊息竊取的問題。
+      </div>
+
+      <div class="tips"><b><a href="/invite">索取邀請函</a></b></div>
+    </td>
+  </tr>
+</table>
+
+{% endblock %}
+
+{% block foot %}
+{% include "h_desc.htm" %}
+{% endblock %}

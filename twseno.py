@@ -1,9 +1,29 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Copyright (c) 2010 Toomore Chiang, http://toomore.net/
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
 
 class twseno(object):
   def __init__(self):
     self.allstockno = STOCKNO
+    self.last_update = UPDATE
 
   @property
   def allstock(self):
@@ -41,6 +61,7 @@ class twseno(object):
     return result
 
 ##### stock no list #####
+UPDATE = "2010-12-13"
 STOCKNO = {'1101':'台泥',
 '1102':'亞泥',
 '1103':'嘉泥',
@@ -169,6 +190,7 @@ STOCKNO = {'1101':'台泥',
 '1560':'中砂',
 '1582':'信錦',
 '1583':'程泰',
+'1590':'亞德客',
 '1603':'華電',
 '1604':'聲寶',
 '1605':'華新',
@@ -465,13 +487,14 @@ STOCKNO = {'1101':'台泥',
 '2616':'山隆',
 '2617':'台航',
 '2618':'長榮航',
+'2637':'KY慧洋',
 '2701':'萬企',
 '2702':'華園',
 '2704':'國賓',
 '2705':'六福',
 '2706':'第一店',
 '2707':'晶華',
-'2723':'GourmetMaster',
+'2723':'KY美食',
 '2801':'彰銀',
 '2809':'京城銀',
 '2812':'台中銀',
@@ -754,6 +777,7 @@ STOCKNO = {'1101':'台泥',
 '8926':'台汽電',
 '8940':'新天地',
 '910861':'神州數碼',
+'910948':'Z-Obee',
 '9902':'台火',
 '9904':'寶成',
 '9905':'大華',

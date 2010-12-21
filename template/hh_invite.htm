@@ -1,0 +1,20 @@
+{% extends "h_infopage.htm" %}
+
+{% block titlename %}寄送邀請函 - {% endblock %}
+
+{% block content %}
+<div class="txttips">
+<b>{{ tv.umail }}</b> 寄送邀請了！ 請確認您的 <a target="_blank" href="http://www.gmail.com/">Gmail</a> 信箱。<br>
+<br>
+再 3 個步驟即可完成：<br>
+<ol>
+  <li>連到 Gmail 信箱，在左側<b>即時通訊</b>欄中確認加入 goristock@appspot.com</li>
+  <li>在下方欄位內找到 <b>goristock</b> 點擊開啟對話視窗</li>
+  <li>輸入 help 或相關查詢即可使用</li>
+</ol>
+</div>
+{% endblock %}
+
+{% block foot %}
+{% include "h_desc.htm" %}
+{% endblock %}

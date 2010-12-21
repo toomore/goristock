@@ -21,7 +21,11 @@
 # THE SOFTWARE.
 
 ## GAE lib
-from google.appengine.api import memcache
+try:
+  import memcache as MEM
+  memcache = MEM.Client(['127.0.0.1:11211'], debug=0)
+except:
+  from google.appengine.api import memcache
 
 ## Python lib
 from datetime import datetime
@@ -29,12 +33,16 @@ from datetime import timedelta
 import csv
 import logging
 import math
+import random
 import re
 import time
 import urllib2
 
 ## custom lib
 from realtime import twsk
+from realtime import twsew
+
+TIMEZONE = 8
 
 class goristock(object):
   """ Start up from __init__
@@ -58,6 +66,9 @@ class goristock(object):
           self.data_date = [list]
           self.stock_range = [list]
           self.stock_vol = [list]
+          self.stock_open = [list]
+          self.stock_h = [list]
+          self.stock_l = [list]
     """
     self.raw_data = []
     self.stock_name = ''
@@ -65,6 +76,9 @@ class goristock(object):
     self.data_date = []
     self.stock_range = []
     self.stock_vol = []
+    self.stock_open = []
+    self.stock_h = []
+    self.stock_l = []
     starttime = 0
     self.debug = debug
 
@@ -87,6 +101,9 @@ class goristock(object):
         self.stock_name = result['stock_name']
         self.stock_range = result['stock_range'] + self.stock_range
         self.stock_vol = result['stock_vol'] + self.stock_vol
+        self.stock_open = result['stock_open'] + self.stock_open
+        self.stock_h = result['stock_h'] + self.stock_h
+        self.stock_l = result['stock_l'] + self.stock_l
         starttime += 1
     except:
       logging.info('Data not enough! %s' % stock_no)
@@ -136,32 +153,37 @@ class goristock(object):
       self.data_date.pop()
       self.stock_range.pop()
       self.stock_vol.pop()
+      self.stock_open.pop()
+      self.stock_h.pop()
+      self.stock_l.pop()
 
 ##### main def #####
   def fetch_data(self, stock_no, nowdatetime, firsttime = 1):
     """ Fetch data from twse.com.tw
         return list.
     """
-    url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
+    url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv&r=%(rand)s' % {'year': nowdatetime.year, 'mon': nowdatetime.month, 'stock': stock_no, 'rand': random.randrange(1,1000000)}
     self.debug_print(url)
     logging.info(url)
     #print cc.info().headers
 
     # set memcache expire
-    now = datetime.today() + timedelta(hours = 8)
-    if now.hour >= 14 and now.minute >= 30:
+    now = datetime.today() + timedelta(hours = TIMEZONE)
+    if now >= datetime(now.year, now.month, now.day, 14, 45):
       addday = 1
     else:
       addday = 0
-    endtime = datetime(now.year, now.month, now.day + addday, 13, 25)
+    endtime = datetime(now.year, now.month, now.day, 14, 00) + timedelta(days = addday) ## change from 13:35 to 14:00
+    logging.info('endtime: %s' % str(endtime))
 
     if firsttime == 0:
-      if endtime <= datetime.today():
-        expire = 0
+      if endtime <= now:
+        expire = 'ALUP' ## always update.
       else:
-        expire = (endtime - datetime.today()).seconds
+        expire = (endtime - now).seconds
     else:
-      expire = 0
+      expire = 0 ## never expire.
+    logging.info('expire: %s' % expire)
 
     ## get memcache
     memname = '%(stock)s%(year)d%(mon)02d' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': stock_no}
@@ -173,8 +195,12 @@ class goristock(object):
       cc = urllib2.urlopen(url)
       cc_read = cc.readlines()
       csv_read = csv.reader(cc_read)
-      if memcache.set(memname, cc_read, expire):
-        logging.info('#MemcacheAdd: %s' % memname)
+      if expire != 'ALUP':
+        memcache.add(memname, cc_read, expire)
+      else:
+        memcache.delete(memname)
+      memcache.add('time%s' % memname, '%s %s' % (now, expire))
+      logging.info('#MemcacheAdd: %s' % memname)
 
     return csv_read
 
@@ -186,11 +212,18 @@ class goristock(object):
           [stock_name]: Stock name (str) and encode form big5 to utf-8
           [data_date]: Stock date (list)
           [stock_range]: Stock range price (list)
+          [stock_vol]: Stock Volue (list)
+          [stock_open]: Stock open price (list)
+          [stock_h]: Stock high price (list)
+          [stock_l]: Stock low price (list)
     """
     getr = []
     getdate = []
     getrange = []
     getvol = []
+    getopen = []
+    geth = []
+    getl = []
     otherinfo = []
     fetch_data_raw = 1
     for i in csv_read:
@@ -200,6 +233,9 @@ class goristock(object):
         getdate.append(i[0].replace(' ',''))
         getrange.append(i[-2])
         getvol.append(int(i[1].replace(',','')))
+        getopen.append(self.covstr(i[3]))
+        geth.append(self.covstr(i[4]))
+        getl.append(self.covstr(i[5]))
       else:
         otherinfo.append(i[0])
       fetch_data_raw += 1
@@ -215,7 +251,10 @@ class goristock(object):
       'stock_name': stock_name,
       'data_date': getdate,
       'stock_range': getrange,
-      'stock_vol': getvol
+      'stock_vol': getvol,
+      'stock_open': getopen,
+      'stock_h': geth,
+      'stock_l': getl
     }
     self.debug_print(otherinfo)
     self.debug_print(stock_name)
@@ -303,7 +342,7 @@ class goristock(object):
   @property
   def TimeinOpen(self):
     """ In open market time. """
-    now = time.gmtime().tm_hour + time.gmtime(8*60*60).tm_hour
+    now = time.gmtime().tm_hour + time.gmtime(TIMEZONE * 60 * 60).tm_hour
     if now >= 9 and now <= 14:
       return True
     else:
@@ -569,3 +608,8 @@ def Rt_display(stock_no):
     return re
   else:
     return a
+
+def TW_display():
+  """ For real time TWSE display """
+  a = twsew().weight
+  return a
