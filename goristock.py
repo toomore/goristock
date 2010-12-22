@@ -584,6 +584,40 @@ Today: %(stock_price)s %(stock_range)s
       }
     return re
 
+##### For Google Chart #####
+  def gchart(self, s = 0, size = [], candle = 20):
+    """ Chart for serious stocks """
+    if s == 0:
+      s = len(self.raw_data)
+    if len(size) == 2:
+      sw,sh = size
+    else:
+      sh = 300
+      sw = 25 * s
+      if sw > 1000:
+        sw = 1000
+        candle = 950/s
+
+    stc = ''
+    for i in self.raw_data[-s:]:
+      stc += str(i) + ','
+    sto = ''
+    for i in self.stock_open[-s:]:
+      sto += str(i) + ','
+    sth = ''
+    for i in self.stock_h[-s:]:
+      sth += str(i) + ','
+    stl = ''
+    for i in self.stock_l[-s:]:
+      stl += str(i) + ','
+
+    stmax = max(self.stock_h[-s:])
+    stmin = min(self.stock_l[-s:])
+    strange = (stmax-stmin) / 10
+
+    re = "http://%(rand)s.chart.apis.google.com/chart?chs=%(sw)sx%(sh)s&cht=lc&chd=t1:0,0,0|0,%(h)s0|0,%(c)s0|0,%(o)s0|0,%(l)s0&chm=F,,1,1:-1,%(candle)s&chxt=y&chds=%(min)s,%(max)s&chxr=0,%(min)s,%(max)s,%(range)s" % {'h': sth, 'c': stc, 'o': sto, 'l': stl, 'min': stmin, 'max': stmax, 'sw': sw, 'sh': sh, 'range': strange, 'candle': candle, 'rand': random.randint(0,9)}
+    return re
+
 ##### For Real time stock display #####
 def covstr(s):
   """ convert string to int or float. """
