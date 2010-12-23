@@ -610,12 +610,30 @@ Today: %(stock_price)s %(stock_range)s
     stl = ''
     for i in self.stock_l[-s:]:
       stl += str(i) + ','
+    stdate = ''
+    for i in self.data_date[-s:]:
+      stdate += str(i[-2:]) + '|'
 
     stmax = max(self.stock_h[-s:])
     stmin = min(self.stock_l[-s:])
     strange = (stmax-stmin) / 10
 
-    re = "http://%(rand)s.chart.apis.google.com/chart?chs=%(sw)sx%(sh)s&cht=lc&chd=t1:0,0,0|0,%(h)s0|0,%(c)s0|0,%(o)s0|0,%(l)s0&chm=F,,1,1:-1,%(candle)s&chxt=y&chds=%(min)s,%(max)s&chxr=0,%(min)s,%(max)s,%(range)s" % {'h': sth, 'c': stc, 'o': sto, 'l': stl, 'min': stmin, 'max': stmax, 'sw': sw, 'sh': sh, 'range': strange, 'candle': candle, 'rand': random.randint(0,9)}
+    re = "http://%(rand)s.chart.apis.google.com/chart?chs=%(sw)sx%(sh)s&cht=lc&chd=t1:0,0,0|0,%(h)s0|0,%(c)s0|0,%(o)s0|0,%(l)s0&chm=F,,1,1:-1,%(candle)s&chxt=y,x&chds=%(min)s,%(max)s&chxr=0,%(min)s,%(max)s,%(range)s&chg=20,%(chg)s&chtt=%(chtt)s&chxl=1:||%(chxl)s" % {
+      'h': sth,
+      'c': stc,
+      'o': sto,
+      'l': stl,
+      'min': stmin,
+      'max': stmax,
+      'sw': sw,
+      'sh': sh,
+      'range': strange,
+      'candle': candle,
+      'chg': 10,
+      'rand': random.randint(0,9),
+      'chxl': stdate,
+      'chtt': '%s %s' % (self.stock_name,self.stock_no)
+    }
     return re
 
 ##### For Real time stock display #####
