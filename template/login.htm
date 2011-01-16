@@ -1,0 +1,15 @@
+<html>
+<head>
+  <title>Log in with OpenID</title>
+</head>
+<body>
+  <h1>Log in with OpenID</h1>
+  <form method="get" action="/_ah/login_required">
+    {% if continue %}
+      <input type="text" name="continue" value="{{continue|escape}}" />
+    {% endif %}
+    <input type="text" name="openid" />
+    <input type="submit" value="Log In" />
+  </form>
+</body>
+</html>

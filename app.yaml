@@ -39,6 +39,10 @@ handlers:
   script: main.py
   login: admin
 
+## For openID
+- url: /_ah/login_required
+  script: openid_login.py
+
 ## API
 - url: /API.*
   script: main_api.py

@@ -20,56 +20,27 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-## GAE lib
+from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.api import users
 
-import goristock
-import mobileapi
-import urlparse
-import urllib
-
-def create_openid_url(self, continue_url):
-  continue_url = urlparse.urljoin(self.request.url, continue_url)
-  return "/_ah/login_required?continue=%s" % urllib.quote(continue_url)
-
-def loginornot(self, user, continue_url):
-  if user:
-    greeting = ("%s <a href=\"%s\">設定</a><br>%s<br>%s" %
-                  (user.nickname(), users.create_logout_url(self.request.uri), user.federated_identity(), user.federated_provider()))
-  else:
-    greeting = ("<a href=\"%s\">OpenID 登入</a>" %
-                   create_openid_url(self, continue_url))
-  return greeting
-
-############## webapp Models ##############
-class mobile(webapp.RequestHandler):
-
+class OpenIdLoginHandler(webapp.RequestHandler):
   def get(self):
-    user = users.get_current_user()
-    greeting = loginornot(self, user, '/m')
-    d = []
-    for i in sorted([2891,2618,2353,1907]):
-      g = mobileapi.mapi(i).output
-      d.append(g)
-
-    hh_api = template.render('./template/hh_mobile.htm',{'tv': d, 'user': greeting})
-    self.response.out.write(hh_api)
-
-############## redirect Models ##############
-class rewrite(webapp.RequestHandler):
-  def get(self):
-    self.redirect('/m')
+    continue_url = self.request.GET.get('continue')
+    openid_url = self.request.GET.get('openid')
+    if not openid_url:
+      #path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
+      self.response.out.write(template.render('./template/login.htm', {'continue': continue_url}))
+    else:
+      self.redirect(users.create_login_url(continue_url, None, openid_url))
 
 ############## main Models ##############
 def main():
   """ Start up. """
   application = webapp.WSGIApplication(
                 [
-                  ('/m', mobile),
-                  ('/m.*', rewrite)
+                  ('/_ah/login_required', OpenIdLoginHandler)
                 ],debug=True)
   run_wsgi_app(application)
 
