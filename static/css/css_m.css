@@ -1,0 +1,65 @@
+a {
+  color:#0000CC;
+  text-decoration: none;
+}
+
+a:hover{
+  color:#6666dd;
+}
+
+body{
+  font-family: 'Droid Sans Fallback','微軟正黑體','Arial';
+  margin: 0;
+  padding: 0;
+  color: #fff;
+  background: #000;
+}
+
+.stable {
+  width: 100%;
+  font-weight: bold;
+  border-collapse:collapse;
+  font-size: x-large;
+}
+
+td {
+  text-align: center;
+}
+
+.red {
+  color: red;
+}
+
+.green {
+  color: green;
+}
+
+.tr {
+  border-bottom: 1px #333 solid;
+}
+
+.nav {
+  width: 100%;
+  font-weight: bold;
+  font-size: x-large;
+}
+
+.nav a {
+  color: #acf;
+}
+
+.nav tr{
+  background-color: #445;
+}
+
+.foot {
+        clear:both;
+}
+.footdesc{
+  text-align: center;
+  color: #aaa;
+  padding: 5px;
+  margin-top: 20px;
+  border-top: 5px #99a solid;
+  background-color: #445;
+}

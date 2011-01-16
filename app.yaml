@@ -43,6 +43,10 @@ handlers:
 - url: /API.*
   script: main_api.py
 
+## Mobile
+- url: /m.*
+  script: main_m.py
+
 ## Main WSGI
 - url: .*
   script: main.py
