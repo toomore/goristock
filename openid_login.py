@@ -29,9 +29,13 @@ class OpenIdLoginHandler(webapp.RequestHandler):
   def get(self):
     continue_url = self.request.GET.get('continue')
     openid_url = self.request.GET.get('openid')
+    otheropenid_url = self.request.GET.get('otheropenid')
     if not openid_url:
-      #path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
-      self.response.out.write(template.render('./template/login.htm', {'continue': continue_url}))
+      if not otheropenid_url:
+        #path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
+        self.response.out.write(template.render('./template/login.htm', {'continue': continue_url}))
+      else:
+        self.redirect(users.create_login_url(continue_url, None, otheropenid_url))
     else:
       self.redirect(users.create_login_url(continue_url, None, openid_url))
 

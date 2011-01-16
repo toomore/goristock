@@ -7,12 +7,21 @@ a:hover{
   color:#6666dd;
 }
 
-body{
+body {
   font-family: 'Droid Sans Fallback','微軟正黑體','Arial';
   margin: 0;
   padding: 0;
   color: #fff;
   background: #000;
+}
+
+.inopenid {
+  font-family: 'Droid Sans Fallback','微軟正黑體','Arial';
+  margin: 0;
+  padding: 0;
+  color: #000;
+  background: #281;
+  font-weight: bold;
 }
 
 .stable {
@@ -50,6 +59,16 @@ td {
 
 .nav tr{
   background-color: #445;
+}
+
+.openidlist {
+  font-size: large;
+  line-height: 29pt;
+  list-style-type:none;
+}
+
+.openidlist li img{
+  width: 16px;
 }
 
 .foot {
