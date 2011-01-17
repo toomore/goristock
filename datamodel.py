@@ -29,5 +29,5 @@ class userdata(db.Model):
 
 class stocklist(db.Model):
   user = db.ReferenceProperty(userdata)
-  stock = db.ListProperty(int, default = [1701,2618,1907,2891])
+  stock = db.ListProperty(int, default = [2330,2498,1216,2891])
 

@@ -6,13 +6,24 @@
 {% endblock %}
 
 {% block content %}
+<div class="mconfigtitle">
+使用者資訊
+</div>
+<div class="mconfigtxt">
+OpenID: <i>{{ usd.nickname }}</i><br>
+Provider: <i>{{ usd.provider }}</i>
+</div>
+<div class="mconfigtitle">
+新增/刪除股票
+</div>
 {% for i in tv %}
 [{{ i }}] 
 {% endfor %}
-<div>
+<div class="mconfigtxt">
 <form action="/m/config" method="POST">
 新增：<input name="add" size="15" tabindex="1"><br>
 刪除：<input name="del" size="15" tabindex="2"><br>
-<input type="submit" value="設定！"> <a href="/m">取消設定</a>
 </div>
+<input type="submit" value="設定！"> <a href="/m">取消設定</a>
+</form>
 {% endblock %}

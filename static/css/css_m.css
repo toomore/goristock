@@ -72,6 +72,23 @@ td {
   vertical-align:middle;
 }
 
+.mconfigtitle {
+  font-weight: bold;
+  border-top: 3px #696 solid;
+  padding: 4px;
+  background-color: #363;
+  font-size: large;
+}
+
+.mconfigtxt {
+  font-weight: bold;
+  margin-bottom: 10px;
+}
+
+.mconfigtxt i {
+  color: #aad;
+}
+
 .foot {
   clear:both;
 }

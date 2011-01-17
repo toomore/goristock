@@ -44,7 +44,7 @@ class OpenIdLoginHandler(webapp.RequestHandler):
 
 class IdUser(webapp.RequestHandler):
   def add_init(self, user):
-    return datamodel.userdata.get_by_key_name(user.federated_identity())
+    return datamodel.userdata.get_by_key_name(user.nickname())
 
   def add_account(self):
     user = users.get_current_user()
