@@ -31,6 +31,8 @@ import mobileapi
 import urlparse
 import urllib
 import datamodel
+import twseno
+import random
 
 def create_openid_url(self, continue_url):
   continue_url = urlparse.urljoin(self.request.url, continue_url)
@@ -55,7 +57,8 @@ class mobile(webapp.RequestHandler):
       ud = datamodel.stocklist.get_by_key_name(user.nickname())
       stlist = ud.stock
     else:
-      stlist = [2330,2498,1216,2891]
+      c = twseno.twseno().allstock.keys()
+      stlist = [random.choice(c) for i in range(4)]
 
     greeting = loginornot(self, user, '/m')
     d = []
@@ -78,7 +81,8 @@ class udataconfig(webapp.RequestHandler):
       ud = datamodel.stocklist.get_by_key_name(user.nickname())
       stlist = ud.stock
       usd = {'nickname': user.nickname(), 'provider': user.federated_provider()}
-      hh_mconfig = template.render('./template/hh_mconfig.htm', {'tv': stlist, 'usd': usd})
+      logout = "<a href=\"%s\">登出 OpenID.</a>" % users.create_logout_url('/m')
+      hh_mconfig = template.render('./template/hh_mconfig.htm', {'tv': stlist, 'usd': usd, 'logout': logout})
 
     self.response.out.write(hh_mconfig)
 

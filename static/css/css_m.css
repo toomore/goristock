@@ -84,6 +84,9 @@ td {
   font-weight: bold;
   margin-bottom: 10px;
 }
+.mconfigtxt a {
+  color:#FF7900;
+}
 
 .mconfigtxt i {
   color: #aad;
