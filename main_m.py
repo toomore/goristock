@@ -52,8 +52,11 @@ class mobile(webapp.RequestHandler):
     greeting = loginornot(self, user, '/m')
     d = []
     for i in sorted([2891,2618,2353,1907]):
-      g = mobileapi.mapi(i).output
-      d.append(g)
+      try:
+        g = mobileapi.mapi(i).output
+        d.append(g)
+      except:
+        d.append({'stock_no': i})
 
     hh_api = template.render('./template/hh_mobile.htm',{'tv': d, 'user': greeting})
     self.response.out.write(hh_api)

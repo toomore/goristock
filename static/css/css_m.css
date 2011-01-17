@@ -20,7 +20,7 @@ body {
   margin: 0;
   padding: 0;
   color: #000;
-  background: #281;
+  background: #dee;
   font-weight: bold;
 }
 
@@ -68,7 +68,8 @@ td {
 }
 
 .openidlist li img{
-  width: 16px;
+  width: 26px;
+  vertical-align:middle;
 }
 
 .foot {
