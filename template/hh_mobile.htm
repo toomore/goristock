@@ -8,7 +8,7 @@
 {% block content %}
 
 <table class="stable">
-{% for i in tv%}
+{% for i in tv %}
   <tr>
     <td>{{ i.name }}</td>
     <td class="{{ i.css }}">{{ i.c }}</td>
@@ -18,7 +18,7 @@
     <td>{{ i.stock_no }}</td>
     <td>{{ i.value }}</td>
     <td>{{ i.time }}</td>
-  </tr> 
+  </tr>
 {% endfor %}
 </table>
 <table class="nav">
@@ -27,9 +27,4 @@
     <td>{{ user }}</td>
   </tr>
 </table>
-{% endblock %}
-
-{% block foot %}
-goristock for Mobile.<br>
-手機版 | 網頁版
 {% endblock %}

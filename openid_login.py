@@ -25,26 +25,56 @@ from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 
+import datamodel
+import logging
+
 class OpenIdLoginHandler(webapp.RequestHandler):
   def get(self):
-    continue_url = self.request.GET.get('continue')
+    #continue_url = self.request.GET.get('continue')
+    continue_url = '/_ah/IdUser'
     openid_url = self.request.GET.get('openid')
     otheropenid_url = self.request.GET.get('otheropenid')
     if not openid_url:
       if not otheropenid_url:
-        #path = os.path.join(os.path.dirname(__file__), 'templates', 'login.html')
         self.response.out.write(template.render('./template/login.htm', {'continue': continue_url}))
       else:
         self.redirect(users.create_login_url(continue_url, None, otheropenid_url))
     else:
       self.redirect(users.create_login_url(continue_url, None, openid_url))
 
+class IdUser(webapp.RequestHandler):
+  def add_init(self, user):
+    return datamodel.userdata.get_by_key_name(user.federated_identity())
+
+  def add_account(self):
+    user = users.get_current_user()
+    if not self.add_init(user):
+      re = datamodel.userdata(
+            key_name = user.federated_identity(),
+            openid_provider = user.federated_provider()
+            ).put()
+      logging.info('info: %s' % re)
+      datamodel.stocklist(
+            key_name = user.federated_identity(),
+            user = re
+            ).put()
+      return re
+    else:
+      return False
+
+  def get(self):
+    if self.add_account():
+      self.redirect('/m')
+    else:
+      self.redirect('/m')
+
 ############## main Models ##############
 def main():
   """ Start up. """
   application = webapp.WSGIApplication(
                 [
-                  ('/_ah/login_required', OpenIdLoginHandler)
+                  ('/_ah/login_required', OpenIdLoginHandler),
+                  ('/_ah/IdUser', IdUser)
                 ],debug=True)
   run_wsgi_app(application)
 

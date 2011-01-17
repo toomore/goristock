@@ -30,6 +30,7 @@ import goristock
 import mobileapi
 import urlparse
 import urllib
+import datamodel
 
 def create_openid_url(self, continue_url):
   continue_url = urlparse.urljoin(self.request.url, continue_url)
@@ -37,29 +38,70 @@ def create_openid_url(self, continue_url):
 
 def loginornot(self, user, continue_url):
   if user:
-    greeting = ("%s <a href=\"%s\">設定</a><br>%s<br>%s" %
-                  (user.nickname(), users.create_logout_url(self.request.uri), user.federated_identity(), user.federated_provider()))
+    config = (" | <a href=\"%s\">登出</a><br>Login Info.<br>%s<br>%s" %
+                  (users.create_logout_url(self.request.uri), user.federated_identity(), user.federated_provider()))
+    greeting = "<a href=\"/m/config\">設定</a>"
   else:
     greeting = ("<a href=\"%s\">OpenID 登入</a>" %
                    create_openid_url(self, continue_url))
-  return greeting
+    config = ''
+  return [greeting, config]
 
 ############## webapp Models ##############
 class mobile(webapp.RequestHandler):
 
   def get(self):
     user = users.get_current_user()
+    if user:
+      ud = datamodel.stocklist.get_by_key_name(user.federated_identity())
+      stlist = ud.stock
+    else:
+      stlist = [2891,2618,2353,1907]
+
     greeting = loginornot(self, user, '/m')
     d = []
-    for i in sorted([2891,2618,2353,1907]):
+    for i in sorted(stlist):
       try:
         g = mobileapi.mapi(i).output
         d.append(g)
       except:
         d.append({'stock_no': i})
 
-    hh_api = template.render('./template/hh_mobile.htm',{'tv': d, 'user': greeting})
-    self.response.out.write(hh_api)
+    hh_mobile = template.render('./template/hh_mobile.htm',{'tv': d, 'user': greeting[0], 'config': greeting[1]})
+    self.response.out.write(hh_mobile)
+
+class udataconfig(webapp.RequestHandler):
+  def get(self):
+    user = users.get_current_user()
+    if not user:
+      self.redirect('/m')
+    else:
+      ud = datamodel.stocklist.get_by_key_name(user.federated_identity())
+      stlist = ud.stock
+      hh_mconfig = template.render('./template/hh_mconfig.htm', {'tv': stlist})
+
+    self.response.out.write(hh_mconfig)
+
+  def post(self):
+    user = users.get_current_user()
+    if not user:
+      self.redirect('/m')
+    else:
+      ud = datamodel.stocklist.get_by_key_name(user.federated_identity())
+      stlist = ud.stock
+      if self.request.POST.get('add'):
+        adds = [ int(i) for i in list(self.request.POST.get('add').split(','))]
+      else:
+        adds = []
+      if self.request.POST.get('del'):
+        dels = [ int(i) for i in list(self.request.POST.get('del').split(','))]        
+      else:
+        dels = []
+
+      stlists = (set(stlist)|set(adds))-set(dels)
+      ud.stock = list(stlists)
+      if ud.put():
+        self.redirect('/m')
 
 ############## redirect Models ##############
 class rewrite(webapp.RequestHandler):
@@ -72,6 +114,7 @@ def main():
   application = webapp.WSGIApplication(
                 [
                   ('/m', mobile),
+                  ('/m/config', udataconfig),
                   ('/m.*', rewrite)
                 ],debug=True)
   run_wsgi_app(application)
