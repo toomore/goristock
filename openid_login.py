@@ -50,12 +50,12 @@ class IdUser(webapp.RequestHandler):
     user = users.get_current_user()
     if not self.add_init(user):
       re = datamodel.userdata(
-            key_name = user.federated_identity(),
+            key_name = user.nickname(),
             openid_provider = user.federated_provider()
             ).put()
       logging.info('info: %s' % re)
       datamodel.stocklist(
-            key_name = user.federated_identity(),
+            key_name = user.nickname(),
             user = re
             ).put()
       return re
