@@ -109,6 +109,33 @@ class udataconfig(webapp.RequestHandler):
       except:
         self.redirect('/m')
 
+class detail(webapp.RequestHandler):
+  def get(self, no):
+    op = goristock.goristock(no).XMPP_display(3,6,18).encode('utf-8').replace('\n','<br>')
+    oop = op.split('<br>')
+    ooop = ''
+    for i in oop:
+      if ':' in i:
+        d = i.split(':')
+        if '↑' in d[1]:
+          d[1] = '<span class="red">%s</span>' % d[1]
+        elif '↓' in d[1]:
+          d[1] = '<span class="green">%s</span>' % d[1]
+        elif '-(' in d[1]:
+          d[1] = '<span class="gray">%s</span>' % d[1]
+        ooop += d[0] + ':' + d[1] + '<br>'
+      else:
+        ooop += i + '<br>'
+
+    hh_mdetail = template.render('./template/hh_mdetail.htm', {'tv': ooop, 'no': no})
+    self.response.out.write(hh_mdetail)
+
+class chart(webapp.RequestHandler):
+  def get(self, no):
+    chart = goristock.goristock(no).gchart(18,[310,260],10)
+    hh_mchart = template.render('./template/hh_mchart.htm', {'no': no, 'chart': chart})
+    self.response.out.write(hh_mchart)
+
 ############## redirect Models ##############
 class rewrite(webapp.RequestHandler):
   def get(self):
@@ -121,6 +148,8 @@ def main():
                 [
                   ('/m', mobile),
                   ('/m/config', udataconfig),
+                  ('/m/detail/(.*)', detail),
+                  ('/m/chart/(.*)', chart),
                   ('/m.*', rewrite)
                 ],debug=True)
   run_wsgi_app(application)

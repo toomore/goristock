@@ -1,0 +1,20 @@
+{% extends "hm_infopage.htm" %}
+
+{% block titlename %}Mobile - {% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block content %}
+<div class="mdetail">
+{{ tv }}
+</div>
+<br>
+<table class="nav">
+  <tr>
+    <td><a href="/m">←Back</a></td>
+    <td><a href="/m/chart/{{ no }}">Chart→</a></td>
+  </tr>
+</table>
+
+{% endblock %}

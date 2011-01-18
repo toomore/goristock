@@ -47,7 +47,7 @@ class mapi(object):
     elif covstr(self.g['range']) < 0:
       css = "green"
     else:
-      css = ""
+      css = "gray"
 
     re = {
       'name': self.g['name'],

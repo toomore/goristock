@@ -1,6 +1,7 @@
 a {
   color:#FF7900;
   text-decoration: none;
+  font-weight: bold;
 }
 
 a:hover{
@@ -31,6 +32,10 @@ body {
   font-size: x-large;
 }
 
+.pp {
+  font-size: small;
+}
+
 td {
   text-align: center;
 }
@@ -41,6 +46,10 @@ td {
 
 .green {
   color: green;
+}
+
+.gray {
+  color: gray;
 }
 
 .tr {
@@ -90,6 +99,17 @@ td {
 
 .mconfigtxt i {
   color: #aad;
+}
+
+.mdetail {
+  font-weight: bold;
+  font-size: large;
+  color:#eee;
+  line-height: 20pt;
+}
+
+.mchart {
+  text-align: center;
 }
 
 .foot {

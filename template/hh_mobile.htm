@@ -12,10 +12,11 @@
   <tr>
     <td>{{ i.name }}</td>
     <td class="{{ i.css }}">{{ i.c }}</td>
-    <td class="{{ i.css }}">{{ i.range|floatformat:2 }} ({{ i.pp|floatformat:2 }}%)</td>
+    <td class="{{ i.css }}">{{ i.range|floatformat:2 }} <span class="pp">({{ i.pp|floatformat:2 }}%)</span></td>
+    <td rowspan="2"><a href="/m/detail/{{ i.stock_no }}">→</a></td>
   </tr>
   <tr class="tr">
-    <td>{{ i.stock_no }}</td>
+    <td><a href="/m/detail/{{ i.stock_no }}">{{ i.stock_no }}</a></td>
     <td>{{ i.value }}</td>
     <td>{{ i.time }}</td>
   </tr>
