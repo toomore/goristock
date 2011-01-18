@@ -152,7 +152,7 @@ class xmpp_invite(webapp.RequestHandler):
   @login_required
   def get(self):
     umail = users.get_current_user().email()
-    xmpp.send_invite(umail)
+    xmpp.send_invite(umail) ## TODO: Will be fault if OpenID login.
     xmpp.send_message('toomore0929@gmail.com', '#NEWUSER %s' % umail)
     logging.info('#NEWUSER %s' % umail)
     ## todo: send a guild mail to the first time invited user.

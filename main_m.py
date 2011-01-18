@@ -83,8 +83,7 @@ class udataconfig(webapp.RequestHandler):
       usd = {'nickname': user.nickname(), 'provider': user.federated_provider()}
       logout = "<a href=\"%s\">登出 OpenID.</a>" % users.create_logout_url('/m')
       hh_mconfig = template.render('./template/hh_mconfig.htm', {'tv': stlist, 'usd': usd, 'logout': logout})
-
-    self.response.out.write(hh_mconfig)
+      self.response.out.write(hh_mconfig)
 
   def post(self):
     user = users.get_current_user()

@@ -40,7 +40,9 @@ handlers:
   login: admin
 
 ## For openID
-- url: /_ah/.*
+- url: /_ah/login_required
+  script: openid_login.py
+- url: /_ah/IdUser
   script: openid_login.py
 
 ## API
