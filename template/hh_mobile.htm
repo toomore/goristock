@@ -24,7 +24,10 @@
 </table>
 <table class="nav">
   <tr>
-    <td><a href="/m">重新整理</a></td>
+    <td><a href="/m">我的組合</a></td>
+    {% if login %}
+    <td><a href="/m?r=1">隨機顯示</a></td>
+    {% endif %}
     <td>{{ user }}</td>
   </tr>
 </table>

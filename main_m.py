@@ -50,15 +50,14 @@ def loginornot(self, user, continue_url):
 
 ############## webapp Models ##############
 class mobile(webapp.RequestHandler):
-
   def get(self):
     user = users.get_current_user()
-    if user:
-      ud = datamodel.stocklist.get_by_key_name(user.nickname())
-      stlist = ud.stock
-    else:
+    if not user or self.request.GET.get('r'):
       c = twseno.twseno().allstock.keys()
       stlist = [random.choice(c) for i in range(4)]
+    else:
+      ud = datamodel.stocklist.get_by_key_name(user.nickname())
+      stlist = ud.stock
 
     greeting = loginornot(self, user, '/m')
     d = []
@@ -69,7 +68,7 @@ class mobile(webapp.RequestHandler):
       except:
         d.append({'stock_no': i})
 
-    hh_mobile = template.render('./template/hh_mobile.htm',{'tv': d, 'user': greeting[0], 'config': greeting[1]})
+    hh_mobile = template.render('./template/hh_mobile.htm',{'tv': d, 'user': greeting[0], 'config': greeting[1], 'login': user})
     self.response.out.write(hh_mobile)
 
 class udataconfig(webapp.RequestHandler):
