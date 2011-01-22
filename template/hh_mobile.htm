@@ -6,6 +6,13 @@
 {% endblock %}
 
 {% block content %}
+<div class="newstitle">
+{% if r %}
+  隨機顯示
+{% else %}
+  我的選股
+{% endif %}
+</div>
 
 <table class="stable">
 {% for i in tv %}
@@ -24,10 +31,13 @@
 </table>
 <table class="nav">
   <tr>
-    <td><a href="/m">我的組合</a></td>
     {% if login %}
-    <td><a href="/m?r=1">隨機顯示</a></td>
+    <td><a href="/m">我的選股</a></td>
+    <td><a href="/m?r=1">隨機</a></td>
+    {% else %}
+    <td><a href="/m">重新整理</a></td>
     {% endif %}
+    <td><a href="/m/news">新聞</a></td>
     <td>{{ user }}</td>
   </tr>
 </table>

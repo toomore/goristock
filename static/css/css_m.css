@@ -111,7 +111,31 @@ td {
 .mchart {
   text-align: center;
 }
+.newstitle {
+  font-size: large;
+  font-weight: bold;
+  padding: 5px;
+  background-color: #007;
+}
 
+.newslist {
+  font-size: x-large;
+  font-weight: bold;
+  padding-bottom: 5px;
+  padding-top: 5px;
+  border-bottom: 1px #333 solid;
+}
+
+.newsinfo {
+  font-size: small;
+  font-weight: bold;
+  color: #ff9;
+}
+
+.newssearch {
+  font-weight: bold;
+  text-align: center;
+}
 .foot {
   clear:both;
 }

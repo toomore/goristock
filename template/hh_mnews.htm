@@ -1,0 +1,29 @@
+{% extends "hm_infopage.htm" %}
+
+{% block titlename %}Mobile NEWS - {% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block content %}
+<div class="newstitle">
+  {{ q|title }}
+</div>
+{% for i in n %}
+  <div class="newslist">
+    <a href="{{ i.url }}">{{ i.title }}</a>
+    <div class="newsinfo">{{ i.publisher }} {{i.publisheddate }}</div>
+  </div>
+{% endfor%}
+<table class="nav">
+  <tr>
+    <td><a href="/m/news">今日新聞 Top NEWS</a></td>
+    <td><a href="/m">首頁</a></td>
+  </tr>
+</table>
+<div class="newssearch">
+<form action="/m/news/search" method="GET">
+  <input name="q" size="15"><input type="submit" value="search">
+</form>
+</div>
+{% endblock %}

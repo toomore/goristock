@@ -28,6 +28,8 @@ from google.appengine.api import users
 
 import goristock
 import mobileapi
+from gnews import gnews
+
 import urlparse
 import urllib
 import datamodel
@@ -55,9 +57,11 @@ class mobile(webapp.RequestHandler):
     if not user or self.request.GET.get('r'):
       c = twseno.twseno().allstock.keys()
       stlist = [random.choice(c) for i in range(4)]
+      r = True
     else:
       ud = datamodel.stocklist.get_by_key_name(user.nickname())
       stlist = ud.stock
+      r = False
 
     greeting = loginornot(self, user, '/m')
     d = []
@@ -68,7 +72,7 @@ class mobile(webapp.RequestHandler):
       except:
         d.append({'stock_no': i})
 
-    hh_mobile = template.render('./template/hh_mobile.htm',{'tv': d, 'user': greeting[0], 'config': greeting[1], 'login': user})
+    hh_mobile = template.render('./template/hh_mobile.htm',{'tv': d, 'user': greeting[0], 'config': greeting[1], 'login': user, 'r': r})
     self.response.out.write(hh_mobile)
 
 class udataconfig(webapp.RequestHandler):
@@ -105,35 +109,63 @@ class udataconfig(webapp.RequestHandler):
         ud.stock = list(stlists)
         if ud.put():
           self.redirect('/m')
-      except:
+      except ValueError:
         self.redirect('/m')
 
 class detail(webapp.RequestHandler):
   def get(self, no):
-    op = goristock.goristock(no).XMPP_display(3,6,18).encode('utf-8').replace('\n','<br>')
-    oop = op.split('<br>')
-    ooop = ''
-    for i in oop:
-      if ':' in i:
-        d = i.split(':')
-        if '↑' in d[1]:
-          d[1] = '<span class="red">%s</span>' % d[1]
-        elif '↓' in d[1]:
-          d[1] = '<span class="green">%s</span>' % d[1]
-        elif '-(' in d[1]:
-          d[1] = '<span class="gray">%s</span>' % d[1]
-        ooop += d[0] + ':' + d[1] + '<br>'
-      else:
-        ooop += i + '<br>'
-
-    hh_mdetail = template.render('./template/hh_mdetail.htm', {'tv': ooop, 'no': no})
-    self.response.out.write(hh_mdetail)
+    try:
+      op = goristock.goristock(no).XMPP_display(3,6,18).encode('utf-8').replace('\n','<br>')
+      oop = op.split('<br>')
+      ooop = ''
+      for i in oop:
+        if ':' in i:
+          d = i.split(':')
+          if '↑' in d[1]:
+            d[1] = '<span class="red">%s</span>' % d[1]
+          elif '↓' in d[1]:
+            d[1] = '<span class="green">%s</span>' % d[1]
+          elif '-(' in d[1]:
+            d[1] = '<span class="gray">%s</span>' % d[1]
+          ooop += d[0] + ':' + d[1] + '<br>'
+        else:
+          ooop += i + '<br>'
+      try:
+        stockname = twseno.twseno().allstockno.get(str(no)).decode('utf-8')
+      except:
+        stockname = ''
+      hh_mdetail = template.render('./template/hh_mdetail.htm', {'tv': ooop, 'no': no, 'stockname': stockname})
+      self.response.out.write(hh_mdetail)
+    except IndexError:
+      self.redirect('/m')
 
 class chart(webapp.RequestHandler):
   def get(self, no):
     chart = goristock.goristock(no).gchart(18,[310,260],10)
     hh_mchart = template.render('./template/hh_mchart.htm', {'no': no, 'chart': chart})
     self.response.out.write(hh_mchart)
+
+class getnews(webapp.RequestHandler):
+  def get(self, q = None, rsz = 8):
+    if q:
+      q = urllib.unquote(q[1:])
+      n = gnews(q, rsz = rsz).formatre
+    else:
+      n = gnews('', 'b', rsz).formatre
+      q = 'Top NEWS'
+
+    opn = []
+    for i in n:
+      opn.append(n[i])
+
+    hh_mnews = template.render('./template/hh_mnews.htm', {'n': opn, 'q': q})
+    self.response.out.write(hh_mnews)
+
+class newssearch(webapp.RequestHandler):
+  def get(self):
+    q = urllib.quote(self.request.GET.get('q').encode('utf-8'))
+    #print q
+    self.redirect('/m/news/%s' % q)
 
 ############## redirect Models ##############
 class rewrite(webapp.RequestHandler):
@@ -149,6 +181,8 @@ def main():
                   ('/m/config', udataconfig),
                   ('/m/detail/(.*)', detail),
                   ('/m/chart/(.*)', chart),
+                  ('/m/news/search', newssearch),
+                  ('/m/news(.*)', getnews),
                   ('/m.*', rewrite)
                 ],debug=True)
   run_wsgi_app(application)
