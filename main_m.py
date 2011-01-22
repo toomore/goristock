@@ -35,6 +35,8 @@ import urllib
 import datamodel
 import twseno
 import random
+from datetime import datetime
+from datetime import timedelta
 
 def create_openid_url(self, continue_url):
   continue_url = urlparse.urljoin(self.request.url, continue_url)
@@ -156,6 +158,7 @@ class getnews(webapp.RequestHandler):
 
     opn = []
     for i in n:
+      n[i]['publishedDate'] = datetime.strptime(n[i]['publisheddate'], '%Y-%m-%d %H:%M:%S') - timedelta(hours = 8)
       opn.append(n[i])
 
     hh_mnews = template.render('./template/hh_mnews.htm', {'n': opn, 'q': q})
