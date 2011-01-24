@@ -170,6 +170,11 @@ class newssearch(webapp.RequestHandler):
     #print q
     self.redirect('/m/news/%s' % q)
 
+class newskeywords(webapp.RequestHandler):
+  def get(self):
+    hh_mnewskeywords = template.render('./template/hh_mnewskeywords.htm', {})
+    self.response.out.write(hh_mnewskeywords)
+
 ############## redirect Models ##############
 class rewrite(webapp.RequestHandler):
   def get(self):
@@ -185,6 +190,7 @@ def main():
                   ('/m/detail/(.*)', detail),
                   ('/m/chart/(.*)', chart),
                   ('/m/news/search', newssearch),
+                  ('/m/news/keywords', newskeywords),
                   ('/m/news(.*)', getnews),
                   ('/m.*', rewrite)
                 ],debug=True)

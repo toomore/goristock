@@ -32,6 +32,18 @@ body {
   font-size: x-large;
 }
 
+.stablekey {
+  width: 100%;
+  font-weight: bold;
+  border-collapse:collapse;
+  font-size: large;
+}
+
+.stablekey td{
+  padding-top:7px;
+  padding-bottom:7px;
+}
+
 .pp {
   font-size: small;
 }
