@@ -6,6 +6,9 @@
 {% endblock %}
 
 {% block content %}
+<div class="newstitle">
+  各股分析
+</div>
 <div class="mdetail">
 {{ tv }}
 </div>
@@ -13,8 +16,11 @@
 <table class="nav">
   <tr>
     <td><a href="/m">←Back</a></td>
-    <td><a href="/m/news/{{ no }} {{ stockname }}">NEWS</a></td>
-    <td><a href="/m/chart/{{ no }}">Chart→</a></td>
+    <td><a href="/m/news/{{ no }} {{ stockname }}">新聞</a></td>
+{% if login %}
+    <td><a href="/m/note/{{ no }}">筆記</a></td>
+{% endif %}
+    <td><a href="/m/chart/{{ no }}">K線圖→</a></td>
   </tr>
 </table>
 {% endblock %}

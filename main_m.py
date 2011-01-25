@@ -24,7 +24,10 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
+#from google.appengine.ext.webapp.util import login_required
 from google.appengine.api import users
+from google.appengine.ext import db
+
 
 import goristock
 import mobileapi
@@ -74,8 +77,8 @@ class mobile(webapp.RequestHandler):
       except:
         d.append({'stock_no': i})
 
-    hh_mobile = template.render('./template/hh_mobile.htm',{'tv': d, 'user': greeting[0], 'config': greeting[1], 'login': user, 'r': r})
-    self.response.out.write(hh_mobile)
+    mhh_mobile = template.render('./template/mhh_mobile.htm',{'tv': d, 'user': greeting[0], 'config': greeting[1], 'login': user, 'r': r})
+    self.response.out.write(mhh_mobile)
 
 class udataconfig(webapp.RequestHandler):
   def get(self):
@@ -87,8 +90,8 @@ class udataconfig(webapp.RequestHandler):
       stlist = ud.stock
       usd = {'nickname': user.nickname(), 'provider': user.federated_provider()}
       logout = "<a href=\"%s\">登出 OpenID.</a>" % users.create_logout_url('/m')
-      hh_mconfig = template.render('./template/hh_mconfig.htm', {'tv': stlist, 'usd': usd, 'logout': logout})
-      self.response.out.write(hh_mconfig)
+      mhh_mconfig = template.render('./template/mhh_mconfig.htm', {'tv': stlist, 'usd': usd, 'logout': logout})
+      self.response.out.write(mhh_mconfig)
 
   def post(self):
     user = users.get_current_user()
@@ -115,6 +118,9 @@ class udataconfig(webapp.RequestHandler):
         self.redirect('/m')
 
 class detail(webapp.RequestHandler):
+  def __init__(self):
+    self.user = users.get_current_user()
+
   def get(self, no):
     try:
       op = goristock.goristock(no).XMPP_display(3,6,18).encode('utf-8').replace('\n','<br>')
@@ -136,16 +142,16 @@ class detail(webapp.RequestHandler):
         stockname = twseno.twseno().allstockno.get(str(no)).decode('utf-8')
       except:
         stockname = ''
-      hh_mdetail = template.render('./template/hh_mdetail.htm', {'tv': ooop, 'no': no, 'stockname': stockname})
-      self.response.out.write(hh_mdetail)
+      mhh_mdetail = template.render('./template/mhh_mdetail.htm', {'tv': ooop, 'no': no, 'stockname': stockname, 'login': self.user})
+      self.response.out.write(mhh_mdetail)
     except IndexError:
       self.redirect('/m')
 
 class chart(webapp.RequestHandler):
   def get(self, no):
     chart = goristock.goristock(no).gchart(18,[310,260],10)
-    hh_mchart = template.render('./template/hh_mchart.htm', {'no': no, 'chart': chart})
-    self.response.out.write(hh_mchart)
+    mhh_mchart = template.render('./template/mhh_mchart.htm', {'no': no, 'chart': chart})
+    self.response.out.write(mhh_mchart)
 
 class getnews(webapp.RequestHandler):
   def get(self, q = None, rsz = 8):
@@ -161,8 +167,8 @@ class getnews(webapp.RequestHandler):
       n[i]['publishedDate'] = datetime.strptime(n[i]['publisheddate'], '%Y-%m-%d %H:%M:%S') - timedelta(hours = 8)
       opn.append(n[i])
 
-    hh_mnews = template.render('./template/hh_mnews.htm', {'n': opn, 'q': q})
-    self.response.out.write(hh_mnews)
+    mhh_mnews = template.render('./template/mhh_mnews.htm', {'n': opn, 'q': q})
+    self.response.out.write(mhh_mnews)
 
 class newssearch(webapp.RequestHandler):
   def get(self):
@@ -172,8 +178,107 @@ class newssearch(webapp.RequestHandler):
 
 class newskeywords(webapp.RequestHandler):
   def get(self):
-    hh_mnewskeywords = template.render('./template/hh_mnewskeywords.htm', {})
-    self.response.out.write(hh_mnewskeywords)
+    mhh_mnewskeywords = template.render('./template/mhh_mnewskeywords.htm', {})
+    self.response.out.write(mhh_mnewskeywords)
+
+class note(webapp.RequestHandler):
+  def __init__(self):
+    self.user = users.get_current_user()
+    try:
+      self.userkey = datamodel.userdata.get_by_key_name(self.user.nickname())
+    except AttributeError:
+      pass
+
+  def get(self,mode,no):
+    if not self.user: ## Not login
+      nc = 0
+      self.redirect('/m')
+    else: ## login
+      #u = dir(datamodel.stocklist.get_by_key_name(self.user.nickname()))
+      result = datamodel.usernote.gql('where user = :user and notetitle = :notetitle', user = self.userkey, notetitle = no)
+      nc = result.count()
+
+      if mode == '/add':
+        mod = 'add'
+        reurl = 'detail'
+        mhh_mnote = template.render('./template/mhh_mnoteedit.htm', {'no': no, 'mod': mod, 'reurl': reurl})
+        t = 'in add'
+      elif mode == '/edit':
+        mod = 'edit'
+        reurl = 'note'
+        for i in result:
+          text = i.notetext
+        mhh_mnote = template.render('./template/mhh_mnoteedit.htm', {'no': no, 'mod': mod, 'text': text, 'reurl': reurl})
+        t = 'in edit'
+      elif mode == '/del':
+        t = 'in del'
+        for i in result:
+          key = i.key()
+        mhh_mnote = template.render('./template/mhh_mnotedel.htm', {'no': no, 'key': key})
+      elif mode == '/list':
+        result = datamodel.usernote.gql('where user = :user order by edittime desc', user = self.userkey)
+        listnote = []
+        for i in result:
+          l = {
+                'title': i.notetitle,
+                'text': i.notetext.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace("'", '&#39;')[:12],
+                'editdate': i.edittime
+              }
+          if len(i.notetext) > 12:
+            l['text'] = l['text'] + ' ...'
+          listnote.append(l)
+        mhh_mnote = template.render('./template/mhh_mnotelist.htm', {'no': no, 'note': listnote})
+      elif mode == '':
+        if nc == 0:
+          t = 'in no note'
+          mhh_mnote = template.render('./template/mhh_mnote.htm', {'no': no, 'nc': nc})
+        else:
+          noteop = {}
+          for i in result:
+            noteop['text'] = i.notetext.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace("'", '&#39;').replace('\r\n','<br>')
+            noteop['editdate'] = i.edittime
+            noteop['adddate'] = i.addtime
+          t = 'in note'
+          mhh_mnote = template.render('./template/mhh_mnote.htm', {'no': no, 'nc': nc, 'noteop': noteop})
+        t = 'only no'
+      else:
+        t = 'in else'
+      self.response.out.write(mhh_mnote)
+
+class notef(webapp.RequestHandler):
+  def __init__(self):
+    self.user = users.get_current_user()
+    try:
+      self.userkey = datamodel.userdata.get_by_key_name(self.user.nickname())
+    except AttributeError:
+      pass
+
+  def post(self):
+    if not self.user: ## Not login
+      self.redirect('/m')
+    else:
+      mod = self.request.POST.get('mod')
+      no = self.request.POST.get('no')
+      text = self.request.POST.get('text')
+      if mod == 'add':
+        datamodel.usernote(user = self.userkey, notetitle = no, notetext = text).put()
+        self.redirect('/m/note/%s' % no)
+      elif mod == 'edit':
+        result = datamodel.usernote.gql('where user = :user and notetitle = :notetitle', user = self.userkey, notetitle = no)
+        for i in result:
+          i.notetext = text
+          i.put()
+        self.redirect('/m/note/%s' % no)
+      elif mod == 'del':
+        key = self.request.POST.get('key')
+        note = datamodel.usernote.get(key)
+        if note.user.key() == self.userkey.key():
+          note.delete()
+          self.redirect('/m/note/%s' % no)
+        else:
+          self.redirect('/m')
+      else:
+        self.redirect('/m')
 
 ############## redirect Models ##############
 class rewrite(webapp.RequestHandler):
@@ -192,8 +297,10 @@ def main():
                   ('/m/news/search', newssearch),
                   ('/m/news/keywords', newskeywords),
                   ('/m/news(.*)', getnews),
+                  ('/m/note(.*)/(.*)', note),
+                  ('/m/notef', notef),
                   ('/m.*', rewrite)
-                ],debug=True)
+               ],debug=True)
   run_wsgi_app(application)
 
 if __name__ == '__main__':

@@ -103,7 +103,9 @@ td {
 
 .mconfigtxt {
   font-weight: bold;
+  font-size: large;
   margin-bottom: 10px;
+  padding: 5px;
 }
 .mconfigtxt a {
   color:#FF7900;
@@ -148,6 +150,43 @@ td {
   font-weight: bold;
   text-align: center;
 }
+.notetext {
+  color: #eee;
+  font-size: large;
+  font-weight: bold;
+  padding: 10px;
+}
+
+.notetext span{
+  font-style:italic;
+  font-size: small;
+  color: #888;
+}
+
+.notelist {
+  font-size: x-large;
+  font-weight: bold;
+  border-bottom: 1px #333 solid;
+}
+
+.noteinfo {
+  font-size: large;
+  font-weight: bold;
+  color: #ff9;
+}
+
+.noteinfotime {
+  font-style: italic;
+  font-size: small;
+  text-align: right;
+  padding: 5px;
+}
+
+.notedel {
+  text-align: center;
+  padding: 15px;
+}
+
 .foot {
   clear:both;
 }

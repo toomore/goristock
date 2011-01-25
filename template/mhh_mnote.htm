@@ -1,0 +1,32 @@
+{% extends "hm_infopage.htm" %}
+
+{% block titlename %}Mobile Note {{ no }} - {% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block content %}
+<div class="newstitle">
+  筆記 {{ no }}
+</div>
+<div class="notetext">
+{% if nc %}
+  {{ noteop.text }}<br>
+  <br>
+  <a href="/m/note/edit/{{ no }}">編輯</a> / <a href="/m/note/list/all">筆記列表</a> / <a href="/m/note/del/{{ no }}" class="red">刪除筆記</a><br>
+  <br>
+  <span>最後編輯時間：{{ noteop.editdate|timesince }} ago.</span><br>
+  <span>筆記建立時間：{{ noteop.adddate|timesince }} ago.</span><br>
+{% else %}
+  <a href="/m/note/add/{{ no }}">+新增筆記</a>
+{% endif %}
+</div>
+
+<table class="nav">
+  <tr>
+    <td><a href="/m/detail/{{ no }}">←分析</a></td>
+    <td><a href="/m/news/{{ no }} {{ stockname }}">新聞</a></td>
+    <td><a href="/m/chart/{{ no }}">K線圖→</a></td>
+  </tr>
+</table>
+{% endblock %}

@@ -31,3 +31,10 @@ class stocklist(db.Model):
   user = db.ReferenceProperty(userdata)
   stock = db.ListProperty(int, default = [2330,2498,1216,2891])
 
+class usernote(db.Model):
+  """ Let user add customs notes for stock. """
+  user = db.ReferenceProperty(userdata)
+  notetitle = db.StringProperty()
+  notetext = db.TextProperty()
+  edittime = db.DateTimeProperty(auto_now = True)
+  addtime = db.DateTimeProperty(auto_now_add = True)

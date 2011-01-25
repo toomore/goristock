@@ -1,0 +1,25 @@
+{% extends "hm_infopage.htm" %}
+
+{% block titlename %}Mobile Note List - {% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block content %}
+<div class="newstitle">
+  筆記列表
+</div>
+{% for i in note %}
+<div class="notelist">
+  <a href="/m/note/{{ i.title }}">{{ i.title }}</a>
+  <span class="noteinfo">{{ i.text }}</span>
+  <div class="noteinfotime">最後編輯時間：{{ i.editdate|timesince }} ago.</div>
+</div>
+{% endfor%}
+<table class="nav">
+  <tr>
+    <td><a href="/m">我的選股</a></td>
+    <td><a href="/m/config">設定</a></td>
+  </tr>
+</table>
+{% endblock %}

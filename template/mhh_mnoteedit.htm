@@ -1,0 +1,27 @@
+{% extends "hm_infopage.htm" %}
+
+{% block titlename %}Mobile {{ mod|title }} Note - {% endblock %}
+
+{% block javascript %}
+{% endblock %}
+
+{% block content %}
+<div class="newstitle">
+  Note {{ no }}
+</div>
+<form action="/m/notef" method="POST">
+  關於 {{ no }} 的筆記<br>
+  <textarea name="text" cols="34" rows="6">{{ text }}</textarea><br>
+  <input type="hidden" name="mod" value="{{ mod }}">
+  <input type="hidden" name="no" value="{{ no }}">
+  <input type="submit" value="確定"> <a href="/m/{{ reurl }}/{{ no }}">取消</a>
+</form>
+
+<table class="nav">
+  <tr>
+    <td><a href="/m">←Back</a></td>
+    <td><a href="/m/news/{{ no }} {{ stockname }}">新聞</a></td>
+    <td><a href="/m/chart/{{ no }}">K線圖→</a></td>
+  </tr>
+</table>
+{% endblock %}
