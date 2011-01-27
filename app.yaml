@@ -44,6 +44,8 @@ handlers:
   script: openid_login.py
 - url: /_ah/IdUser
   script: openid_login.py
+- url: /_ah/openidlogout
+  script: openid_login.py
 ##- url: /_ah/openid.*
 ##  script: openid_login.py
 

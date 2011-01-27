@@ -28,6 +28,8 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 import datamodel
 import logging
 
+from gaesessions import get_current_session
+
 class OpenIdLoginHandler(webapp.RequestHandler):
   def get(self):
     #continue_url = self.request.GET.get('continue')
@@ -48,25 +50,38 @@ class IdUser(webapp.RequestHandler):
 
   def add_account(self):
     user = users.get_current_user()
-    if not self.add_init(user):
-      re = datamodel.userdata(
+    ## session start
+    session = get_current_session()
+    if session.is_active():
+      session.terminate()
+
+    try:
+      re = datamodel.userdata.get_or_insert(
             key_name = user.nickname(),
             openid_provider = user.federated_provider()
-            ).put()
-      logging.info('info: %s' % re)
-      datamodel.stocklist(
+            )
+      datamodel.stocklist.get_or_insert(
             key_name = user.nickname(),
             user = re
-            ).put()
+            )
+      session['me'] = re
+      session['key_name'] = user.nickname()
+      logging.info('info: %s' % re)
       return re
-    else:
+    except:
       return False
 
   def get(self):
     if self.add_account():
       self.redirect('/m')
     else:
-      self.redirect('/m')
+      print "!"
+
+class oidout(webapp.RequestHandler):
+  def get(self):
+    session = get_current_session()
+    session.terminate()
+    self.redirect(users.create_logout_url('/m'))
 
 ############## main Models ##############
 def main():
@@ -74,7 +89,8 @@ def main():
   application = webapp.WSGIApplication(
                 [
                   ('/_ah/login_required', OpenIdLoginHandler),
-                  ('/_ah/IdUser', IdUser)
+                  ('/_ah/IdUser', IdUser),
+                  ('/_ah/openidlogout', oidout),
                 ],debug=True)
   run_wsgi_app(application)
 

@@ -24,14 +24,14 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
-#from google.appengine.ext.webapp.util import login_required
 from google.appengine.api import users
 from google.appengine.ext import db
-
 
 import goristock
 import mobileapi
 from gnews import gnews
+
+from gaesessions import get_current_session
 
 import urlparse
 import urllib
@@ -47,7 +47,8 @@ def create_openid_url(self, continue_url):
 
 def loginornot(self, user, continue_url):
   if user:
-    config = (" | <a href=\"%s\">登出</a>" % users.create_logout_url(self.request.uri))
+    #config = (" | <a href=\"%s\">登出</a>" % users.create_logout_url(self.request.uri))
+    config = (" | <a href=\"%s\">登出</a>" % '/_ah/openidlogout')
     greeting = "<a href=\"/m/config\">設定</a>"
   else:
     greeting = ("<a href=\"%s\">OpenID 登入</a>" %
@@ -58,13 +59,18 @@ def loginornot(self, user, continue_url):
 ############## webapp Models ##############
 class mobile(webapp.RequestHandler):
   def get(self):
-    user = users.get_current_user()
-    if not user or self.request.GET.get('r'):
+    #user = users.get_current_user()
+    session = get_current_session()
+
+    if not session.has_key('me') or self.request.GET.get('r'):
+      user = False
       c = twseno.twseno().allstock.keys()
       stlist = [random.choice(c) for i in range(4)]
       r = True
     else:
-      ud = datamodel.stocklist.get_by_key_name(user.nickname())
+      user = session['me']
+      user_key_name = session['key_name']
+      ud = datamodel.stocklist.get_by_key_name(user_key_name)
       stlist = ud.stock
       r = False
 
@@ -82,24 +88,32 @@ class mobile(webapp.RequestHandler):
 
 class udataconfig(webapp.RequestHandler):
   def get(self):
-    user = users.get_current_user()
+    #user = users.get_current_user()
+    session = get_current_session()
+    user = session['me']
+    user_key_name = session['key_name']
+
     if not user:
       self.redirect('/m')
     else:
-      ud = datamodel.stocklist.get_by_key_name(user.nickname())
+      ud = datamodel.stocklist.get_by_key_name(user_key_name)
       stlist = ud.stock
-      usd = {'nickname': user.nickname(), 'provider': user.federated_provider()}
-      logout = "<a href=\"%s\">登出 OpenID.</a>" % users.create_logout_url('/m')
+      usd = {'nickname': user_key_name, 'provider': user.openid_provider}
+      logout = "<a href=\"%s\">登出 OpenID.</a>" % '/_ah/openidlogout'
       mhh_mconfig = template.render('./template/mhh_mconfig.htm', {'tv': stlist, 'usd': usd, 'logout': logout})
       self.response.out.write(mhh_mconfig)
 
   def post(self):
-    user = users.get_current_user()
+    #user = users.get_current_user()
+    session = get_current_session()
+    user = session['me']
+    user_key_name = session['key_name']
+
     if not user:
       self.redirect('/m')
     else:
       try:
-        ud = datamodel.stocklist.get_by_key_name(user.nickname())
+        ud = datamodel.stocklist.get_by_key_name(user_key_name)
         stlist = ud.stock
         if self.request.POST.get('add'):
           adds = [ int(i) for i in list(self.request.POST.get('add').split(','))]
@@ -119,7 +133,9 @@ class udataconfig(webapp.RequestHandler):
 
 class detail(webapp.RequestHandler):
   def __init__(self):
-    self.user = users.get_current_user()
+    #self.user = users.get_current_user()
+    session = get_current_session()
+    self.user = session['me']
 
   def get(self, no):
     try:
@@ -183,9 +199,13 @@ class newskeywords(webapp.RequestHandler):
 
 class note(webapp.RequestHandler):
   def __init__(self):
-    self.user = users.get_current_user()
+    #self.user = users.get_current_user()
+    session = get_current_session()
+    self.user = session['me']
+    user_key_name = session['key_name']
+
     try:
-      self.userkey = datamodel.userdata.get_by_key_name(self.user.nickname())
+      self.userkey = datamodel.userdata.get_by_key_name(user_key_name)
     except AttributeError:
       pass
 
@@ -247,9 +267,13 @@ class note(webapp.RequestHandler):
 
 class notef(webapp.RequestHandler):
   def __init__(self):
-    self.user = users.get_current_user()
+    #self.user = users.get_current_user()
+    session = get_current_session()
+    self.user = session['me']
+    user_key_name = session['key_name']
+
     try:
-      self.userkey = datamodel.userdata.get_by_key_name(self.user.nickname())
+      self.userkey = datamodel.userdata.get_by_key_name(user_key_name)
     except AttributeError:
       pass
 
