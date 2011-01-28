@@ -1,12 +1,12 @@
 cron:
-- description: Overall stock
-  url: /ad/task
-  schedule: every mon,tue,wed,thu,fri 14:35
-  timezone: Asia/Taipei
-- description: Mail overall stock
-  url: /ad/cron_mail
-  schedule: every mon,tue,wed,thu,fri 14:45
-  timezone: Asia/Taipei
+#- description: Overall stock
+#  url: /ad/task
+#  schedule: every mon,tue,wed,thu,fri 14:35
+#  timezone: Asia/Taipei
+#- description: Mail overall stock
+#  url: /ad/cron_mail
+#  schedule: every mon,tue,wed,thu,fri 14:45
+#  timezone: Asia/Taipei
 - description: stantisercache
   url: /ad/stantisercache
   schedule: every mon,tue,wed,thu,fri 14:29
