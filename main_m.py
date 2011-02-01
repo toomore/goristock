@@ -24,8 +24,7 @@
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
-from google.appengine.api import users
-from google.appengine.ext import db
+#from google.appengine.api import users
 
 import goristock
 import mobileapi
@@ -38,6 +37,7 @@ import urllib
 import datamodel
 import twseno
 import random
+import time
 from datetime import datetime
 from datetime import timedelta
 
@@ -68,6 +68,10 @@ class mobile(webapp.RequestHandler):
       stlist = [random.choice(c) for i in range(4)]
       r = True
     else:
+      ## Renew session expire time and session_id
+      newdate = time.mktime((datetime.today() + timedelta(14,hours = 8)).timetuple())
+      session.regenerate_id(newdate)
+
       user = session['me']
       user_key_name = session['key_name']
       ud = datamodel.stocklist.get_by_key_name(user_key_name)
@@ -99,7 +103,7 @@ class udataconfig(webapp.RequestHandler):
       ud = datamodel.stocklist.get_by_key_name(user_key_name)
       stlist = ud.stock
       usd = {'nickname': user_key_name, 'provider': user.openid_provider}
-      logout = "<a href=\"%s\">登出 OpenID.</a>" % '/_ah/openidlogout'
+      logout = "OpenID 將在 %s 過期，或是直接<a href=\"/_ah/openidlogout\">登出 OpenID.</a>" % datetime.fromtimestamp(session.get_expiration())
       mhh_mconfig = template.render('./template/mhh_mconfig.htm', {'tv': stlist, 'usd': usd, 'logout': logout})
       self.response.out.write(mhh_mconfig)
 
