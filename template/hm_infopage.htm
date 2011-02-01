@@ -21,6 +21,6 @@
     </head>
     <body>
       <div class="con">{% block content %}{% endblock %}</div>
-      <div class="foot footdesc">{% block foot %}goristock for Mobile.<br><a href="/m">手機版</a> | 網頁版{{ config }}{% endblock %}</div>
+      <div class="foot footdesc">{% block foot %}goristock for Mobile.<br><a href="/m">手機版</a> | 網頁版{{ config|safe }}{% endblock %}</div>
     </body>
 </html>

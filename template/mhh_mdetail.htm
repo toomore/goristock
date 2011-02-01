@@ -6,11 +6,83 @@
 {% endblock %}
 
 {% block content %}
+{% if real %}
+<div class="newstitle">
+  五檔行情揭示表
+</div>
+<div class="best5">
+  {{ real.name }} {{ real.stock_no }}
+  <table>
+    <tr>
+      <td>開盤價</td>
+      <td>最高價</td>
+      <td>最低價</td>
+      <td>成交價</td>
+      <td>成交量</td>
+    </tr>
+    <tr>
+      <td>{{ real.open }}</td>
+      <td class="red">{{ real.h }}</td>
+      <td class="green">{{ real.l }}</td>
+      <td{% if real.ranges %} class="red"{% else %} class="green"{% endif %}>{{ real.c }}</td>
+      <td>{{ real.value }}</td>
+    </tr>
+    <tr>
+      <td colspan='2'>最後更新時間</td>
+      <td>漲跌</td>
+      <td>漲跌幅</td>
+      <td>單量</td>
+    </tr>
+    <tr>
+      <td colspan='2'>{{ real.time }}</td>
+      <td{% if real.ranges %} class="red"{% else %} class="green"{% endif %}>{{ real.range|floatformat:2 }}</td>
+      <td{% if real.ranges %} class="red"{% else %} class="green"{% endif %}>{{ real.pp|floatformat:2 }}%</td>
+      <td>{{ real.pvalue }}</td>
+    </tr>
+  </table>
+  <table class="best5list">
+    <tr>
+      <td>買進行情表</td>
+      <td>賣出行情表</td>
+    </tr>
+    <tr>
+      <td>
+        <table>
+          <tr>
+            <td>價格</td>
+            <td>數量</td>
+          </tr>
+            {% for i,n in real.top5buy %}
+            <tr>
+              <td class="green">{{ i|floatformat:2 }}</td>
+              <td>{{ n }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+      </td>
+      <td>
+        <table>
+          <tr>
+            <td>價格</td>
+            <td>數量</td>
+          </tr>
+            {% for i,n in real.top5sell %}
+            <tr>
+              <td class="red">{{ i|floatformat:2 }}</td>
+              <td>{{ n }}</td>
+            </tr>
+            {% endfor %}
+        </table>
+      </td>
+    </tr>
+  </table>
+</div>
+{% endif %}
 <div class="newstitle">
   各股分析
 </div>
 <div class="mdetail">
-{{ tv }}
+{{ tv|safe }}
 </div>
 <br>
 <table class="nav">

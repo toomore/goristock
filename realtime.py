@@ -82,7 +82,7 @@ class twsk(object):
       else:
         re['ranges'] = True ## price up
 
-      re['crosspic'] = "http://chart.apis.google.com/chart?chs=20x40&cht=lc&chd=t1:0,0,0|0,%s,0|0,%s,0|0,%s,0|0,%s,0&chds=%s,%s&chm=F,,1,1:4,20" % (re['h'],re['c'],re['open'],re['l'],re['l'],re['h'])
+      re['crosspic'] = "http://chart.apis.google.com/chart?chf=bg,s,ffffff&chs=20x50&cht=ls&chd=t1:0,0,0|0,%s,0|0,%s,0|0,%s,0|0,%s,0&chds=%s,%s&chm=F,,1,1:4,20" % (re['h'],re['c'],re['open'],re['l'],re['l'],re['h'])
       re['top5buy'].sort()
       re['top5sell'].sort()
 

@@ -187,6 +187,25 @@ td {
   padding: 15px;
 }
 
+.best5 {
+  font-size: large;
+  text-align: center;
+  font-weight: bold;
+}
+
+.best5 table {
+  font-size: large;
+  margin-left:auto;
+  margin-right:auto;
+  font-weight: bold;
+}
+
+.best5list {
+  background-color: #223;
+  padding: 5px;
+  width:90%;
+}
+
 .foot {
   clear:both;
 }

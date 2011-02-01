@@ -53,10 +53,20 @@ class mapi(object):
       'name': self.g['name'],
       'stock_no': self.g['no'],
       'time': self.g['time'],
+      'open': self.g['open'],
+      'h': self.g['h'],
+      'l': self.g['l'],
       'c': self.g['c'],
+      'max': self.g['max'],
+      'min': self.g['min'],
       'range': covstr(self.g['range']),
+      'ranges': self.g['ranges'],
       'value': self.g['value'],
+      'pvalue': self.g['pvalue'],
       'pp': covstr(self.g['pp']),
+      'top5buy': self.g['top5buy'],
+      'top5sell': self.g['top5sell'],
+      'crosspic': self.g['crosspic'],
       'css': css
     }
     return re

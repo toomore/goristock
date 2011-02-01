@@ -17,6 +17,7 @@
 <table class="stable">
 {% for i in tv %}
   <tr>
+    <td rowspan="2"><img src="{{ i.crosspic }}"></td>
     <td>{{ i.name }}</td>
     <td class="{{ i.css }}">{{ i.c }}</td>
     <td class="{{ i.css }}">{{ i.range|floatformat:2 }} <span class="pp">({{ i.pp|floatformat:2 }}%)</span></td>
@@ -38,7 +39,7 @@
     <td><a href="/m">重新整理</a></td>
     {% endif %}
     <td><a href="/m/news">新聞</a></td>
-    <td>{{ user }}</td>
+    <td>{{ user|safe }}</td>
   </tr>
 </table>
 {% endblock %}

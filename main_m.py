@@ -20,6 +20,13 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+from google.appengine.dist import use_library
+use_library('django', '1.1')
+import django
+## some issue http://code.google.com/p/googleappengine/issues/detail?id=1758
+
 ## GAE lib
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
@@ -143,6 +150,11 @@ class detail(webapp.RequestHandler):
 
   def get(self, no):
     try:
+      real = mobileapi.mapi(no).output
+    except:
+      real = None
+
+    try:
       op = goristock.goristock(no).XMPP_display(3,6,18).encode('utf-8').replace('\n','<br>')
       oop = op.split('<br>')
       ooop = ''
@@ -162,7 +174,7 @@ class detail(webapp.RequestHandler):
         stockname = twseno.twseno().allstockno.get(str(no)).decode('utf-8')
       except:
         stockname = ''
-      mhh_mdetail = template.render('./template/mhh_mdetail.htm', {'tv': ooop, 'no': no, 'stockname': stockname, 'login': self.user})
+      mhh_mdetail = template.render('./template/mhh_mdetail.htm', {'tv': ooop, 'real': real, 'no': no, 'stockname': stockname, 'login': self.user})
       self.response.out.write(mhh_mdetail)
     except IndexError:
       self.redirect('/m')
