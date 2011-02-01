@@ -3,6 +3,7 @@ goristock 台灣股市分析機器人
 
 :Authors:
   Toomore
+:Version: 0.4 of 2011/02/08
 
 How it work.
 ------------
@@ -16,6 +17,43 @@ Report Issue or get involved
 
 ChangeLog
 ===========
+
+2011-02-08 v0.4
+----------------
+main change:
+
+#. Add web site for Mobile.
+
+#. OpenID suppourt.
+
+#. `gae-session <https://github.com/dound/gae-sessions>`_ support.
+
+commits:
+
+- a49a6ec Add Five Best Bids & Asks list in mobile.
+- 3c31bcc Add session auto renew.
+- ab9e5db Change cron from Chinese New Year.
+- 598a2fe Add gae-session in mobile.
+- b329754 Add Note for mobile.
+- 884a59b Add news keywords in mobile.
+- 5c4df29 Change TIMESINCE for mobile news.
+- d407ab8 Update stock list.
+- 21b2196 Add NEWS in mobile.
+- d73937f Add random display when login mobile.
+- dfc4954 Fixed a bug.
+- a051b3b Add detail and chart for mobile.
+- 713be6e Fixed some bugs.
+- 02840c9 Delete no use .js and change openid_login.py
+- e37549b Change random display for non-login frontpage.
+- 1f9971e Change mobile config UI.
+- b2c2102 Add config page for mobile.
+- 663abd9 Change OpenID Login UI.
+- ce580b1 Add OpenID login interface.
+- 2dd6fa7 Add OpenID for Mobile Login.
+- 8384b33 Start for Mobile templates.
+- e7b6a64 Add title, date in Chart.
+- c2396b0 Add Google Chart for display stock.
+- 75a706c Merge branch 'dev'
 
 2010-12-22 v0.3
 ----------------
