@@ -70,7 +70,10 @@ class mobile(webapp.RequestHandler):
     session = get_current_session()
 
     if not session.has_key('me') or self.request.GET.get('r'):
-      user = False
+      if session.has_key('me'):
+        user = True
+      else:
+        user = False
       c = twseno.twseno().allstock.keys()
       stlist = [random.choice(c) for i in range(4)]
       r = True

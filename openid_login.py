@@ -20,6 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+from google.appengine.dist import use_library
+use_library('django', '1.1')
+import django
+
 from google.appengine.api import users
 from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
@@ -32,17 +38,21 @@ from gaesessions import get_current_session
 
 class OpenIdLoginHandler(webapp.RequestHandler):
   def get(self):
-    #continue_url = self.request.GET.get('continue')
+    continue_url = self.request.GET.get('continue')
     continue_url = '/_ah/IdUser'
     openid_url = self.request.GET.get('openid')
     otheropenid_url = self.request.GET.get('otheropenid')
-    if not openid_url:
-      if not otheropenid_url:
-        self.response.out.write(template.render('./template/login.htm', {'continue': continue_url}))
+    session = get_current_session()
+    if not session.has_key('me'):
+      if not openid_url:
+        if not otheropenid_url:
+          self.response.out.write(template.render('./template/login.htm', {'continue': continue_url}))
+        else:
+          self.redirect(users.create_login_url(continue_url, None, otheropenid_url))
       else:
-        self.redirect(users.create_login_url(continue_url, None, otheropenid_url))
+        self.redirect(users.create_login_url(continue_url, None, openid_url))
     else:
-      self.redirect(users.create_login_url(continue_url, None, openid_url))
+      self.redirect('/m')
 
 class IdUser(webapp.RequestHandler):
   def add_init(self, user):
