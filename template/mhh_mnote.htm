@@ -11,7 +11,7 @@
 </div>
 <div class="notetext">
 {% if nc %}
-  {{ noteop.text }}<br>
+  {{ noteop.text|safe }}<br>
   <br>
   <a href="/m/note/edit/{{ no }}">編輯</a> / <a href="/m/note/list/all">筆記列表</a> / <a href="/m/note/del/{{ no }}" class="red">刪除筆記</a><br>
   <br>

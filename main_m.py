@@ -24,7 +24,7 @@ import os
 os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
 from google.appengine.dist import use_library
 use_library('django', '1.1')
-import django
+#import django
 ## some issue http://code.google.com/p/googleappengine/issues/detail?id=1758
 
 ## GAE lib
@@ -103,9 +103,12 @@ class mobile(webapp.RequestHandler):
 class udataconfig(webapp.RequestHandler):
   def get(self):
     #user = users.get_current_user()
-    session = get_current_session()
-    user = session['me']
-    user_key_name = session['key_name']
+    try:
+      session = get_current_session()
+      user = session['me']
+      user_key_name = session['key_name']
+    except:
+      user = None
 
     if not user:
       self.redirect('/m')
@@ -119,9 +122,12 @@ class udataconfig(webapp.RequestHandler):
 
   def post(self):
     #user = users.get_current_user()
-    session = get_current_session()
-    user = session['me']
-    user_key_name = session['key_name']
+    try:
+      session = get_current_session()
+      user = session['me']
+      user_key_name = session['key_name']
+    except:
+      user = None
 
     if not user:
       self.redirect('/m')
@@ -149,7 +155,7 @@ class detail(webapp.RequestHandler):
   def __init__(self):
     #self.user = users.get_current_user()
     session = get_current_session()
-    self.user = session['me']
+    self.login = session.has_key('me')
 
   def get(self, no):
     try:
@@ -177,7 +183,7 @@ class detail(webapp.RequestHandler):
         stockname = twseno.twseno().allstockno.get(str(no)).decode('utf-8')
       except:
         stockname = ''
-      mhh_mdetail = template.render('./template/mhh_mdetail.htm', {'tv': ooop, 'real': real, 'no': no, 'stockname': stockname, 'login': self.user})
+      mhh_mdetail = template.render('./template/mhh_mdetail.htm', {'tv': ooop, 'real': real, 'no': no, 'stockname': stockname, 'login': self.login})
       self.response.out.write(mhh_mdetail)
     except IndexError:
       self.redirect('/m')
@@ -217,24 +223,21 @@ class newskeywords(webapp.RequestHandler):
     self.response.out.write(mhh_mnewskeywords)
 
 class note(webapp.RequestHandler):
-  def __init__(self):
+  def get(self,mode,no):
     #self.user = users.get_current_user()
     session = get_current_session()
-    self.user = session['me']
-    user_key_name = session['key_name']
-
     try:
-      self.userkey = datamodel.userdata.get_by_key_name(user_key_name)
-    except AttributeError:
-      pass
+      user = session['me']
+      user_key_name = session['key_name']
+      userkey = datamodel.userdata.get_by_key_name(user_key_name)
+    except:
+      user = None
 
-  def get(self,mode,no):
-    if not self.user: ## Not login
+    if not user: ## Not login
       nc = 0
       self.redirect('/m')
     else: ## login
-      #u = dir(datamodel.stocklist.get_by_key_name(self.user.nickname()))
-      result = datamodel.usernote.gql('where user = :user and notetitle = :notetitle', user = self.userkey, notetitle = no)
+      result = datamodel.usernote.gql('where user = :user and notetitle = :notetitle', user = userkey, notetitle = no)
       nc = result.count()
 
       if mode == '/add':
@@ -255,7 +258,7 @@ class note(webapp.RequestHandler):
           key = i.key()
         mhh_mnote = template.render('./template/mhh_mnotedel.htm', {'no': no, 'key': key})
       elif mode == '/list':
-        result = datamodel.usernote.gql('where user = :user order by edittime desc', user = self.userkey)
+        result = datamodel.usernote.gql('where user = :user order by edittime desc', user = userkey)
         listnote = []
         for i in result:
           l = {
@@ -285,29 +288,27 @@ class note(webapp.RequestHandler):
       self.response.out.write(mhh_mnote)
 
 class notef(webapp.RequestHandler):
-  def __init__(self):
-    #self.user = users.get_current_user()
-    session = get_current_session()
-    self.user = session['me']
-    user_key_name = session['key_name']
-
-    try:
-      self.userkey = datamodel.userdata.get_by_key_name(user_key_name)
-    except AttributeError:
-      pass
-
   def post(self):
-    if not self.user: ## Not login
+    #self.user = users.get_current_user()
+    try:
+      session = get_current_session()
+      user = session['me']
+      user_key_name = session['key_name']
+      userkey = datamodel.userdata.get_by_key_name(user_key_name)
+    except:
+      user = None
+
+    if not user: ## Not login
       self.redirect('/m')
     else:
       mod = self.request.POST.get('mod')
       no = self.request.POST.get('no')
       text = self.request.POST.get('text')
       if mod == 'add':
-        datamodel.usernote(user = self.userkey, notetitle = no, notetext = text).put()
+        datamodel.usernote(user = userkey, notetitle = no, notetext = text).put()
         self.redirect('/m/note/%s' % no)
       elif mod == 'edit':
-        result = datamodel.usernote.gql('where user = :user and notetitle = :notetitle', user = self.userkey, notetitle = no)
+        result = datamodel.usernote.gql('where user = :user and notetitle = :notetitle', user = userkey, notetitle = no)
         for i in result:
           i.notetext = text
           i.put()
@@ -315,7 +316,7 @@ class notef(webapp.RequestHandler):
       elif mod == 'del':
         key = self.request.POST.get('key')
         note = datamodel.usernote.get(key)
-        if note.user.key() == self.userkey.key():
+        if note.user.key() == userkey.key():
           note.delete()
           self.redirect('/m/note/%s' % no)
         else:
