@@ -277,7 +277,8 @@ class note(webapp.RequestHandler):
         else:
           noteop = {}
           for i in result:
-            noteop['text'] = i.notetext.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace("'", '&#39;').replace('\r\n','<br>')
+            #noteop['text'] = i.notetext.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;').replace('"', '&quot;').replace("'", '&#39;').replace('\r\n','<br>')
+            noteop['text'] = i.notetext
             noteop['editdate'] = i.edittime
             noteop['adddate'] = i.addtime
           t = 'in note'

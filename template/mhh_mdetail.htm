@@ -35,8 +35,8 @@
     </tr>
     <tr>
       <td colspan='2'>{{ real.time }}</td>
-      <td{% if real.ranges %} class="red"{% else %} class="green"{% endif %}>{{ real.range|floatformat:2 }}</td>
-      <td{% if real.ranges %} class="red"{% else %} class="green"{% endif %}>{{ real.pp|floatformat:2 }}%</td>
+      <td{% if real.ranges %} class="red"{% else %} class="green"{% endif %}>{{ real.range|floatformat:-2 }}</td>
+      <td{% if real.ranges %} class="red"{% else %} class="green"{% endif %}>{{ real.pp|floatformat:-2 }}%</td>
       <td>{{ real.pvalue }}</td>
     </tr>
   </table>
@@ -54,7 +54,7 @@
           </tr>
             {% for i,n in real.top5buy %}
             <tr>
-              <td class="green">{{ i|floatformat:2 }}</td>
+              <td class="green">{{ i|floatformat:-2 }}</td>
               <td>{{ n }}</td>
             </tr>
             {% endfor %}
@@ -68,7 +68,7 @@
           </tr>
             {% for i,n in real.top5sell %}
             <tr>
-              <td class="red">{{ i|floatformat:2 }}</td>
+              <td class="red">{{ i|floatformat:-2 }}</td>
               <td>{{ n }}</td>
             </tr>
             {% endfor %}
