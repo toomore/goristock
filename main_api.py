@@ -64,6 +64,11 @@ class searchstock(webapp.RequestHandler):
     reapi = goapi.searchstock(self.request.get('q'))
     self.response.out.write(template.render('./template/api.htm',{'reapi': reapi}))
 
+class news(webapp.RequestHandler):
+  def get(self):
+    reapi = goapi.newsapi(self.request.get('q'))
+    self.response.out.write(template.render('./template/api.htm',{'reapi': reapi}))
+
 ############## redirect Models ##############
 class rewrite(webapp.RequestHandler):
   def get(self):
@@ -80,6 +85,7 @@ def main():
                   ('/API/weight', weight),
                   ('/API/liststock', liststock),
                   ('/API/searchstock', searchstock),
+                  ('/API/news', news),
                   ('/API.*', rewrite)
                 ],debug=True)
   run_wsgi_app(application)

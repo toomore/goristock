@@ -50,6 +50,10 @@
   <ul>
     <li>搜尋上市公司</li>
   </ul>
+<li><a href="#apinews">/API/news</a></li>
+  <ul>
+    <li>搜尋財經新聞</li>
+  </ul>
 </ul>
 </div>
 <h2><a name="apiv"></a>API 版本紀錄</h2>
@@ -57,6 +61,8 @@
   API 版本：v0.1pre
 
   文件最後更新時間
+  - 2011-02-08
+    - Add /API/news
   - 2010-12-16
     - Add Error Report.
     - Add /API/liststock
@@ -481,5 +487,89 @@
         </dd>
     </dl>
 </dl>
+<h2><a name="apinews"></a>/API/news</h2>
+<div class="apiscr">搜尋財經新聞</div>
+<dl>
+  <dt>Required parameters：</dt>
+    <dd><b>q</b>：欲搜尋關鍵字</dd>
+  <dt>Return attributes：</dt>
+    <dd><b>url</b>：新聞網址</dd>
+    <dd><b>publisher</b>：新聞出版者</dd>
+    <dd><b>publisheddate</b>：新聞出版時間</dd>
+    <dd><b>title</b>：新聞標題</dd>
+</dl>
+<dl>
+  <dt>Example：</dt>
+      <dl>
+        <dt>URL：</dt>
+          <dd>
+<pre class="brush: py;">
+## 所呼叫的 API 網址範例，搜尋關於 "宏達電 2498" 之新聞。
+/API/news?q=宏達電 2498
+</pre>
+         </dd>
+        <dt>JSON output：</dt>
+          <dd>
+<pre class="brush: py;">
+## 回傳的結果，JSON 格式
+{
+  "0": {
+    "url": "http://udn.com/NEWS/STOCK/STO2/6137205.shtml",
+    "publisher": "聯合新聞網",
+    "publisheddate": "2011-02-07 14:21:41",
+    "title": "觸控 3供應鏈4星亮"
+  },
+  "1": {
+    "url": "http://news.cnyes.com/Content/20110207/KDUJ17J5KPVEY.shtml?c=tw_stock",
+    "publisher": "鉅亨網",
+    "publisheddate": "2011-02-07 17:49:16",
+    "title": "紅盤看我！金兔年狡兔三窟 電金傳10檔強者恆強指標股"
+  },
+  ...
+}
+</pre>
+          </dd>
+        <dt>URL：</dt>
+          <dd>
+<pre class="brush: py;">
+## 如果不指定關鍵字，則回傳當日 TOP 8 財經新聞
+/API/news
+</pre>
+         </dd>
+        <dt>JSON output：</dt>
+          <dd>
+<pre class="brush: py;">
+## 回傳的結果，JSON 格式
+{
+  "0": {
+    "url": "http://iservice.libertytimes.com.tw/liveNews/news.php?no=460806&type=%E8%B2%A1%E7%B6%93",
+    "publisher": "自由時報",
+    "publisheddate": "2011-02-07 22:45:09",
+    "title": "今彩539三星彩四星彩派彩"
+  },
+  "1": {
+    "url": "http://iservice.libertytimes.com.tw/liveNews/news.php?no=460801&type=%E5%9C%8B%E9%9A%9B",
+    "publisher": "自由時報",
+    "publisheddate": "2011-02-07 22:25:14",
+    "title": "埃及漸正常宵禁縮短股市將開"
+  },
+  ...
+}
+</pre>
+</dd>
+      <dt>Error report：</dt>
+        <dd>
+<pre class="brush: py;">
+## 如果沒有輸入關鍵字會回傳
+{
+  "ERRORREPORT": "No result."
+}
+</pre>
+        </dd>
+    </dl>
+<dt>Reference：</dt>
+  <dd><a href="http://code.google.com/apis/newssearch/">Google News Search API</a></dd>
+</dl>
+
 </div>
 {% endblock %}

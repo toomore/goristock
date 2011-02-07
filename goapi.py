@@ -27,6 +27,7 @@ except:
 import goristock
 import realtime
 import twseno
+from gnews import gnews
 
 class goapi(object):
   def __init__(self, stock_no):
@@ -88,4 +89,16 @@ def searchstock(q):
     return json.dumps(re)
   else:
     re = {'ERRORREPORT': "No keyword."}
+    return json.dumps(re)
+
+def newsapi(q = None, rsz = 8):
+  try:
+    if q:
+      q = q.encode('utf-8')
+      n = gnews(q, rsz = rsz).formatre
+    else:
+      n = gnews('', 'b', rsz).formatre
+    return json.dumps(n)
+  except TypeError:
+    re = {'ERRORREPORT': "No result."}
     return json.dumps(re)
