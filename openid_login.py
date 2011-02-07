@@ -39,7 +39,10 @@ from gaesessions import get_current_session
 
 class OpenIdLoginHandler(webapp.RequestHandler):
   def get(self):
-    continue_url = self.request.GET.get('continue')
+    continue_session = self.request.GET.get('continue')
+    session = get_current_session()
+    session['continue'] = continue_session
+
     continue_url = '/_ah/IdUser'
     openid_url = self.request.GET.get('openid')
     otheropenid_url = self.request.GET.get('otheropenid')
@@ -47,7 +50,7 @@ class OpenIdLoginHandler(webapp.RequestHandler):
     if not session.has_key('me'):
       if not openid_url:
         if not otheropenid_url:
-          self.response.out.write(template.render('./template/login.htm', {'continue': continue_url}))
+          self.response.out.write(template.render('./template/login.htm', {'continue': continue_session}))
         else:
           self.redirect(users.create_login_url(continue_url, None, otheropenid_url))
       else:
@@ -63,6 +66,10 @@ class IdUser(webapp.RequestHandler):
     user = users.get_current_user()
     ## session start
     session = get_current_session()
+    try:
+      self.reurl = session['continue']
+    except:
+      self.reurl = '/m'
     if session.is_active():
       session.terminate()
 
@@ -84,7 +91,7 @@ class IdUser(webapp.RequestHandler):
 
   def get(self):
     if self.add_account():
-      self.redirect('/m')
+      self.redirect(self.reurl)
     else:
       print "!"
 
