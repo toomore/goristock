@@ -116,7 +116,7 @@ class udataconfig(webapp.RequestHandler):
       ud = datamodel.stocklist.get_by_key_name(user_key_name)
       stlist = ud.stock
       usd = {'nickname': user_key_name, 'provider': user.openid_provider}
-      logout = "OpenID 將在 %s 過期，或是直接<a href=\"/_ah/openidlogout\">登出 OpenID.</a>" % datetime.fromtimestamp(session.get_expiration())
+      logout = "自動登入將在 %s 過期，或是直接<a href=\"/_ah/openidlogout\">登出 OpenID.</a>" % datetime.fromtimestamp(session.get_expiration())
       mhh_mconfig = template.render('./template/mhh_mconfig.htm', {'tv': stlist, 'usd': usd, 'logout': logout})
       self.response.out.write(mhh_mconfig)
 

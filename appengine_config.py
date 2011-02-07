@@ -7,6 +7,7 @@ use_library('django', '1.1')
 # by http://code.google.com/p/googleappengine/issues/detail?id=1758#c25
 
 from gaesessions import SessionMiddleware
+import datamodel
 
 # suggestion: generate your own random key using os.urandom(64)
 # WARNING: Make sure you run os.urandom(64) OFFLINE and copy/paste the output to

@@ -46,6 +46,7 @@ import goristock
 from all_portf import all_portf
 from twseno import twseno
 from gnews import gnews
+from gaesessions import get_current_session
 
 def ckinv(oo):
   """ check the value is date or not """
@@ -152,8 +153,14 @@ class xmpp_invite(webapp.RequestHandler):
   @login_required
   def get(self):
     umail = users.get_current_user().email()
-    xmpp.send_invite(umail) ## TODO: Will be fault if OpenID login.
-    xmpp.send_message('toomore0929@gmail.com', '#NEWUSER %s' % umail)
+    try: ## Fixed: If OpenID login, fault mail format will reurl & out login.
+      xmpp.send_invite(umail)
+      xmpp.send_message('toomore0929@gmail.com', '#NEWUSER %s' % umail)
+    except:
+      session = get_current_session()
+      session.terminate()
+      self.redirect(users.create_logout_url('/invite'))
+
     logging.info('#NEWUSER %s' % umail)
     ## todo: send a guild mail to the first time invited user.
     tv = {'umail': umail}
