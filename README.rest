@@ -22,14 +22,27 @@ ChangeLog
 ----------------
 main change:
 
-#. Add web site for Mobile.
+#. Add web site for `Mobile <http://goristock.appspot.com/m>`_.
 
-#. OpenID suppourt.
+#. OpenID support.
 
 #. `gae-session <https://github.com/dound/gae-sessions>`_ support.
 
+#. Using Django template 1.1
+
+#. [API] Add `NEWS search support <http://goristock.appspot.com/API#apinews>`_.
+
 commits:
 
+- bafd70b Fixed OpenID continue url.
+- 334165f Add API using.
+- d4b15d2 Change cron for new year open.
+- 1e480d5 Fixed when OpenID get invite XMPP fault & gaesession bug.
+- 22218bd Add NEWS API.
+- 404e0c1 Change some django bug.
+- b528ec4 Change to using Django temp. filters for note.
+- 7088840 Fixed need-login page detect.
+- cb0e7ed Tiny change OpenID detect login or not.
 - a49a6ec Add Five Best Bids & Asks list in mobile.
 - 3c31bcc Add session auto renew.
 - ab9e5db Change cron from Chinese New Year.
