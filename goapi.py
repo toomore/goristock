@@ -52,7 +52,7 @@ class goapi(object):
         }
     except:
       re = {'ERRORREPORT': "Can't fetch stock data."}
-    return json.dumps(re)
+    return json.dumps(re, ensure_ascii = False)
 
   @property
   def stock_real(self):
@@ -60,14 +60,14 @@ class goapi(object):
       re = realtime.twsk(self.stock_no).real
     except:
       re = {'ERRORREPORT': "Can't fetch real stock data."}
-    return json.dumps(re)
+    return json.dumps(re, ensure_ascii = False)
 
 def weight():
   try:
     re = realtime.twsew().weight
   except:
     re = {'ERRORREPORT': "Can't fetch weight data."}
-  return json.dumps(re)
+  return json.dumps(re, ensure_ascii = False)
 
 def stocklist():
   stock_list = twseno.twseno().allstockno
@@ -76,7 +76,7 @@ def stocklist():
     re_st.update({i: stock_list[i].decode('utf-8')})
   re = {'stocklist': re_st, 'n': len(stock_list)}
   re.update({'last_update': twseno.twseno().last_update})
-  return json.dumps(re)
+  return json.dumps(re, ensure_ascii = False)
 
 def searchstock(q):
   q = q.encode('utf-8').replace(' ','')
@@ -86,10 +86,10 @@ def searchstock(q):
     for i in rq:
       re_se.update({i: rq[i].decode('utf-8')})
     re = {'result': re_se, 'n': len(rq)}
-    return json.dumps(re)
+    return json.dumps(re, ensure_ascii = False)
   else:
     re = {'ERRORREPORT': "No keyword."}
-    return json.dumps(re)
+    return json.dumps(re, ensure_ascii = False)
 
 def newsapi(q = None, rsz = 8):
   try:
@@ -98,7 +98,7 @@ def newsapi(q = None, rsz = 8):
       n = gnews(q, rsz = rsz).formatre
     else:
       n = gnews('', 'b', rsz).formatre
-    return json.dumps(n)
+    return json.dumps(n, ensure_ascii = False)
   except TypeError:
     re = {'ERRORREPORT': "No result."}
-    return json.dumps(re)
+    return json.dumps(re, ensure_ascii = False)
