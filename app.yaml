@@ -66,6 +66,7 @@ handlers:
 
 inbound_services:
 - xmpp_message
+- xmpp_presence
 - mail
 
 builtins:

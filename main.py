@@ -440,6 +440,16 @@ class rewrite(webapp.RequestHandler):
   def get(self):
     self.redirect('/')
 
+############## TEST XMPP new feathre Models ##############
+class xmpp_avail(webapp.RequestHandler):
+  def post(self):
+    f = self.request.get('from').split('/')[0]
+    rev = goristock.TW_display()
+    reply = '{%s %s} 加權指數：%s (%s) 成交金額：%s 億' % (rev['0']['time'][5:], rev['1']['time'][:-3], rev['1']['value'], rev['1']['range'], rev['200']['v2'])
+    xmpp.send_presence(f, status=reply)
+    logging.info('presence: %s (%s)' % (self.request.get('from'), self.request.get('status')))
+    #xmpp.send_message('toomore0929@gmail.com', self.request.get('from'))
+
 ############## main Models ##############
 def main():
   """ Start up. """
@@ -452,6 +462,9 @@ def main():
                   ('/howitwork', howitwork),
                   ('/dev', getindev),
                   ('/_ah/xmpp/message/chat/', xmpp_pagex),
+                  ('/_ah/xmpp/presence/available/', xmpp_avail),
+                  ('/_ah/xmpp/presence/unavailable/', xmpp_avail),
+                  ('/_ah/xmpp/presence/probe/', xmpp_avail),
                   ('/ad/task', task),
                   ('/ad/task_stock', task_stock), ## out of work
                   ('/ad/task_stocks', task_stocks),
