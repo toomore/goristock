@@ -443,10 +443,14 @@ class rewrite(webapp.RequestHandler):
 ############## TEST XMPP new feathre Models ##############
 class xmpp_avail(webapp.RequestHandler):
   def post(self):
+    from datamodel import seluser
     f = self.request.get('from').split('/')[0]
     rev = goristock.TW_display()
     reply = '{%s %s} 加權指數：%s (%s) 成交金額：%s 億' % (rev['0']['time'][5:], rev['1']['time'][:-3], rev['1']['value'], rev['1']['range'], rev['200']['v2'])
     xmpp.send_presence(f, status=reply)
+    udata = seluser.get_or_insert(key_name = f, times = 1)
+    udata.times += 1
+    udata.put()
     logging.info('presence: %s (%s)' % (self.request.get('from'), self.request.get('status')))
     #xmpp.send_message('toomore0929@gmail.com', self.request.get('from'))
 

@@ -38,3 +38,9 @@ class usernote(db.Model):
   notetext = db.TextProperty()
   edittime = db.DateTimeProperty(auto_now = True)
   addtime = db.DateTimeProperty(auto_now_add = True)
+
+class seluser(db.Model):
+  """ pre_dev """
+  times = db.IntegerProperty()
+  edittime = db.DateTimeProperty(auto_now = True)
+  addtime = db.DateTimeProperty(auto_now_add = True)
