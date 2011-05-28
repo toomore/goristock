@@ -68,6 +68,7 @@ inbound_services:
 - xmpp_message
 - xmpp_presence
 - mail
+- warmup
 
 builtins:
 - appstats: on
