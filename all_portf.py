@@ -26,4 +26,13 @@ class all_portf(object):
     self.a = a
 
   def ck_portf_001(self):
+    ''' 3-6負乖離且向上，三日內最大量，成交量大於1000，收盤價大於 10 '''
     return self.a.MAO(3,6)[1] == '↑'.decode('utf-8') and (self.a.MAO(3,6)[0][1][-1] < 0 or ( self.a.MAO(3,6)[0][1][-1] < 1 and self.a.MAO(3,6)[0][1][-1] > 0 and self.a.MAO(3,6)[0][1][-2] < 0 and  self.a.MAO(3,6)[0][0] == 3)) and self.a.VOLMAX3 and self.a.stock_vol[-1] > 1000*1000 and self.a.raw_data[-1] > 10
+
+  def ck_portf_002(self):
+    ''' 3日均價大於6日均價，6日均價大於18日均價 '''
+    return self.a.MA(3) > self.a.MA(6) > self.a.MA(18)
+
+  def ck_portf_003(self):
+    ''' 當日成交量，大於前三天的總成交量 '''
+    return self.a.MAVOL(1) > sum(self.a.stock_vol[-4:-1])

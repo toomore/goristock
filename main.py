@@ -292,18 +292,19 @@ class task_stock(webapp.RequestHandler):
     a = goristock.goristock(self.request.get('no'))
     body = a.XMPP_display(3,6,18)
     logging.info(body)
-    xmpp.send_message('toomore0929@gmail.com', body)
+    #xmpp.send_message('toomore0929@gmail.com', body)
 
 class task_stocks(webapp.RequestHandler):
   def post(self):
     a = goristock.goristock(self.request.get('no'))
-    if all_portf(a).ck_portf_001():
-      if self.request.get('d'):
-        body = a.XMPP_display(3,6,18)
-      else:
-        body = a.Cmd_display
-      logging.info(body)
 
+    if self.request.get('d'):
+      body = a.XMPP_display(3,6,18)
+    else:
+      body = a.Cmd_display
+    logging.info(body)
+
+    if all_portf(a).ck_portf_001():
       mail = memcache.get('mailstock')
       if mail:
         logging.info('memcache get: mailstock')
@@ -311,8 +312,27 @@ class task_stocks(webapp.RequestHandler):
         mail = []
       mail.append(body)
       memcache.set('mailstock', mail)
-      xmpp.send_message('toomore0929@gmail.com', body)
+      #xmpp.send_message('toomore0929@gmail.com', body)
       logging.info('memcache set: mailstock')
+    if all_portf(a).ck_portf_002():
+      mail = memcache.get('mailstock002')
+      if mail:
+        logging.info('memcache get: mailstock002')
+      else:
+        mail = []
+      mail.append(body)
+      memcache.set('mailstock002', mail)
+      logging.info('memcache set: mailstock002')
+    if all_portf(a).ck_portf_003():
+      mail = memcache.get('mailstock003')
+      if mail:
+        logging.info('memcache get: mailstock003')
+      else:
+        mail = []
+      mail.append(body)
+      memcache.set('mailstock003', mail)
+      logging.info('memcache set: mailstock003')
+    '''
     else:
       mailtotest = memcache.get('mailtotest')
       if mailtotest:
@@ -321,7 +341,7 @@ class task_stocks(webapp.RequestHandler):
         mailtotest = []
       mailtotest.append('#test: %s' % a.Cmd_display)
       memcache.set('mailtotest', mailtotest)
-
+    '''
 
 ############## prememcache Models ##############
 class stpremem(webapp.RequestHandler):
@@ -386,23 +406,39 @@ class cron_mail_test(webapp.RequestHandler):
   def get(self):
     if memcache.get('mailstock'):
       memget = memcache.get('mailstock')
-      mailtotest = memcache.get('mailtotest')
-      mail_body = ''
-      mailtotest_body = ''
+      #mailtotest = memcache.get('mailtotest')
+      mailstock002 = memcache.get('mailstock002')
+      mailstock003 = memcache.get('mailstock003')
+      mail_body = '=== 001 ===\n3-6負乖離且向上，三日內最大量，成交量大於1000，收盤價大於 10\n\n'.decode('utf-8')
+      #mailtotest_body = ''
+      mailstock002_body = '=== 002 MA(3 > 6 > 18) ===\n3日均價大於6日均價，6日均價大於18日均價\n\n'.decode('utf-8')
+      mailstock003_body = '=== 003 MAVOL(1 > (2,3,4)) ===\n當日成交量，大於前三天的總成交量\n\n'.decode('utf-8')
+
       memget = sorted(memget)
-      mailtotest = sorted(mailtotest)
+      #mailtotest = sorted(mailtotest)
+      mailstock002 = sorted(mailstock002)
+      mailstock003 = sorted(mailstock003)
+
       for i in memget:
         mail_body += i + '\n'
+      '''
       for i in mailtotest:
         mailtotest_body += i + '\n'
+      '''
+      for i in mailstock002:
+        mailstock002_body += i + '\n'
+      for i in mailstock003:
+        mailstock003_body += i + '\n'
 
       mail.send_mail(
         sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
         to = "toomore0929@gmail.com",
         subject = "[TEST] GORISTOCK %s SELECTED." % str(datetime.today() + timedelta(seconds=60*60*8)).split(' ')[0],
-        body = mail_body + '='*20 + '\n' + mailtotest_body)
+        body = mail_body + '\n' + mailstock002_body + '\n' + mailstock003_body)
       memcache.delete('mailstock')
       memcache.delete('mailtotest')
+      memcache.delete('mailstock002')
+      memcache.delete('mailstock003')
       logging.info(mail_body)
     else:
       mailtotest = memcache.get('mailtotest')
