@@ -332,6 +332,15 @@ class task_stocks(webapp.RequestHandler):
       mail.append(body)
       memcache.set('mailstock003', mail)
       logging.info('memcache set: mailstock003')
+    if all_portf(a).ck_portf_004():
+      mail = memcache.get('mailstock004')
+      if mail:
+        logging.info('memcache get: mailstock004')
+      else:
+        mail = []
+      mail.append(body)
+      memcache.set('mailstock004', mail)
+      logging.info('memcache set: mailstock004')
     '''
     else:
       mailtotest = memcache.get('mailtotest')
@@ -409,15 +418,18 @@ class cron_mail_test(webapp.RequestHandler):
       #mailtotest = memcache.get('mailtotest')
       mailstock002 = memcache.get('mailstock002')
       mailstock003 = memcache.get('mailstock003')
-      mail_body = '=== 001 ===\n3-6負乖離且向上，三日內最大量，成交量大於1000，收盤價大於 10\n\n'.decode('utf-8')
+      mailstock004 = memcache.get('mailstock004')
+      mail_body = '=== 001 ===\n說明：3-6負乖離且向上，三日內最大量，成交量大於1000，收盤價大於 10\n\n'.decode('utf-8')
       #mailtotest_body = ''
-      mailstock002_body = '=== 002 MA(3 > 6 > 18) ===\n3日均價大於6日均價，6日均價大於18日均價\n\n'.decode('utf-8')
-      mailstock003_body = '=== 003 MAVOL(1 > (2,3,4)) ===\n當日成交量，大於前三天的總成交量\n\n'.decode('utf-8')
+      mailstock002_body = '=== 002 MA(3 > 6 > 18) ===\n3說明：日均價大於6日均價，6日均價大於18日均價\n\n'.decode('utf-8')
+      mailstock003_body = '=== 003 MAVOL(1 > (2,3,4)) ===\n說明：當日成交量，大於前三天的總成交量\n\n'.decode('utf-8')
+      mailstock004_body = '=== 004 SD < 0.25 ===\n說明：45天內，標準差小於 0.25\n\n'.decode('utf-8')
 
       memget = sorted(memget)
       #mailtotest = sorted(mailtotest)
       mailstock002 = sorted(mailstock002)
       mailstock003 = sorted(mailstock003)
+      mailstock004 = sorted(mailstock004)
 
       for i in memget:
         mail_body += i + '\n'
@@ -429,16 +441,19 @@ class cron_mail_test(webapp.RequestHandler):
         mailstock002_body += i + '\n'
       for i in mailstock003:
         mailstock003_body += i + '\n'
+      for i in mailstock004:
+        mailstock004_body += i + '\n'
 
       mail.send_mail(
         sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
         to = "toomore0929@gmail.com",
         subject = "[TEST] GORISTOCK %s SELECTED." % str(datetime.today() + timedelta(seconds=60*60*8)).split(' ')[0],
-        body = mail_body + '\n' + mailstock002_body + '\n' + mailstock003_body)
+        body = mail_body + '\n' + mailstock002_body + '\n' + mailstock003_body+ '\n' + mailstock004_body)
       memcache.delete('mailstock')
       memcache.delete('mailtotest')
       memcache.delete('mailstock002')
       memcache.delete('mailstock003')
+      memcache.delete('mailstock004')
       logging.info(mail_body)
     else:
       mailtotest = memcache.get('mailtotest')
