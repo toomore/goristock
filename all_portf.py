@@ -35,8 +35,8 @@ class all_portf(object):
 
   def ck_portf_003(self):
     ''' 當日成交量，大於前三天的總成交量 '''
-    return self.a.MAVOL(1) > sum(self.a.stock_vol[-4:-1])
+    return self.a.stock_vol[-1] > sum(self.a.stock_vol[-4:-1])
 
   def ck_portf_004(self):
-    ''' 45天內，標準差小於 0.25 '''
+    ''' 價走平一個半月 '''
     return self.a.SD < 0.25
