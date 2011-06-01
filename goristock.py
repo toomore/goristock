@@ -240,7 +240,7 @@ class goristock(object):
         otherinfo.append(i[0])
       fetch_data_raw += 1
 
-    if fetch_data_raw > 5:
+    if fetch_data_raw >= 3:
       #stock_name = otherinfo[0].split(' ')[2].decode('big5').encode('utf-8')
       stock_name = unicode(otherinfo[0].split(' ')[2],'cp950')
     else:
