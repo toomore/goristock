@@ -1,5 +1,5 @@
 application: goristock
-version: mem
+version: pre-dev
 runtime: python
 api_version: 1
 

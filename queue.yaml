@@ -5,10 +5,10 @@ queue:
     task_retry_limit: 5
     task_age_limit: 10m
 - name: stock
-  rate: 6/s
+  rate: 10/s
   retry_parameters:
     task_retry_limit: 5
-    task_age_limit: 10m
+    task_age_limit: 3m
 - name: premem
   rate: 3/s
   retry_parameters:

@@ -427,7 +427,7 @@ class cron_mail_test(webapp.RequestHandler):
       mailstock004 = memcache.get('mailstock004')
       mail_body = '=== 001 ===\n說明：3-6負乖離且向上，三日內最大量，成交量大於1000，收盤價大於 10\n篩選股票：\n'.decode('utf-8')
       #mailtotest_body = ''
-      mailstock002_body = '=== 002 MA(3 > 6 > 18) ===\n說明：日均價大於6日均價，6日均價大於18日均價\n篩選股票：\n'.decode('utf-8')
+      mailstock002_body = '=== 002 MA(3 > 6 > 18) ===\n說明：3日均價大於6日均價，6日均價大於18日均價\n篩選股票：\n'.decode('utf-8')
       mailstock003_body = '=== 003 MAVOL(1 > (2,3,4)) ===\n說明：當日成交量，大於前三天的總成交量\n篩選股票：\n'.decode('utf-8')
       mailstock004_body = '=== 004 SD < 0.25 ===\n說明：價走平一個半月\n篩選股票：\n'.decode('utf-8')
 
