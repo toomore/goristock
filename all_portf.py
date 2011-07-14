@@ -31,12 +31,16 @@ class all_portf(object):
 
   def ck_portf_002(self):
     ''' 3日均價大於6日均價，6日均價大於18日均價。（短中長線呈現多頭的態勢） '''
-    return self.a.MA(3) > self.a.MA(6) > self.a.MA(18)
+    return self.a.MA(3) > self.a.MA(6) > self.a.MA(18) and self.a.MAC(18) == '↑'.decode('utf-8') and self.a.stock_vol[-1] > 1000*1000 and self.a.raw_data[-1] > 10
 
   def ck_portf_003(self):
     ''' 當日成交量，大於前三天的總成交量。（短線多空動能） '''
-    return self.a.stock_vol[-1] > sum(self.a.stock_vol[-4:-1])
+    return self.a.stock_vol[-1] > sum(self.a.stock_vol[-4:-1]) and self.a.stock_vol[-1] > 1000*1000 and self.a.raw_data[-1] > 10
 
   def ck_portf_004(self):
     ''' 價走平一個半月。（箱型整理、盤整） '''
-    return self.a.SD < 0.25
+    return self.a.SD < 0.25 and self.a.stock_vol[-1] > 1000*1000 and self.a.raw_data[-1] > 10
+
+  def ck_portf_005(self):
+    ''' 6日均價大於18日均價，大於3日均價。（預備黃金交叉） '''
+    return self.a.MA(6) > self.a.MA(18) > self.a.MA(3) and self.a.MAC(3) == '↑'.decode('utf-8') and self.a.stock_vol[-1] > 1000*1000 and self.a.raw_data[-1] > 10
