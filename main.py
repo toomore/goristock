@@ -427,40 +427,50 @@ class cron_mail(webapp.RequestHandler):
 class cron_mail2(webapp.RequestHandler):
   def get(self):
     if memcache.get('mailstock'):
-      memget = memcache.get('mailstock')
-      #mailtotest = memcache.get('mailtotest')
-      mailstock002 = memcache.get('mailstock002')
-      mailstock003 = memcache.get('mailstock003')
-      mailstock004 = memcache.get('mailstock004')
-      mailstock005 = memcache.get('mailstock005')
-      mail_body = '=== 001 ===\n說明：3-6負乖離且向上，三日內最大量，成交量大於 1000 張，收盤價大於 10 元。（較嚴謹的選股）\n篩選股票：\n'.decode('utf-8')
-      #mailtotest_body = ''
-      mailstock002_body = '=== 002 MA(3 > 6 > 18 & 18↑) ===\n說明：3日均價大於6日均價，6日均價大於18日均價。（短中長線呈現多頭的態勢）\n篩選股票：\n'.decode('utf-8')
-      mailstock003_body = '=== 003 MAVOL(1 > (2,3,4)) ===\n說明：當日成交量，大於前三天的總成交量。（短線多空動能）\n篩選股票：\n'.decode('utf-8')
-      mailstock004_body = '=== 004 SD < 0.25 ===\n說明：價走平一個半月。（箱型整理、盤整）\n篩選股票：\n'.decode('utf-8')
-      mailstock005_body = '=== 005 MA(6 > 18 > 3 & 3↑) ===\n說明：6日均價大於18日均價，大於3日均價。（預備黃金交叉）\n篩選股票：\n'.decode('utf-8')
+      try:
+        memget = sorted(memcache.get('mailstock'))
+        mail_body = '=== 001 ===\n說明：3-6負乖離且向上，三日內最大量，成交量大於 1000 張，收盤價大於 10 元。（較嚴謹的選股）\n篩選股票：\n'.decode('utf-8')
+        for i in memget:
+          mail_body += i + '\n'
+      except:
+        mail_body = ''
 
-      memget = sorted(memget)
-      #mailtotest = sorted(mailtotest)
-      mailstock002 = sorted(mailstock002)
-      mailstock003 = sorted(mailstock003)
-      mailstock004 = sorted(mailstock004)
-      mailstock005 = sorted(mailstock005)
+      try:
+        mailstock002 = sorted(memcache.get('mailstock002'))
+        mailstock002_body = '=== 002 MA(3 > 6 > 18 & 18↑) ===\n說明：3日均價大於6日均價，6日均價大於18日均價。（短中長線呈現多頭的態勢）\n篩選股票：\n'.decode('utf-8')
+        for i in mailstock002:
+          mailstock002_body += i + '\n'
+      except:
+          mailstock002_body = ''
 
-      for i in memget:
-        mail_body += i + '\n'
+      try:
+        mailstock003 = sorted(memcache.get('mailstock003'))
+        mailstock003_body = '=== 003 MAVOL(1 > (2,3,4)) ===\n說明：當日成交量，大於前三天的總成交量。（短線多空動能）\n篩選股票：\n'.decode('utf-8')
+        for i in mailstock003:
+          mailstock003_body += i + '\n'
+      except:
+          mailstock003_body = ''
+
+      try:
+        mailstock004 = sorted(memcache.get('mailstock004'))
+        mailstock004_body = '=== 004 SD < 0.25 ===\n說明：價走平一個半月。（箱型整理、盤整）\n篩選股票：\n'.decode('utf-8')
+        for i in mailstock004:
+          mailstock004_body += i + '\n'
+      except:
+          mailstock004_body = ''
+
+      try:
+        mailstock005 = sorted(memcache.get('mailstock005'))
+        mailstock005_body = '=== 005 MA(6 > 18 > 3 & 3↑) ===\n說明：6日均價大於18日均價，大於3日均價。（預備黃金交叉）\n篩選股票：\n'.decode('utf-8')
+        for i in mailstock005:
+          mailstock005_body += i + '\n'
+      except:
+          mailstock005_body = ''
+
       '''
       for i in mailtotest:
         mailtotest_body += i + '\n'
       '''
-      for i in mailstock002:
-        mailstock002_body += i + '\n'
-      for i in mailstock003:
-        mailstock003_body += i + '\n'
-      for i in mailstock004:
-        mailstock004_body += i + '\n'
-      for i in mailstock005:
-        mailstock005_body += i + '\n'
 
       mail.send_mail(
         sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
@@ -481,40 +491,50 @@ class cron_mail_test(webapp.RequestHandler):
   ''' /ad/task →  /ad/cron_mail_test '''
   def get(self):
     if memcache.get('mailstock'):
-      memget = memcache.get('mailstock')
-      #mailtotest = memcache.get('mailtotest')
-      mailstock002 = memcache.get('mailstock002')
-      mailstock003 = memcache.get('mailstock003')
-      mailstock004 = memcache.get('mailstock004')
-      mailstock005 = memcache.get('mailstock005')
-      mail_body = '=== 001 ===\n說明：3-6負乖離且向上，三日內最大量，成交量大於 1000 張，收盤價大於 10 元。（較嚴謹的選股）\n篩選股票：\n'.decode('utf-8')
-      #mailtotest_body = ''
-      mailstock002_body = '=== 002 MA(3 > 6 > 18 & 18↑) ===\n說明：3日均價大於6日均價，6日均價大於18日均價。（短中長線呈現多頭的態勢）\n篩選股票：\n'.decode('utf-8')
-      mailstock003_body = '=== 003 MAVOL(1 > (2,3,4)) ===\n說明：當日成交量，大於前三天的總成交量。（短線多空動能）\n篩選股票：\n'.decode('utf-8')
-      mailstock004_body = '=== 004 SD < 0.25 ===\n說明：價走平一個半月。（箱型整理、盤整）\n篩選股票：\n'.decode('utf-8')
-      mailstock005_body = '=== 005 MA(6 > 18 > 3 & 3↑) ===\n說明：6日均價大於18日均價，大於3日均價。（預備黃金交叉）\n篩選股票：\n'.decode('utf-8')
+      try:
+        memget = sorted(memcache.get('mailstock'))
+        mail_body = '=== 001 ===\n說明：3-6負乖離且向上，三日內最大量，成交量大於 1000 張，收盤價大於 10 元。（較嚴謹的選股）\n篩選股票：\n'.decode('utf-8')
+        for i in memget:
+          mail_body += i + '\n'
+      except:
+        mail_body = ''
 
-      memget = sorted(memget)
-      #mailtotest = sorted(mailtotest)
-      mailstock002 = sorted(mailstock002)
-      mailstock003 = sorted(mailstock003)
-      mailstock004 = sorted(mailstock004)
-      mailstock005 = sorted(mailstock005)
+      try:
+        mailstock002 = sorted(memcache.get('mailstock002'))
+        mailstock002_body = '=== 002 MA(3 > 6 > 18 & 18↑) ===\n說明：3日均價大於6日均價，6日均價大於18日均價。（短中長線呈現多頭的態勢）\n篩選股票：\n'.decode('utf-8')
+        for i in mailstock002:
+          mailstock002_body += i + '\n'
+      except:
+          mailstock002_body = ''
 
-      for i in memget:
-        mail_body += i + '\n'
+      try:
+        mailstock003 = sorted(memcache.get('mailstock003'))
+        mailstock003_body = '=== 003 MAVOL(1 > (2,3,4)) ===\n說明：當日成交量，大於前三天的總成交量。（短線多空動能）\n篩選股票：\n'.decode('utf-8')
+        for i in mailstock003:
+          mailstock003_body += i + '\n'
+      except:
+          mailstock003_body = ''
+
+      try:
+        mailstock004 = sorted(memcache.get('mailstock004'))
+        mailstock004_body = '=== 004 SD < 0.25 ===\n說明：價走平一個半月。（箱型整理、盤整）\n篩選股票：\n'.decode('utf-8')
+        for i in mailstock004:
+          mailstock004_body += i + '\n'
+      except:
+          mailstock004_body = ''
+
+      try:
+        mailstock005 = sorted(memcache.get('mailstock005'))
+        mailstock005_body = '=== 005 MA(6 > 18 > 3 & 3↑) ===\n說明：6日均價大於18日均價，大於3日均價。（預備黃金交叉）\n篩選股票：\n'.decode('utf-8')
+        for i in mailstock005:
+          mailstock005_body += i + '\n'
+      except:
+          mailstock005_body = ''
+
       '''
       for i in mailtotest:
         mailtotest_body += i + '\n'
       '''
-      for i in mailstock002:
-        mailstock002_body += i + '\n'
-      for i in mailstock003:
-        mailstock003_body += i + '\n'
-      for i in mailstock004:
-        mailstock004_body += i + '\n'
-      for i in mailstock005:
-        mailstock005_body += i + '\n'
 
       mail.send_mail(
         sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
