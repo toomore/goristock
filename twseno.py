@@ -24,6 +24,7 @@ import csv
 class twseno(object):
   def __init__(self):
     self.allstockno = self.importcsv()
+    self.ind_code = self.industry_code()
 
   def importcsv(self):
     f = csv.reader(open('./stock_no.csv', 'r'))
@@ -33,6 +34,14 @@ class twseno(object):
         re[int(i[0])] = str(i[1])
       except:
         pass
+
+    return re
+
+  def industry_code(self):
+    f = csv.reader(open('./industry_code.csv' ,'r'))
+    re = {}
+    for i in f:
+      re[int(i[0])] = i[1]
 
     return re
 
