@@ -19,28 +19,3 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-
-from google.appengine.ext import db
-
-class userdata(db.Model):
-  """ key_name is 'federated_identity' """
-  openid_provider = db.StringProperty()
-  addtime = db.DateTimeProperty(auto_now_add = True)
-
-class stocklist(db.Model):
-  user = db.ReferenceProperty(userdata)
-  stock = db.ListProperty(int, default = [2330,2498,1216,2891])
-
-class usernote(db.Model):
-  """ Let user add customs notes for stock. """
-  user = db.ReferenceProperty(userdata)
-  notetitle = db.StringProperty()
-  notetext = db.TextProperty()
-  edittime = db.DateTimeProperty(auto_now = True)
-  addtime = db.DateTimeProperty(auto_now_add = True)
-
-class seluser(db.Model):
-  """ pre_dev """
-  times = db.IntegerProperty()
-  edittime = db.DateTimeProperty(auto_now = True)
-  addtime = db.DateTimeProperty(auto_now_add = True)

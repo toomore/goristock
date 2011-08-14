@@ -3,7 +3,7 @@ goristock 台灣股市分析機器人
 
 :Authors:
   Toomore
-:Version: 0.4 of 2011/02/08
+:Version: 0.5x of 2011/08/14
 
 How it work.
 ------------
@@ -18,136 +18,8 @@ Report Issue or get involved
 ChangeLog
 ===========
 
-2011-02-08 v0.4
+2011-08-14 v0.5x
 ----------------
 main change:
 
-#. Add web site for `Mobile <http://goristock.appspot.com/m>`_.
-
-#. OpenID support.
-
-#. `gae-session <https://github.com/dound/gae-sessions>`_ support.
-
-#. Using Django template 1.1
-
-#. [API] Add `NEWS search support <http://goristock.appspot.com/API#apinews>`_.
-
-commits:
-
-- bafd70b Fixed OpenID continue url.
-- 334165f Add API using.
-- d4b15d2 Change cron for new year open.
-- 1e480d5 Fixed when OpenID get invite XMPP fault & gaesession bug.
-- 22218bd Add NEWS API.
-- 404e0c1 Change some django bug.
-- b528ec4 Change to using Django temp. filters for note.
-- 7088840 Fixed need-login page detect.
-- cb0e7ed Tiny change OpenID detect login or not.
-- a49a6ec Add Five Best Bids & Asks list in mobile.
-- 3c31bcc Add session auto renew.
-- ab9e5db Change cron from Chinese New Year.
-- 598a2fe Add gae-session in mobile.
-- b329754 Add Note for mobile.
-- 884a59b Add news keywords in mobile.
-- 5c4df29 Change TIMESINCE for mobile news.
-- d407ab8 Update stock list.
-- 21b2196 Add NEWS in mobile.
-- d73937f Add random display when login mobile.
-- dfc4954 Fixed a bug.
-- a051b3b Add detail and chart for mobile.
-- 713be6e Fixed some bugs.
-- 02840c9 Delete no use .js and change openid_login.py
-- e37549b Change random display for non-login frontpage.
-- 1f9971e Change mobile config UI.
-- b2c2102 Add config page for mobile.
-- 663abd9 Change OpenID Login UI.
-- ce580b1 Add OpenID login interface.
-- 2dd6fa7 Add OpenID for Mobile Login.
-- 8384b33 Start for Mobile templates.
-- e7b6a64 Add title, date in Chart.
-- c2396b0 Add Google Chart for display stock.
-- 75a706c Merge branch 'dev'
-
-2010-12-22 v0.3
-----------------
-main change:
-
-#. Add calculator and NEWS search for XMPP.
-
-#. Add API server.
-
-#. Changed some cron time for pre-memcache.
-
-- 0933f96 Remove stantisercache from cron.
-- e206f8f Add default font in css.
-- 1978929 Fixed css fault in IE.
-- f0f2f5a Add /dev page.
-- d07fd31 Add new menu style.
-- 1168963 Add /ad/stantisercache into cron.yaml
-- a097545 Merge branch 'api' into dev
-- 559a0de Rewrite gnews.x()
-- 9313e9e (origin/api, api) Add /API/liststock, /API/searchstock.
-- 44ccc58 Add API error report and tiny desc.
-- 6c32e4a Add /howitwork page.
-- 13bf223 Tiny change /ad/stpremem hours.
-- acfd6ea Add anti-server cache Model.
-- a7b320c Add /ad/fluls into cron.
-- f992076 rm * .pyc
-- 51f3741 Add memcached for offline only useing and TIMEZONE in goristock.
-- 5eaa067 Update goristock.goback()
-- 3567d29 Add /ad/fluls.
-- 9a1cf95 Add Google Anl.
-- dc03d46 Tiny change for memcache expire.
-- 6dc5244 Changed cron time from premem, add mem for some fixed pages.
-- 2494869 Edit API docs for API v0.1pre.
-- acc708d Edit API page.
-- d38e989 Add API doc. page, but not completely.
-- 2e76871 Add goristock API.
-- 44ffcc1 Add some MIT License.
-- 8cc5ba6 Changed facebook button width.
-- bd5f189 Changed some for admin page.
-- 12faf1a Fixed a bug for check URL memcache or not.
-- 0f03ffe Add goristock: open, high, low values.
-- 6a4a50d Remove taskqueue from labs.
-- 337f01f Changed useing random no. for URL fetch.
-- 1dda1af Add another way to check memcache.
-- 90788c4 Add memcache add time recorder.
-- f1ac7a4 Add TWSE weight for real-time reply.
-- 30c20b0 Add mulit-keywords for news search.
-- 2b84171 Fixed determine 14:30 is fault.
-- 0497629 Fixed memcache expire time bug.
-- 8bf73ca Add news publisher and time.
-- bb656b9 Web site update.
-- a14eafb Add help URL for XMPP.
-- 6b8989d Add search Google News for XMPP.
-- 542e709 Fixed calculator to cal 10/3 = 3.333333
-- ae24a44 Add calculator for XMPP.
-- e301798 Change memcache expire for sometimes always update.
-
-2010-11-26 v0.2
-----------------
-Add pre-memcache, rewrite real-time function.
-
-- 766d8e2 Add premem for pre-memcache.
-- e0f6390 Change memcache expire time.
-- 84ffd03 Update stocks list since 2010.11.10
-- 9a803d2 Add Admin_console into app.yaml.
-- 658b48e Take Rt_display out of goristock class.
-- f7ed115 Add memcache logging.
-- 0ddfdad Add memcache expire time.
-- 7fa001b Add memcache in goristock.
-- 112e830 Add Time XMPP reply.
-- 6e309fd Add portfolios.
-- edba2e0 Add some feature for XMPP robot.
-- b43d01a Delist some stocks since 2010.7.27
-- 31d91e5 Update IPOs since 2010.7.27
-- 8551ca8 Add logging into cron_mail.
-- 226657d Changed send daily report to mail list.
-- 38fff76 Add sorted() into class cron_mail()
-- fcf38d4 Use xrange() instead of range().
-- 3c3bc25 Add KeyboardInterrupt.
-- 7047541 Add XMPP invite by users himself.
-
-2010-08-01 v0.1
-----------------
-For base fetch function.
+#. spread gae and grs from goristock.
