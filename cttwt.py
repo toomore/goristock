@@ -20,7 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import time,datetime
+import time
+import datetime
 
 class TWTime(object):
   ''' Transform localtime to Taiwan time in UTF+8 '''
@@ -37,6 +38,17 @@ class TWTime(object):
     return localtime + datetime.timedelta(hours = time.timezone/60/60 + self.TimeZone)
 
   @property
+  def date(self):
+    ''' Display Taiwan date now '''
+    localtime = datetime.date.today()
+    return localtime + datetime.timedelta(hours = time.timezone/60/60 + self.TimeZone)
+
+  @property
   def localtime(self):
     ''' Display localtime now '''
     return datetime.datetime.now()
+
+  @property
+  def localdate(self):
+    ''' Display localdate now '''
+    return datetime.date.today()
