@@ -47,7 +47,7 @@ class twsk(object):
     """ Real time data """
     try:
       unch = sum([covstr(self.stock[3]),covstr(self.stock[4])])/2
-      re = {'name': unicode(self.stock[-1].replace(' ',''), 'cp950'),
+      re = {'name': unicode(self.stock[36].replace(' ',''), 'cp950'),
             'no': self.stock[0],
             'range': self.stock[1],
             'time': self.stock[2],
