@@ -20,6 +20,7 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 import csv
+import os
 
 class twseno(object):
   def __init__(self):
@@ -27,7 +28,7 @@ class twseno(object):
     self.ind_code = self.industry_code()
 
   def importcsv(self):
-    f = csv.reader(open('./stock_no.csv', 'r'))
+    f = csv.reader(open('./grs/stock_no.csv', 'r'))
     re = {}
     for i in f:
       try:
@@ -38,7 +39,7 @@ class twseno(object):
     return re
 
   def industry_code(self):
-    f = csv.reader(open('./industry_code.csv' ,'r'))
+    f = csv.reader(open('./grs/industry_code.csv' ,'r'))
     re = {}
     for i in f:
       re[int(i[0])] = i[1]

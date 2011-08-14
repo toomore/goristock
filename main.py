@@ -42,10 +42,10 @@ import csv
 import re
 
 ## custom lib
-import goristock
-from all_portf import all_portf
-from twseno import twseno
-from gnews import gnews
+from grs import goristock
+from grs.all_portf import all_portf
+from grs.twseno import twseno
+from grs.gnews import gnews
 from gaesessions import get_current_session
 
 def ckinv(oo):

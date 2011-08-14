@@ -20,7 +20,7 @@ class twseopen(object):
     ''' 載入檔案
         檔案依據 http://www.twse.com.tw/ch/trading/trading_days.php
     '''
-    ld = csv.reader(open('./opendate.csv','r'))
+    ld = csv.reader(open('./grs/opendate.csv','r'))
     re = {}
     re['close'] = []
     re['open'] = []

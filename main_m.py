@@ -33,16 +33,16 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 #from google.appengine.api import users
 
-import goristock
-import mobileapi
-from gnews import gnews
+from grs import goristock
+from grs import mobileapi
+from grs.gnews import gnews
+from grs import twseno
 
 from gaesessions import get_current_session
 
 import urlparse
 import urllib
 import datamodel
-import twseno
 import random
 import time
 from datetime import datetime

@@ -26,7 +26,7 @@ from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import memcache
 
-import goapi
+from grs import goapi
 
 ############## webapp Models ##############
 class apidoc(webapp.RequestHandler):
