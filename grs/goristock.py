@@ -649,8 +649,9 @@ def Rt_display(stock_no):
   """ For real time stock display """
   a = twsk(stock_no).real
   if a:
-    re = "{%(time)s} %(stock_no)s %(c)s %(range)+.2f(%(pp)+.2f%%) %(value)s" % {
+    re = "{%(time)s} %(stock_no)s %(stock_name)s %(c)s %(range)+.2f(%(pp)+.2f%%) %(value)s" % {
         'stock_no': stock_no,
+        'stock_name': a['name'],
         'time': a['time'],
         'c': a['c'],
         'range': covstr(a['range']),

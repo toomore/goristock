@@ -1,5 +1,5 @@
 application: goristock
-version: gae
+version: gae-dev
 runtime: python
 api_version: 1
 
