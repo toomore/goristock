@@ -5,6 +5,7 @@ import csv
 from datetime import datetime
 
 class twseopen(object):
+  ''' 判斷當日是否開市 '''
   def __init__(self, time):
     if type(TWTime().now) == type(time):
       self.twtime = TWTime().now
@@ -32,12 +33,13 @@ class twseopen(object):
       elif i[1] == '1':
         re['open'] += [datetime.strptime(i[0],'%Y/%m/%d').date()]
       else:
-        print 'pass'
         pass
     return re
 
   def ooc(self):
-    ''' Open or close '''
+    ''' Open or close
+        回傳 True：開市，False：休市。
+    '''
     if self.ptime.date() in self.ocdate['close']: ## 判對是否為法定休市
       return False
     elif self.ptime.date() in self.ocdate['open']: ## 判對是否為法定開市

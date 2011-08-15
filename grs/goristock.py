@@ -35,14 +35,12 @@ import logging
 import math
 import random
 import re
-import time
 import urllib2
 
 ## custom lib
 from realtime import twsk
 from realtime import twsew
-
-TIMEZONE = 8
+from cttwt import TWTime
 
 class goristock(object):
   """ Start up from __init__
@@ -58,6 +56,10 @@ class goristock(object):
     """ stock_no: Stock no.
         data_num: Default fetch numbers. (Default is 75)
         debug: For debug to print some info about data solution. (Default is 0)
+
+        stock_no: 股票代碼。
+        data_num: 預設抓取的筆數（交易日數，預設為 75 筆）
+        debug: 除錯用，列印出相關除錯資訊。0:關閉（預設） 1:開啟
 
         property:
           self.raw_data = [list]
@@ -168,7 +170,7 @@ class goristock(object):
     #print cc.info().headers
 
     # set memcache expire
-    now = datetime.today() + timedelta(hours = TIMEZONE)
+    now = TWTime().now
     if now >= datetime(now.year, now.month, now.day, 14, 45):
       addday = 1
     else:
@@ -342,7 +344,7 @@ class goristock(object):
   @property
   def TimeinOpen(self):
     """ In open market time. """
-    now = time.gmtime().tm_hour + time.gmtime(TIMEZONE * 60 * 60).tm_hour
+    now = TWTime().now.hour
     if now >= 9 and now <= 14:
       return True
     else:
