@@ -501,7 +501,9 @@ class goristock(object):
 
 ##### For Demo display #####
   def display(self,*arg):
-    """ For simple Demo """
+    """ For simple Demo
+        測試用顯示樣式。
+    """
     print self.stock_name,self.stock_no
     print '%s %s %s(%+.2f%%)' % (self.data_date[-1],self.raw_data[-1],self.stock_range[-1],self.range_per)
     for i in arg:
@@ -514,7 +516,9 @@ class goristock(object):
 
 ##### For XMPP Demo display #####
   def XMPP_display(self,*arg):
-    """ For XMPP Demo """
+    """ For XMPP Demo
+        輸出到 XMPP 之樣式。
+    """
 
     MA = ''
     for i in arg:
@@ -558,7 +562,9 @@ class goristock(object):
 ##### For Task overall stock display #####
   @property
   def Task_display(self):
-    """ For Task overall stock display """
+    """ For Task overall stock display
+        顯示資訊樣式之一，兩行資訊。
+    """
     re = """%(stock_name)s %(stock_no)s %(stock_date)s
 Today: %(stock_price)s %(stock_range)s
 =-=-=-=""" % {
@@ -573,7 +579,9 @@ Today: %(stock_price)s %(stock_range)s
 ##### For Local cmd overall stock display #####
   @property
   def Cmd_display(self):
-    """ For Task overall stock display """
+    """ For Task overall stock display
+        一行顯示資訊，用於終端機顯示樣式。
+    """
     re = "%(stock_no)s %(stock_name)s %(stock_date)s %(stock_price)s %(stock_range)s %(stock_range_per).2f%% %(RABC)s %(stock_vol)s" % {
         'stock_name': unicode(self.stock_name),
         'stock_no': unicode(self.stock_no),
@@ -588,7 +596,12 @@ Today: %(stock_price)s %(stock_range)s
 
 ##### For Google Chart #####
   def gchart(self, s = 0, size = [], candle = 20):
-    """ Chart for serious stocks """
+    """ Chart for serious stocks
+        輸出 Google Chart 圖表。
+        s = 資料筆數
+        size = 圖表寬度、高度 [寬度,高度]
+        candle = K 棒的寬度
+    """
     if s == 0:
       s = len(self.raw_data)
     if len(size) == 2:
@@ -648,7 +661,9 @@ def covstr(s):
   return ret
 
 def Rt_display(stock_no):
-  """ For real time stock display """
+  """ For real time stock display
+      即時盤用，顯示目前查詢各股的股價資訊。
+  """
   a = twsk(stock_no).real
   if a:
     re = "{%(time)s} %(stock_no)s %(c)s %(range)+.2f(%(pp)+.2f%%) %(value)s" % {
@@ -664,6 +679,8 @@ def Rt_display(stock_no):
     return a
 
 def TW_display():
-  """ For real time TWSE display """
+  """ For real time TWSE display
+      即時盤用，顯示大盤目前指數與成交量。
+  """
   a = twsew().weight
   return a
