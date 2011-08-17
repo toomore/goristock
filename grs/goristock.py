@@ -138,14 +138,22 @@ class goristock(object):
     except:
       return False
 
-  def high_or_low(self, one, two):
+  def high_or_low(self,one,two,rev=0):
     """ Return ↑↓- for high, low or equal. """
-    if one > two:
-      re = '↑'.decode('utf-8')
-    elif one < two:
-      re = '↓'.decode('utf-8')
+    if rev == 0:
+      if one > two:
+        re = '↑'.decode('utf-8')
+      elif one < two:
+        re = '↓'.decode('utf-8')
+      else:
+        re = '-'.decode('utf-8')
     else:
-      re = '-'.decode('utf-8')
+      if one > two:
+        re = 1
+      elif one < two:
+        re = -1
+      else:
+        re = 0
     return re
 
   def goback(self,days = 1):
@@ -357,7 +365,7 @@ class goristock(object):
     """
     return float(sum(self.raw_data[-days:]) / days)
 
-  def MAC(self,days):
+  def MAC(self,days,rev = 0):
     """ Comparing yesterday price is high, low or equal.
         return ↑,↓ or -
     """
@@ -366,11 +374,11 @@ class goristock(object):
     yes_MA = float(sum(yesterday[-days:]) / days)
     today_MA = self.MA(days)
 
-    return self.high_or_low(today_MA, yes_MA)
+    return self.high_or_low(today_MA, yes_MA, rev)
 
-  def MA_serial(self,days):
+  def MA_serial(self,days,rev=0):
     """ see make_serial() """
-    return self.make_serial(self.raw_data,days)
+    return self.make_serial(self.raw_data,days,rev)
 
 ##### Volume #####
   def MAVOL(self,days):
@@ -379,7 +387,7 @@ class goristock(object):
     """
     return float(sum(self.stock_vol[-days:]) / days)
 
-  def MACVOL(self,days):
+  def MACVOL(self,days,rev=0):
     """ Comparing yesterday volume is high, low or equal.
         return ↑,↓ or -
     """
@@ -388,11 +396,11 @@ class goristock(object):
     yes_MAVOL = float(sum(yesterday[-days:]) / days)
     today_MAVOL = self.MAVOL(days)
 
-    return self.high_or_low(today_MAVOL, yes_MAVOL)
+    return self.high_or_low(today_MAVOL, yes_MAVOL,rev)
 
-  def MAVOL_serial(self,days):
+  def MAVOL_serial(self,days,rev):
     """ see make_serial() """
-    return self.make_serial(self.stock_vol,days)
+    return self.make_serial(self.stock_vol,days,rev=0)
 
   @property
   def VOLMAX3(self):
@@ -403,7 +411,7 @@ class goristock(object):
       return False
 
 ##### MAO #####
-  def MAO(self,day1,day2):
+  def MAO(self,day1,day2,rev=0):
     """ This is MAO(Moving Average Oscillator), not BIAS.
         It's only 'MAday1 - MAday2'.
 
@@ -430,9 +438,9 @@ class goristock(object):
     for i in xrange(len(day1MAs)):
       serial.append(day1MAs[i]-day2MAs[i])
 
-    cum = self.make_serial(serial,1)
+    cum = self.make_serial(serial,1,rev)
     #return [day1MAs,day2MAs,serial,cum,self.high_or_low(cum[-1],cum[-2])]
-    return [cum,self.high_or_low(day1MAs[-1]-day2MAs[-1],day1MAs[-2]-day2MAs[-2])]
+    return [cum,self.high_or_low(day1MAs[-1]-day2MAs[-1],day1MAs[-2]-day2MAs[-2],rev)]
 
 ##### RABC #####
   @property
@@ -444,7 +452,7 @@ class goristock(object):
     return '(%.2f,%.2f,%.2f)' % (A,B,C)
 
 ##### make serial #####
-  def make_serial(self,data,days):
+  def make_serial(self,data,days,rev=0):
     """ make data in list
         if data enough, will return:
           [0] is the times of high, low or equal
@@ -461,12 +469,12 @@ class goristock(object):
         self.debug_print(len(result))
 
       result.reverse()
-      re = [self.cum_serial(result), result]
+      re = [self.cum_serial(result,rev), result]
       return re
     except:
       return '?'
 
-  def cum_serial(self, raw):
+  def cum_serial(self, raw,rev=0):
     """ Cumulate serial data
         and return times(int)
     """
@@ -474,7 +482,7 @@ class goristock(object):
     diff = raw[:-1]
     result = []
     for i in xrange(len(org)):
-      result.append(self.high_or_low(org[i], diff[i]))
+      result.append(self.high_or_low(org[i], diff[i],rev))
 
     times = 0
     try:
