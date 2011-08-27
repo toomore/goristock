@@ -4,6 +4,8 @@ from cttwt import TWTime
 import csv
 from datetime import datetime
 
+_CSVFILEPATH = __name__.split('.')[-2]
+
 class twseopen(object):
   ''' 判斷當日是否開市 '''
   def __init__(self, time):
@@ -21,7 +23,7 @@ class twseopen(object):
     ''' 載入檔案
         檔案依據 http://www.twse.com.tw/ch/trading/trading_days.php
     '''
-    ld = csv.reader(open('./opendate.csv','r'))
+    ld = csv.reader(open('./%s/opendate.csv' % _CSVFILEPATH, 'r'))
     re = {}
     re['close'] = []
     re['open'] = []
