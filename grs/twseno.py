@@ -33,7 +33,10 @@ class twseno(object):
       try:
         re[int(i[0])] = str(i[1])
       except:
-        pass
+        if i[0] == 'UPDATE':
+          self.last_update = str(i[1])
+        else:
+          pass
 
     return re
 
