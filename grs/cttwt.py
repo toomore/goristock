@@ -27,7 +27,7 @@ class TWTime(object):
   ''' Transform localtime to Taiwan time in UTF+8 '''
   def __init__(self,tz = 8):
     try:
-      self.TimeZone = int(tz)
+      self.TimeZone = float(tz)
     except:
       self.TimeZone = 8
 
