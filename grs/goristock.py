@@ -62,15 +62,15 @@ class goristock(object):
         debug: 除錯用，列印出相關除錯資訊。0:關閉（預設） 1:開啟
 
         property:
-          self.raw_data = [list]
-          self.stock_name = str()
-          self.stock_no = str()
-          self.data_date = [list]
-          self.stock_range = [list]
-          self.stock_vol = [list]
-          self.stock_open = [list]
-          self.stock_h = [list]
-          self.stock_l = [list]
+          self.raw_data = [list]    收盤資訊，[舊→新]
+          self.stock_name = str()   該股票名稱
+          self.stock_no = str()     該股票代號
+          self.data_date = [list]   日期資訊，[舊→新]
+          self.stock_range = [list] 漲跌幅
+          self.stock_vol = [list]   成交量
+          self.stock_open = [list]  開盤價
+          self.stock_h = [list]     最高價
+          self.stock_l = [list]     最低價
     """
     self.raw_data = []
     self.stock_name = ''
@@ -114,14 +114,18 @@ class goristock(object):
 
 ##### App def #####
   def debug_print(self, info):
-    """ For debug print. """
+    """ For debug print.
+        除錯資訊用
+    """
     if self.debug:
       print info
     else:
       pass
 
   def covstr(self,s):
-    """ convert string to int or float. """
+    """ convert string to int or float.
+        轉換數字為浮動小數格式
+    """
     try:
       ret = int(s)
     except ValueError:
@@ -129,7 +133,9 @@ class goristock(object):
     return ret
 
   def ckinv(self,oo):
-    """ check the value is date or not """
+    """ check the value is date or not
+        檢查是否為日期格式
+    """
     pattern = re.compile(r"[0-9]{2}/[0-9]{2}/[0-9]{2}")
     b = re.search(pattern, oo[0])
     try:
@@ -139,7 +145,13 @@ class goristock(object):
       return False
 
   def high_or_low(self,one,two,rev=0):
-    """ Return ↑↓- for high, low or equal. """
+    """ Return ↑↓- for high, low or equal.
+        回傳漲跌標示
+        rev = 0
+          回傳 ↑↓-
+        rev = 1
+          回傳 1 -1 0
+    """
     if rev == 0:
       if one > two:
         re = '↑'.decode('utf-8')
@@ -157,7 +169,10 @@ class goristock(object):
     return re
 
   def goback(self,days = 1):
-    """ Go back days """
+    """ Go back days
+        刪除最新天數資料數據
+        days 代表刪除多少天數（倒退幾天）
+    """
     for i in xrange(days):
       self.raw_data.pop()
       self.data_date.pop()
@@ -171,6 +186,7 @@ class goristock(object):
   def fetch_data(self, stock_no, nowdatetime, firsttime = 1):
     """ Fetch data from twse.com.tw
         return list.
+        從 twse.com.tw 下載資料，回傳格式為 list
     """
     url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/Report%(year)d%(mon)02d/%(year)d%(mon)02d_F3_1_8_%(stock)s.php&type=csv&r=%(rand)s' % {'year': nowdatetime.year, 'mon': nowdatetime.month, 'stock': stock_no, 'rand': random.randrange(1,1000000)}
     self.debug_print(url)
@@ -215,17 +231,24 @@ class goristock(object):
     return csv_read
 
   def list_data(self, csv_read):
-    """ Put the data into the 'self.raw_data' and other stock info.
-
+    """ 將資料 list 化
         return dictionary:
           [stock_price]: Closing price (list)
-          [stock_name]: Stock name (str) and encode form big5 to utf-8
-          [data_date]: Stock date (list)
+                         收盤價格
+          [stock_name]:  Stock name (str) and encode form big5 to utf-8
+                         該股名稱，big5 → UTF-8
+          [data_date]:   Stock date (list)
+                         數據日期資訊
           [stock_range]: Stock range price (list)
-          [stock_vol]: Stock Volue (list)
-          [stock_open]: Stock open price (list)
-          [stock_h]: Stock high price (list)
-          [stock_l]: Stock low price (list)
+                         該鼓漲跌價格
+          [stock_vol]:   Stock Volue (list)
+                         成交量
+          [stock_open]:  Stock open price (list)
+                         開盤價
+          [stock_h]:     Stock high price (list)
+                         最高價
+          [stock_l]:     Stock low price (list)
+                         最低價
     """
     getr = []
     getdate = []
@@ -274,27 +297,32 @@ class goristock(object):
   def num_data(self):
     """ Number of data.
         return int vallue.
+        回傳資料數量
     """
     return len(self.raw_data)
 
   @property
-  def sum_data(self):
+  def sum_data(self): ## Useless
     """ Sum of data. 
         return sum value.
+        加總數據
     """
     return sum(self.raw_data)
 
   @property
-  def avg_data(self):
+  def avg_data(self): ## Useless
     """ Average of data.
         return float value.
+        平均數據
     """
     return float(self.sum_data/self.num_data)
 
 ##### App #####
   @property
   def range_per(self):
-    """ Range percentage """
+    """ Range percentage
+        計算最新日之漲跌幅度百分比
+    """
     rp = float((self.raw_data[-1] - self.raw_data[-2]) / self.raw_data[-2] * 100)
     return rp
 
@@ -302,6 +330,7 @@ class goristock(object):
   def KRED(self):
     """ price is up.
         return True or False.
+        顯示最新日之漲（True）跌（False）
     """
     if self.range_per > 0:
       return True
@@ -310,7 +339,9 @@ class goristock(object):
 
   @property
   def PUPTY(self):
-    """ price is up than yesterday. """
+    """ price is up than yesterday.
+        最新價格比昨日高（True）
+    """
     if self.raw_data[-1] > self.raw_data[-2]:
       return True
     else:
@@ -318,7 +349,9 @@ class goristock(object):
 
   @property
   def SD(self):
-    """ Standard Deviation. """
+    """ Standard Deviation.
+        計算 45 日內之標準差
+    """
     if len(self.raw_data) >= 45:
       data = self.raw_data[-45:]
       data_avg = float(sum(data) / 45)
@@ -332,7 +365,9 @@ class goristock(object):
 
   @property
   def SDAVG(self):
-    """ the last 45 days average in SD. """
+    """ the last 45 days average.
+        計算 45 日內之平均數
+    """
     if len(self.raw_data) >= 45:
       data = self.raw_data[-45:]
       data_avg = float(sum(data) / 45)
@@ -342,7 +377,9 @@ class goristock(object):
 
   @property
   def CV(self):
-    """ Coefficient of Variation. """
+    """ Coefficient of Variation.
+        計算 45 日內之變異數
+    """
     if len(self.raw_data) >= 45:
       data_avg = sum(self.raw_data[-45:]) / 45
       return self.SD / data_avg
@@ -351,7 +388,9 @@ class goristock(object):
 
   @property
   def TimeinOpen(self):
-    """ In open market time. """
+    """ In open market time.
+        在當日開市時刻，9 - 14
+    """
     now = TWTime().now.hour
     if now >= 9 and now <= 14:
       return True
@@ -362,12 +401,18 @@ class goristock(object):
   def MA(self,days):
     """ Price Moving Average with days.
         return float value.
+        計算 days 日移動平均數，回傳 float(value)
     """
     return float(sum(self.raw_data[-days:]) / days)
 
   def MAC(self,days,rev = 0):
     """ Comparing yesterday price is high, low or equal.
         return ↑,↓ or -
+        與前一天 days 日收盤價移動平均比較
+        rev = 0
+          回傳 ↑,↓ or -
+        rev = 1
+          回傳 1,-1 or 0
     """
     yesterday = self.raw_data[:]
     yesterday.pop()
@@ -377,19 +422,27 @@ class goristock(object):
     return self.high_or_low(today_MA, yes_MA, rev)
 
   def MA_serial(self,days,rev=0):
-    """ see make_serial() """
+    """ see make_serial()
+        收盤價移動平均 list 化，資料格式請見 def make_serial()
+    """
     return self.make_serial(self.raw_data,days,rev)
 
 ##### Volume #####
   def MAVOL(self,days):
     """ Volume Moving Average with days.
         return float value.
+        成交量之移動平均，回傳 float(value)
     """
     return float(sum(self.stock_vol[-days:]) / days)
 
   def MACVOL(self,days,rev=0):
     """ Comparing yesterday volume is high, low or equal.
         return ↑,↓ or -
+        與前一天 days 日成交量移動平均比較
+        rev = 0
+          回傳 ↑,↓ or -
+        rev = 1
+          回傳 1,-1 or 0
     """
     yesterday = self.stock_vol[:]
     yesterday.pop()
@@ -399,12 +452,16 @@ class goristock(object):
     return self.high_or_low(today_MAVOL, yes_MAVOL,rev)
 
   def MAVOL_serial(self,days,rev):
-    """ see make_serial() """
+    """ see make_serial()
+        成較量移動平均 list 化，資料格式請見 def make_serial()
+    """
     return self.make_serial(self.stock_vol,days,rev=0)
 
   @property
   def VOLMAX3(self):
-    """ Volume is the max in last 3 days. """
+    """ Volume is the max in last 3 days.
+        三日內最大成交量
+    """
     if self.stock_vol[-1] > self.stock_vol[-2] and self.stock_vol[-1] > self.stock_vol[-3]:
       return True
     else:
@@ -414,12 +471,19 @@ class goristock(object):
   def MAO(self,day1,day2,rev=0):
     """ This is MAO(Moving Average Oscillator), not BIAS.
         It's only 'MAday1 - MAday2'.
+        乖離率，MAday1 - MAday2 兩日之移動平均之差
 
         return list:
         [0] is the times of high, low or equal
           [0] is times
           [1] is the MAO data
-        [1] ↑ ↓ or -
+        [1] rev=0:↑ ↓ or -，rev=1:1 -1 0
+
+        回傳：
+        [0]
+          [0] 回傳次數
+          [1] MAO 資料數據
+        [1] 漲跌標示，rev=0:↑ ↓ or -，rev=1:1 -1 0
     """
     day1MA = self.MA_serial(day1)[1]
     day2MA = self.MA_serial(day2)[1]
@@ -445,7 +509,9 @@ class goristock(object):
 ##### RABC #####
   @property
   def RABC(self):
-    """ Return ABC """
+    """ Return ABC
+        轉折點 ABC
+    """
     A = self.raw_data[-3]*2 - self.raw_data[-6]
     B = self.raw_data[-2]*2 - self.raw_data[-5]
     C = self.raw_data[-1]*2 - self.raw_data[-4]
@@ -459,6 +525,10 @@ class goristock(object):
           [1] is the serial of data.
 
         or return '?'
+
+        資料數據 list 化，days 移動平均值
+        [0] 回傳次數
+        [1] 回傳數據
     """
     raw = data[:]
     result = []
@@ -477,6 +547,7 @@ class goristock(object):
   def cum_serial(self, raw,rev=0):
     """ Cumulate serial data
         and return times(int)
+        計算數據重複（持續）次數
     """
     org = raw[1:]
     diff = raw[:-1]
