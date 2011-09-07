@@ -451,7 +451,7 @@ class goristock(object):
 
     return self.high_or_low(today_MAVOL, yes_MAVOL,rev)
 
-  def MAVOL_serial(self,days,rev):
+  def MAVOL_serial(self,days,rev=0):
     """ see make_serial()
         成較量移動平均 list 化，資料格式請見 def make_serial()
     """
