@@ -66,9 +66,9 @@ handlers:
 
 inbound_services:
 - xmpp_message
-- xmpp_presence
 - mail
 - warmup
+#- xmpp_presence
 
 builtins:
 - appstats: on
