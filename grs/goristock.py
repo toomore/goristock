@@ -348,13 +348,13 @@ class goristock(object):
       return False
 
   @property
-  def SD(self):
+  def SD(self, days=45):
     """ Standard Deviation.
-        計算 45 日內之標準差
+        計算 days 日內之標準差，預設 45 日
     """
-    if len(self.raw_data) >= 45:
-      data = self.raw_data[-45:]
-      data_avg = float(sum(data) / 45)
+    if len(self.raw_data) >= days:
+      data = self.raw_data[-days:]
+      data_avg = float(sum(data) / days)
       data2 = []
       for x in data:
         data2.append((x - data_avg ) ** 2)
@@ -364,24 +364,24 @@ class goristock(object):
       return 0
 
   @property
-  def SDAVG(self):
+  def SDAVG(self, days=45):
     """ the last 45 days average.
-        計算 45 日內之平均數
+        計算 days 日內之平均數，預設 45 日
     """
-    if len(self.raw_data) >= 45:
-      data = self.raw_data[-45:]
-      data_avg = float(sum(data) / 45)
+    if len(self.raw_data) >= days:
+      data = self.raw_data[-days:]
+      data_avg = float(sum(data) / days)
       return data_avg
     else:
       return 0
 
   @property
-  def CV(self):
+  def CV(self, days=45):
     """ Coefficient of Variation.
-        計算 45 日內之變異數
+        計算 days 日內之變異數，預設 45 日
     """
-    if len(self.raw_data) >= 45:
-      data_avg = sum(self.raw_data[-45:]) / 45
+    if len(self.raw_data) >= days:
+      data_avg = sum(self.raw_data[-days:]) / days
       return self.SD / data_avg
     else:
       return 0
