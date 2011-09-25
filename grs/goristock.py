@@ -260,7 +260,8 @@ class goristock(object):
     otherinfo = []
     fetch_data_raw = 1
     for i in csv_read:
-      if self.ckinv(i):
+      #if self.ckinv(i):
+      if len(i) > 1:
         self.debug_print(i)
         getr.append(self.covstr(i[6]))
         getdate.append(i[0].replace(' ',''))
