@@ -44,3 +44,24 @@ class all_portf(object):
   def ck_portf_005(self):
     ''' 6日均價大於18日均價，大於3日均價。（預備黃金交叉） '''
     return self.a.MA(6) > self.a.MA(18) > self.a.MA(3) and self.a.MAC(3) == '↑'.decode('utf-8') and self.a.stock_vol[-1] > 1000*1000 and self.a.raw_data[-1] > 10
+
+  ##### 四大買點組合 #####
+  def ck_portf_006(self):
+    ''' 負乖離扣至最大 '''
+    return list(self.a.ckMAO(self.a.MAO(3,6)[0][1]))[0]
+
+  def ck_portf_007(self):
+    ''' 量大收紅 '''
+    return self.a.stock_vol[-1] > self.a.stock_vol[-2] and self.a.PUPTY
+
+  def ck_portf_008(self):
+    ''' 量縮價不跌 '''
+    return self.a.stock_vol[-1] < self.a.stock_vol[-2] and self.a.PUPTY
+
+  def ck_portf_009(self):
+    ''' 三日均價由下往上 '''
+    return self.a.MAC(3,rev=1) and self.a.MA_serial(3)[0] <= 2
+
+  def ck_portf_010(self):
+    ''' 三日均價大於六日均價 '''
+    return self.a.MA(3) > self.a.MA(6)
