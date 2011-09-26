@@ -350,6 +350,16 @@ class task_stocks(webapp.RequestHandler):
       mail.append(body)
       memcache.set('mailstock005', mail)
       logging.info('memcache set: mailstock005')
+    if all_portf(a).ck_portf_006() and (all_portf(a).ck_portf_007() or all_portf(a).ck_portf_008() or all_portf(a).ck_portf_009() or all_portf(a).ck_portf_010()):
+      mail = memcache.get('mailstock006')
+      if mail:
+        logging.info('memcache get: mailstock006')
+      else:
+        mail = []
+      mail.append(body)
+      memcache.set('mailstock006', mail)
+      logging.info('memcache set: mailstock006')
+
     '''
     else:
       mailtotest = memcache.get('mailtotest')
@@ -467,6 +477,14 @@ class cron_mail2(webapp.RequestHandler):
       except:
           mailstock005_body = ''
 
+      try:
+        mailstock006 = sorted(memcache.get('mailstock006'))
+        mailstock006_body = '=== 006 ===\n說明：四大買點\n篩選股票：\n'.decode('utf-8')
+        for i in mailstock006:
+          mailstock006_body += i + '\n'
+      except:
+          mailstock006_body = ''
+
       '''
       for i in mailtotest:
         mailtotest_body += i + '\n'
@@ -476,7 +494,7 @@ class cron_mail2(webapp.RequestHandler):
         sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
         to = "goristock-daily-report@googlegroups.com",
         subject = "goristock %s selected." % str(datetime.today() + timedelta(seconds=60*60*8)).split(' ')[0],
-        body = mail_body + '\n' + mailstock002_body + '\n' + mailstock003_body + '\n' + mailstock004_body + '\n' + mailstock005_body)
+        body = mail_body + '\n' + mailstock002_body + '\n' + mailstock003_body + '\n' + mailstock004_body + '\n' + mailstock005_body + '\n' + mailstock006_body)
       logging.info(mail_body)
     else:
       logging.info('memcache -> mailstock is empty.')
@@ -486,6 +504,7 @@ class cron_mail2(webapp.RequestHandler):
     memcache.delete('mailstock003')
     memcache.delete('mailstock004')
     memcache.delete('mailstock005')
+    memcache.delete('mailstock006')
 
 class cron_mail_test(webapp.RequestHandler):
   ''' /ad/task →  /ad/cron_mail_test '''
@@ -531,6 +550,14 @@ class cron_mail_test(webapp.RequestHandler):
       except:
           mailstock005_body = ''
 
+      try:
+        mailstock006 = sorted(memcache.get('mailstock006'))
+        mailstock006_body = '=== 006 ===\n說明：四大買點\n篩選股票：\n'.decode('utf-8')
+        for i in mailstock006:
+          mailstock006_body += i + '\n'
+      except:
+          mailstock006_body = ''
+
       '''
       for i in mailtotest:
         mailtotest_body += i + '\n'
@@ -540,7 +567,7 @@ class cron_mail_test(webapp.RequestHandler):
         sender = "goristock-daily-report <daily-report@goristock.appspotmail.com>",
         to = "toomore0929@gmail.com",
         subject = "[TEST] GORISTOCK %s SELECTED." % str(datetime.today() + timedelta(seconds=60*60*8)).split(' ')[0],
-        body = mail_body + '\n' + mailstock002_body + '\n' + mailstock003_body + '\n' + mailstock004_body + '\n' + mailstock005_body)
+        body = mail_body + '\n' + mailstock002_body + '\n' + mailstock003_body + '\n' + mailstock004_body + '\n' + mailstock005_body + '\n' + mailstock006_body)
       logging.info(mail_body)
     else:
       mailtotest = memcache.get('mailtotest')
@@ -561,6 +588,7 @@ class cron_mail_test(webapp.RequestHandler):
     memcache.delete('mailstock003')
     memcache.delete('mailstock004')
     memcache.delete('mailstock005')
+    memcache.delete('mailstock006')
 
 ############## flush Models ##############
 class flush(webapp.RequestHandler):
@@ -612,7 +640,7 @@ def main():
                   ('/_ah/xmpp/presence/available/', xmpp_avail),
                   ('/_ah/xmpp/presence/unavailable/', xmpp_avail),
                   ('/_ah/xmpp/presence/probe/', xmpp_avail),
-                  ('/ad/task', task),
+                  ('/ad/task', task), # /ad/task > /ad/cron_mail[_test]
                   ('/ad/task_stock', task_stock), ## out of work
                   ('/ad/task_stocks', task_stocks),
                   ('/ad/cron_mail', cron_mail2),
