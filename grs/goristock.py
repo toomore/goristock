@@ -261,6 +261,7 @@ class goristock(object):
     fetch_data_raw = 1
     for i in csv_read:
       if self.ckinv(i):
+      #if len(i) > 1:
         self.debug_print(i)
         getr.append(self.covstr(i[6]))
         getdate.append(i[0].replace(' ',''))
@@ -348,13 +349,13 @@ class goristock(object):
       return False
 
   @property
-  def SD(self):
+  def SD(self, days=45):
     """ Standard Deviation.
-        計算 45 日內之標準差
+        計算 days 日內之標準差，預設 45 日
     """
-    if len(self.raw_data) >= 45:
-      data = self.raw_data[-45:]
-      data_avg = float(sum(data) / 45)
+    if len(self.raw_data) >= days:
+      data = self.raw_data[-days:]
+      data_avg = float(sum(data) / days)
       data2 = []
       for x in data:
         data2.append((x - data_avg ) ** 2)
@@ -364,24 +365,24 @@ class goristock(object):
       return 0
 
   @property
-  def SDAVG(self):
+  def SDAVG(self, days=45):
     """ the last 45 days average.
-        計算 45 日內之平均數
+        計算 days 日內之平均數，預設 45 日
     """
-    if len(self.raw_data) >= 45:
-      data = self.raw_data[-45:]
-      data_avg = float(sum(data) / 45)
+    if len(self.raw_data) >= days:
+      data = self.raw_data[-days:]
+      data_avg = float(sum(data) / days)
       return data_avg
     else:
       return 0
 
   @property
-  def CV(self):
+  def CV(self, days=45):
     """ Coefficient of Variation.
-        計算 45 日內之變異數
+        計算 days 日內之變異數，預設 45 日
     """
-    if len(self.raw_data) >= 45:
-      data_avg = sum(self.raw_data[-45:]) / 45
+    if len(self.raw_data) >= days:
+      data_avg = sum(self.raw_data[-days:]) / days
       return self.SD / data_avg
     else:
       return 0
@@ -505,6 +506,24 @@ class goristock(object):
     cum = self.make_serial(serial,1,rev)
     #return [day1MAs,day2MAs,serial,cum,self.high_or_low(cum[-1],cum[-2])]
     return [cum,self.high_or_low(day1MAs[-1]-day2MAs[-1],day1MAs[-2]-day2MAs[-2],rev)]
+
+##### 判斷正負乖離位置 #####
+  def ckMAO(self,data,s=5,pm=False):
+    """判斷正負乖離位置
+       s = 取樣判斷區間
+       pm = True（正）/False（負） 乖離
+       return [T/F, 第幾個轉折日, 乖離值]
+    """
+    c = data[-s:]
+
+    if pm:
+      ckvalue = max(c)
+      preckvalue = max(c) > 0
+    else:
+      ckvalue = min(c)
+      preckvalue = max(c) < 0
+
+    return [s - c.index(ckvalue) < 4 and c.index(ckvalue) != s-1 and preckvalue, s - c.index(ckvalue) - 1, ckvalue]
 
 ##### RABC #####
   @property
