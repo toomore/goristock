@@ -41,6 +41,7 @@ def viewonly(no):
   for i in range(0,25):
     a.goback(1) ## 倒退一天
     ck4m(a,True)
+    #ck4ms(a)
 
 def ck4m(a, other=False):
   pa = B4P(a)
@@ -65,6 +66,15 @@ def ck4m(a, other=False):
   elif other:
     print '--', a.Cmd_display,'\t--'
 
+def ck4ms(a):
+  pa = B4P(a)
+  if pa.B4PB:
+    print 'O-', a.Cmd_display,'\tBUY  四大買點'
+  elif pa.B4PS:
+    print '-X', a.Cmd_display,'\tSELL 四大賣點'
+  else:
+    print '--', a.Cmd_display,'\t--'
+
 if __name__ == '__main__':
-  allck()
-  #viewonly(2610)
+  #allck()
+  viewonly(2610)
