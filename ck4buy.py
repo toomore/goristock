@@ -25,26 +25,46 @@ from grs import goristock
 from grs.twseno import twseno
 from grs.all_portf import B4P
 
-for i in twseno().allstockno:
-  a = goristock.goristock(i)
+def allck():
+  ''' 檢查所有股票買賣點，剔除$10以下、成交量小於1000張的股票。 '''
+  for i in twseno().allstockno:
+    a = goristock.goristock(i)
+    try:
+      if a.stock_vol[-1] > 1000*1000 and a.raw_data[-1] > 10:
+        #a.goback(3) ## 倒退天數
+        ck4m(a)
+    except:
+      pass
+
+def viewonly(no):
+  a = goristock.goristock(no)
+  for i in range(0,25):
+    a.goback(1) ## 倒退一天
+    ck4m(a,True)
+
+def ck4m(a, other=False):
   pa = B4P(a)
-  try:
-    #a.goback(3)
-    if pa.ckMinsGLI and pa.B1:
-      print 'O-', a.Cmd_display,'量大收紅'
-    elif pa.ckMinsGLI and pa.B2:
-      print 'O-', a.Cmd_display,'量縮價不跌'
-    elif pa.ckMinsGLI and pa.B3:
-      print 'O-', a.Cmd_display,'三日均價由下往上'
-    elif pa.ckMinsGLI and pa.B4:
-      print 'O-', a.Cmd_display,'三日均價大於六日均價'
-    elif pa.ckPlusGLI and pa.S1:
-      print '-X', a.Cmd_display,'量大收黑'
-    elif pa.ckPlusGLI and pa.S2:
-      print '-X', a.Cmd_display,'量縮價跌'
-    elif pa.ckPlusGLI and pa.S3:
-      print '-X', a.Cmd_display,'三日均價由上往下'
-    elif pa.ckPlusGLI and pa.S4:
-      print '-X', a.Cmd_display,'三日均價小於六日均價'
-  except:
-    print 'STOP!'
+  if pa.ckMinsGLI:
+    if pa.B1:
+      print 'O-', a.Cmd_display,'\t量大收紅'
+    elif pa.B2:
+      print 'O-', a.Cmd_display,'\t量縮價不跌'
+    elif pa.B3:
+      print 'O-', a.Cmd_display,'\t三日均價由下往上'
+    elif pa.B4:
+      print 'O-', a.Cmd_display,'\t三日均價大於六日均價'
+  elif pa.ckPlusGLI:
+    if pa.S1:
+      print '-X', a.Cmd_display,'\t量大收黑'
+    elif pa.S2:
+      print '-X', a.Cmd_display,'\t量縮價跌'
+    elif pa.S3:
+      print '-X', a.Cmd_display,'\t三日均價由上往下'
+    elif pa.S4:
+      print '-X', a.Cmd_display,'\t三日均價小於六日均價'
+  elif other:
+    print '--', a.Cmd_display,'\t--'
+
+if __name__ == '__main__':
+  allck()
+  #viewonly(2610)
