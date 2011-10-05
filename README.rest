@@ -3,7 +3,7 @@ goristock 台灣股市分析機器人
 
 :Authors:
   Toomore
-:Version: 0.5x of 2011/08/14
+:Version: 0.5 of 2011/10/05
 
 How it work.
 ------------
@@ -18,8 +18,44 @@ Report Issue or get involved
 ChangeLog
 ===========
 
-2011-08-14 v0.5x
+2011-10-05 v0.5
 ----------------
 main change:
 
 #. spread gae and grs from goristock.
+
+#. a87bede [issues #35] Build Buy or sell record.
+
+#. a76edcc Update ck4buy example.
+
+#. 84fc5bd Rewrite ck4buy example.
+
+#. c7c9951 [issues #33] Update twseno and add inds no.
+
+#. 14393dd Change License year from 2010 to 2011.
+
+#. 1b3d105 [issues #31 #32] Build B4P model.
+
+#. 2f9c23e [issues #30] Build 4 best buy point model.
+
+#. 06bc671 [issues #30] Build ckMAO.
+
+#. 7ccb454 Tiny change for good efficacy.
+
+#. d30fc52 Change SD,SDAVG,CV default days.(45days)
+
+#. a3afde3 Fixed a rev bug.
+
+#. d1a090c Add code note.
+
+#. b528885 [issues #22] Fixed a zone value type.
+
+#. 7a12995 [issues #19] Fixed csv file open path.
+
+#. efa6425 [API] Fixed liststock fault.
+
+#. d9d8662 Fixed issues #9.
+
+#. b877a0a Translation to Chinese.
+
+#. b0ef262 Useing TWTime() for detecting open or not.
