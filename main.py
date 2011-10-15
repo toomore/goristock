@@ -26,10 +26,13 @@ from google.appengine.api import memcache
 from google.appengine.api import users
 from google.appengine.api import xmpp
 from google.appengine.api.taskqueue import Task
-from google.appengine.ext import webapp
+#from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
-from google.appengine.ext.webapp.util import run_wsgi_app
+#from google.appengine.ext.webapp.util import run_wsgi_app
+
+#Third Libraries
+import webapp2
 #from google.appengine.api import urlfetch
 
 ## Python lib
@@ -68,7 +71,7 @@ def covstr(s):
   return ret
 
 ############## webapp Models ##############
-class MainPage(webapp.RequestHandler):
+class MainPage(webapp2.RequestHandler):
   def get(self):
     hh_index = memcache.get('hh_index')
     if hh_index:
@@ -100,7 +103,7 @@ class MainPage(webapp.RequestHandler):
     """
 
 ############## Test GoRiStock ##############
-class goritest(webapp.RequestHandler):
+class goritest(webapp2.RequestHandler):
   def get(self):
     try:
       stock_no = int(self.request.get('q'))
@@ -118,7 +121,7 @@ class goritest(webapp.RequestHandler):
     #print a.display(3,6,18)
 
 ############## How it work - webapp Models ###################
-class howitwork(webapp.RequestHandler):
+class howitwork(webapp2.RequestHandler):
   def get(self):
     hh_howitwork = memcache.get('hh_howitwork')
     if hh_howitwork:
@@ -129,7 +132,7 @@ class howitwork(webapp.RequestHandler):
     self.response.out.write(hh_howitwork)
 
 ############## dev - webapp Models ###################
-class getindev(webapp.RequestHandler):
+class getindev(webapp2.RequestHandler):
   def get(self):
     hh_dev = memcache.get('hh_dev')
     if hh_dev:
@@ -140,7 +143,7 @@ class getindev(webapp.RequestHandler):
     self.response.out.write(hh_dev)
 
 ############## webapp Models ###################
-class getinvite(webapp.RequestHandler):
+class getinvite(webapp2.RequestHandler):
   def get(self):
     hh_getinvite = memcache.get('hh_getinvite')
     if hh_getinvite:
@@ -150,7 +153,7 @@ class getinvite(webapp.RequestHandler):
       memcache.set('hh_getinvite', hh_getinvite, 60*60*6)
     self.response.out.write(hh_getinvite)
 
-class xmpp_invite(webapp.RequestHandler):
+class xmpp_invite(webapp2.RequestHandler):
   @login_required
   def get(self):
     umail = users.get_current_user().email()
@@ -167,7 +170,7 @@ class xmpp_invite(webapp.RequestHandler):
     tv = {'umail': umail}
     self.response.out.write(template.render('./template/hh_invite.htm',{'tv': tv}))
 
-class xmpp_pagex(webapp.RequestHandler):
+class xmpp_pagex(webapp2.RequestHandler):
   def post(self):
     msg = xmpp.Message(self.request.POST)
     if msg.body.split(' ')[0] == 'search':
@@ -270,7 +273,7 @@ class xmpp_pagex(webapp.RequestHandler):
     logging.info(msg.body)
 
 ############## Task Models ##############
-class task(webapp.RequestHandler):
+class task(webapp2.RequestHandler):
   def get(self):
     #for i in [2618,1701,2369,8261,2401]:
     for i in twseno().allstock:
@@ -284,18 +287,18 @@ class task(webapp.RequestHandler):
         }
       ).add(queue_name='stock')
 
-class taskt(webapp.RequestHandler):
+class taskt(webapp2.RequestHandler):
   def post(self):
     logging.info('%s: %s, %s' % (self.request.get('no'), self.request.get('log'), self.request.POST))
 
-class task_stock(webapp.RequestHandler):
+class task_stock(webapp2.RequestHandler):
   def post(self):
     a = goristock.goristock(self.request.get('no'))
     body = a.XMPP_display(3,6,18)
     logging.info(body)
     #xmpp.send_message('toomore0929@gmail.com', body)
 
-class task_stocks(webapp.RequestHandler):
+class task_stocks(webapp2.RequestHandler):
   def post(self):
     a = goristock.goristock(self.request.get('no'))
 
@@ -383,7 +386,7 @@ class task_stocks(webapp.RequestHandler):
     '''
 
 ############## prememcache Models ##############
-class stpremem(webapp.RequestHandler):
+class stpremem(webapp2.RequestHandler):
   def get(self):
     for i in twseno().allstock:
       Task(
@@ -395,7 +398,7 @@ class stpremem(webapp.RequestHandler):
         }
       ).add(queue_name='premem')
 
-class premem(webapp.RequestHandler):
+class premem(webapp2.RequestHandler):
   def post(self):
     nowdatetime = datetime.today()
     url = "http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY.php?myear=%(year)d&mmon=%(mon)02d&STK_NO=%(stock)s" % {'year': nowdatetime.year, 'mon': nowdatetime.month, 'stock': self.request.get('no')}
@@ -403,7 +406,7 @@ class premem(webapp.RequestHandler):
     goristock.goristock(self.request.get('no'))
 
 ############## anti-server cache Models ##############
-class stantisercache(webapp.RequestHandler):
+class stantisercache(webapp2.RequestHandler):
   def get(self):
     for i in twseno().allstock:
       Task(
@@ -415,14 +418,14 @@ class stantisercache(webapp.RequestHandler):
         }
       ).add(queue_name='premem')
 
-class antisercah(webapp.RequestHandler):
+class antisercah(webapp2.RequestHandler):
   def post(self):
     nowdatetime = datetime.today()
     url = "http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY/STOCK_DAY.php?myear=%(year)d&mmon=%(mon)02d&STK_NO=%(stock)s" % {'year': nowdatetime.year, 'mon': nowdatetime.month, 'stock': self.request.get('no')}
     urllib2.urlopen(url)
 
 ############## Mails Models ##############
-class cron_mail(webapp.RequestHandler):
+class cron_mail(webapp2.RequestHandler):
   def get(self):
     if memcache.get('mailstock'):
       memget = memcache.get('mailstock')
@@ -445,7 +448,7 @@ class cron_mail(webapp.RequestHandler):
     memcache.delete('mailstock003')
     memcache.delete('mailstock004')
 
-class cron_mail2(webapp.RequestHandler):
+class cron_mail2(webapp2.RequestHandler):
   def get(self):
     if memcache.get('mailstock'):
       try:
@@ -526,7 +529,7 @@ class cron_mail2(webapp.RequestHandler):
     memcache.delete('mailstock006')
     memcache.delete('mailstock007')
 
-class cron_mail_test(webapp.RequestHandler):
+class cron_mail_test(webapp2.RequestHandler):
   ''' /ad/task →  /ad/cron_mail_test '''
   def get(self):
     if memcache.get('mailstock'):
@@ -620,12 +623,12 @@ class cron_mail_test(webapp.RequestHandler):
     memcache.delete('mailstock007')
 
 ############## flush Models ##############
-class flush(webapp.RequestHandler):
+class flush(webapp2.RequestHandler):
   def get(self):
     m = memcache.flush_all()
     self.response.out.write('%s<br>%s' % (m, memcache.get_stats()))
 
-class flush_lsdata(webapp.RequestHandler):
+class flush_lsdata(webapp2.RequestHandler):
   def get(self):
     nowdatetime = datetime.today()
     memlist = []
@@ -636,12 +639,12 @@ class flush_lsdata(webapp.RequestHandler):
     self.response.out.write('%s<br>%s' % (m, memcache.get_stats()))
 
 ############## redirect Models ##############
-class rewrite(webapp.RequestHandler):
+class rewrite(webapp2.RequestHandler):
   def get(self):
     self.redirect('/')
 
 ############## TEST XMPP new feathre Models ##############
-class xmpp_avail(webapp.RequestHandler):
+class xmpp_avail(webapp2.RequestHandler):
   def post(self):
     from datamodel import seluser
     f = self.request.get('from').split('/')[0]
@@ -655,34 +658,34 @@ class xmpp_avail(webapp.RequestHandler):
     #xmpp.send_message('toomore0929@gmail.com', self.request.get('from'))
 
 ############## main Models ##############
+application = webapp2.WSGIApplication(
+              [
+                ('/', MainPage),
+                ('/goristock', goritest),
+                ('/getinvite', getinvite),
+                ('/invite', xmpp_invite),
+                ('/howitwork', howitwork),
+                ('/dev', getindev),
+                ('/_ah/xmpp/message/chat/', xmpp_pagex),
+                ('/_ah/xmpp/presence/available/', xmpp_avail),
+                ('/_ah/xmpp/presence/unavailable/', xmpp_avail),
+                ('/_ah/xmpp/presence/probe/', xmpp_avail),
+                ('/ad/task', task), # /ad/task > /ad/cron_mail[_test]
+                ('/ad/task_stock', task_stock), ## out of work
+                ('/ad/task_stocks', task_stocks),
+                ('/ad/cron_mail', cron_mail2),
+                ('/ad/cron_mail_test', cron_mail_test),
+                ('/ad/stpremem', stpremem),
+                ('/ad/premem', premem),
+                ('/ad/stantisercache', stantisercache),
+                ('/ad/antisercah', antisercah),
+                ('/ad/flu', flush),
+                ('/ad/fluls', flush_lsdata),
+                ('/.*', rewrite)
+              ],debug=True) ## unlist: taskt,
+
 def main():
-  """ Start up. """
-  application = webapp.WSGIApplication(
-                [
-                  ('/', MainPage),
-                  ('/goristock', goritest),
-                  ('/getinvite', getinvite),
-                  ('/invite', xmpp_invite),
-                  ('/howitwork', howitwork),
-                  ('/dev', getindev),
-                  ('/_ah/xmpp/message/chat/', xmpp_pagex),
-                  ('/_ah/xmpp/presence/available/', xmpp_avail),
-                  ('/_ah/xmpp/presence/unavailable/', xmpp_avail),
-                  ('/_ah/xmpp/presence/probe/', xmpp_avail),
-                  ('/ad/task', task), # /ad/task > /ad/cron_mail[_test]
-                  ('/ad/task_stock', task_stock), ## out of work
-                  ('/ad/task_stocks', task_stocks),
-                  ('/ad/cron_mail', cron_mail2),
-                  ('/ad/cron_mail_test', cron_mail_test),
-                  ('/ad/stpremem', stpremem),
-                  ('/ad/premem', premem),
-                  ('/ad/stantisercache', stantisercache),
-                  ('/ad/antisercah', antisercah),
-                  ('/ad/flu', flush),
-                  ('/ad/fluls', flush_lsdata),
-                  ('/.*', rewrite)
-                ],debug=True) ## unlist: taskt,
-  run_wsgi_app(application)
+  application.run()
 
 if __name__ == '__main__':
   main()

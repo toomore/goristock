@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-from google.appengine.dist import use_library
-use_library('django', '1.1')
+#import os
+#os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+#from google.appengine.dist import use_library
+#use_library('django', '1.1')
 # by http://code.google.com/p/googleappengine/issues/detail?id=1758#c25
 
 from gaesessions import SessionMiddleware

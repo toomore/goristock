@@ -20,18 +20,21 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import os
-os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
-from google.appengine.dist import use_library
-use_library('django', '1.1')
+#import os
+#os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+#from google.appengine.dist import use_library
+#use_library('django', '1.1')
 #import django
 ## some issue http://code.google.com/p/googleappengine/issues/detail?id=1758
 
 ## GAE lib
-from google.appengine.ext import webapp
+#from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
-from google.appengine.ext.webapp.util import run_wsgi_app
+#from google.appengine.ext.webapp.util import run_wsgi_app
 #from google.appengine.api import users
+
+#Third Libraries
+import webapp2
 
 from grs import goristock
 from grs import mobileapi
@@ -64,7 +67,7 @@ def loginornot(self, user, continue_url):
   return [greeting, config]
 
 ############## webapp Models ##############
-class mobile(webapp.RequestHandler):
+class mobile(webapp2.RequestHandler):
   def get(self):
     #user = users.get_current_user()
     session = get_current_session()
@@ -100,7 +103,7 @@ class mobile(webapp.RequestHandler):
     mhh_mobile = template.render('./template/mhh_mobile.htm',{'tv': d, 'user': greeting[0], 'config': greeting[1], 'login': user, 'r': r})
     self.response.out.write(mhh_mobile)
 
-class udataconfig(webapp.RequestHandler):
+class udataconfig(webapp2.RequestHandler):
   def get(self):
     #user = users.get_current_user()
     try:
@@ -151,7 +154,7 @@ class udataconfig(webapp.RequestHandler):
       except ValueError:
         self.redirect('/m')
 
-class detail(webapp.RequestHandler):
+class detail(webapp2.RequestHandler):
   def __init__(self):
     #self.user = users.get_current_user()
     session = get_current_session()
@@ -188,13 +191,13 @@ class detail(webapp.RequestHandler):
     except IndexError:
       self.redirect('/m')
 
-class chart(webapp.RequestHandler):
+class chart(webapp2.RequestHandler):
   def get(self, no):
     chart = goristock.goristock(no).gchart(18,[310,260],10)
     mhh_mchart = template.render('./template/mhh_mchart.htm', {'no': no, 'chart': chart})
     self.response.out.write(mhh_mchart)
 
-class getnews(webapp.RequestHandler):
+class getnews(webapp2.RequestHandler):
   def get(self, q = None, rsz = 8):
     if q:
       q = urllib.unquote(q[1:])
@@ -211,18 +214,18 @@ class getnews(webapp.RequestHandler):
     mhh_mnews = template.render('./template/mhh_mnews.htm', {'n': opn, 'q': q})
     self.response.out.write(mhh_mnews)
 
-class newssearch(webapp.RequestHandler):
+class newssearch(webapp2.RequestHandler):
   def get(self):
     q = urllib.quote(self.request.GET.get('q').encode('utf-8'))
     #print q
     self.redirect('/m/news/%s' % q)
 
-class newskeywords(webapp.RequestHandler):
+class newskeywords(webapp2.RequestHandler):
   def get(self):
     mhh_mnewskeywords = template.render('./template/mhh_mnewskeywords.htm', {})
     self.response.out.write(mhh_mnewskeywords)
 
-class note(webapp.RequestHandler):
+class note(webapp2.RequestHandler):
   def get(self,mode,no):
     #self.user = users.get_current_user()
     session = get_current_session()
@@ -288,7 +291,7 @@ class note(webapp.RequestHandler):
         t = 'in else'
       self.response.out.write(mhh_mnote)
 
-class notef(webapp.RequestHandler):
+class notef(webapp2.RequestHandler):
   def post(self):
     #self.user = users.get_current_user()
     try:
@@ -326,27 +329,27 @@ class notef(webapp.RequestHandler):
         self.redirect('/m')
 
 ############## redirect Models ##############
-class rewrite(webapp.RequestHandler):
+class rewrite(webapp2.RequestHandler):
   def get(self):
     self.redirect('/m')
 
 ############## main Models ##############
+application = webapp2.WSGIApplication(
+              [
+                ('/m', mobile),
+                ('/m/config', udataconfig),
+                ('/m/detail/(.*)', detail),
+                ('/m/chart/(.*)', chart),
+                ('/m/news/search', newssearch),
+                ('/m/news/keywords', newskeywords),
+                ('/m/news(.*)', getnews),
+                ('/m/note(.*)/(.*)', note),
+                ('/m/notef', notef),
+                ('/m.*', rewrite)
+             ],debug=True)
+
 def main():
-  """ Start up. """
-  application = webapp.WSGIApplication(
-                [
-                  ('/m', mobile),
-                  ('/m/config', udataconfig),
-                  ('/m/detail/(.*)', detail),
-                  ('/m/chart/(.*)', chart),
-                  ('/m/news/search', newssearch),
-                  ('/m/news/keywords', newskeywords),
-                  ('/m/news(.*)', getnews),
-                  ('/m/note(.*)/(.*)', note),
-                  ('/m/notef', notef),
-                  ('/m.*', rewrite)
-               ],debug=True)
-  run_wsgi_app(application)
+  application.run()
 
 if __name__ == '__main__':
   main()

@@ -1,7 +1,8 @@
-application: goristock
-version: gae-dev-10
-runtime: python
+application: grsgae
+version: alpha
+runtime: python27
 api_version: 1
+threadsafe: false
 
 handlers:
 ## Favion url.
@@ -81,6 +82,10 @@ admin_console:
     name: "Appstats"
   - url: /admin_console/
     name: "Admin_console"
+
+libraries:
+- name: django
+  version: latest
 
 skip_files: |
  ^(.*/)?(

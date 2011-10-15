@@ -21,15 +21,18 @@
 # THE SOFTWARE.
 
 ## GAE lib
-from google.appengine.ext import webapp
+#from google.appengine.ext import webapp
 from google.appengine.ext.webapp import template
-from google.appengine.ext.webapp.util import run_wsgi_app
+#from google.appengine.ext.webapp.util import run_wsgi_app
 from google.appengine.api import memcache
 
 from grs import goapi
 
+#Third Libraries
+import webapp2
+
 ############## webapp Models ##############
-class apidoc(webapp.RequestHandler):
+class apidoc(webapp2.RequestHandler):
   def get(self):
     hh_api = memcache.get('hh_api')
     if hh_api:
@@ -39,56 +42,56 @@ class apidoc(webapp.RequestHandler):
       memcache.set('hh_api', hh_api, 60*60*6)
     self.response.out.write(hh_api)
 
-class stock_j(webapp.RequestHandler):
+class stock_j(webapp2.RequestHandler):
   def get(self):
     reapi = goapi.goapi(self.request.get('q')).stock_j
     self.response.out.write(template.render('./template/api.htm',{'reapi': reapi}))
 
-class stock_real(webapp.RequestHandler):
+class stock_real(webapp2.RequestHandler):
   def get(self):
     reapi = goapi.goapi(self.request.get('q')).stock_real
     self.response.out.write(template.render('./template/api.htm',{'reapi': reapi}))
 
-class weight(webapp.RequestHandler):
+class weight(webapp2.RequestHandler):
   def get(self):
     reapi = goapi.weight()
     self.response.out.write(template.render('./template/api.htm',{'reapi': reapi}))
 
-class liststock(webapp.RequestHandler):
+class liststock(webapp2.RequestHandler):
   def get(self):
     reapi = goapi.stocklist()
     self.response.out.write(template.render('./template/api.htm',{'reapi': reapi}))
 
-class searchstock(webapp.RequestHandler):
+class searchstock(webapp2.RequestHandler):
   def get(self):
     reapi = goapi.searchstock(self.request.get('q'))
     self.response.out.write(template.render('./template/api.htm',{'reapi': reapi}))
 
-class news(webapp.RequestHandler):
+class news(webapp2.RequestHandler):
   def get(self):
     reapi = goapi.newsapi(self.request.get('q'))
     self.response.out.write(template.render('./template/api.htm',{'reapi': reapi}))
 
 ############## redirect Models ##############
-class rewrite(webapp.RequestHandler):
+class rewrite(webapp2.RequestHandler):
   def get(self):
     self.redirect('/API')
 
 ############## main Models ##############
+application = webapp2.WSGIApplication(
+              [
+                ('/API', apidoc),
+                ('/API/stock', stock_j),
+                ('/API/real', stock_real),
+                ('/API/weight', weight),
+                ('/API/liststock', liststock),
+                ('/API/searchstock', searchstock),
+                ('/API/news', news),
+                ('/API.*', rewrite)
+              ],debug=True)
+
 def main():
-  """ Start up. """
-  application = webapp.WSGIApplication(
-                [
-                  ('/API', apidoc),
-                  ('/API/stock', stock_j),
-                  ('/API/real', stock_real),
-                  ('/API/weight', weight),
-                  ('/API/liststock', liststock),
-                  ('/API/searchstock', searchstock),
-                  ('/API/news', news),
-                  ('/API.*', rewrite)
-                ],debug=True)
-  run_wsgi_app(application)
+  application.run()
 
 if __name__ == '__main__':
   main()

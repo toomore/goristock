@@ -7,32 +7,37 @@ import hmac
 import logging
 import pickle
 import os
+import threading
 import time
 
 from google.appengine.api import memcache
 from google.appengine.ext import db
 
 # Configurable cookie options
-COOKIE_NAME_PREFIX = "DgT"  # identifies a cookie as being one used by gae-sessions (so you can set cookies too)
+COOKIE_NAME_PREFIX = "DgU"  # identifies a cookie as being one used by gae-sessions (so you can set cookies too)
 COOKIE_PATH = "/"
 DEFAULT_COOKIE_ONLY_THRESH = 10240  # 10KB: GAE only allows ~16000B in HTTP header - leave ~6KB for other info
-DEFAULT_LIFETIME = datetime.timedelta(days=14)
+DEFAULT_LIFETIME = datetime.timedelta(days=7)
 
 # constants
 SID_LEN = 43  # timestamp (10 chars) + underscore + md5 (32 hex chars)
 SIG_LEN = 44  # base 64 encoded HMAC-SHA256
 MAX_COOKIE_LEN = 4096
 EXPIRE_COOKIE_FMT = ' %s=; expires=Wed, 01-Jan-1970 00:00:00 GMT; Path=' + COOKIE_PATH
-COOKIE_FMT = ' ' + COOKIE_NAME_PREFIX + '%02d="%s"; expires=%s; Path=' + COOKIE_PATH + '; HttpOnly'
+COOKIE_FMT = ' ' + COOKIE_NAME_PREFIX + '%02d="%s"; %sPath=' + COOKIE_PATH + '; HttpOnly'
 COOKIE_FMT_SECURE = COOKIE_FMT + '; Secure'
 COOKIE_DATE_FMT = '%a, %d-%b-%Y %H:%M:%S GMT'
-COOKIE_OVERHEAD = len(COOKIE_FMT % (0, '', '')) + 29 + 150  # 29=date len, 150=safety margin (e.g., in case browser uses 4000 instead of 4096)
+COOKIE_OVERHEAD = len(COOKIE_FMT % (0, '', '')) + len('expires=Xxx, xx XXX XXXX XX:XX:XX GMT; ') + 150  # 150=safety margin (e.g., in case browser uses 4000 instead of 4096)
 MAX_DATA_PER_COOKIE = MAX_COOKIE_LEN - COOKIE_OVERHEAD
 
-_current_session = None
+_tls = threading.local()
 def get_current_session():
     """Returns the session associated with the current request."""
-    return _current_session
+    return _tls.current_session
+
+def set_current_session(session):
+    """Sets the session associated with the current request."""
+    _tls.current_session = session
 
 def is_gaesessions_key(k):
     return k.startswith(COOKIE_NAME_PREFIX)
@@ -52,6 +57,7 @@ class Session(object):
 
     def __init__(self, sid=None, lifetime=DEFAULT_LIFETIME, no_datastore=False,
                  cookie_only_threshold=DEFAULT_COOKIE_ONLY_THRESH, cookie_key=None):
+        self._accessed = False
         self.sid = None
         self.cookie_keys = []
         self.cookie_data = None
@@ -92,7 +98,7 @@ class Session(object):
             if sig == actual_sig:
                 self.__set_sid(sid, False)
                 # check for expiration and terminate the session if it has expired
-                if time.time() > self.get_expiration():
+                if self.get_expiration() != 0 and time.time() > self.get_expiration():
                     return self.terminate()
 
                 if pdump:
@@ -124,7 +130,10 @@ class Session(object):
         sig = Session.__compute_hmac(self.base_key, self.sid, self.cookie_data)
         cv = sig + self.sid + b64encode(self.cookie_data)
         num_cookies = 1 + (len(cv) - 1) / m
-        ed = datetime.datetime.fromtimestamp(self.get_expiration()).strftime(COOKIE_DATE_FMT)
+        if self.get_expiration() > 0:
+            ed = "expires=%s; " % datetime.datetime.fromtimestamp(self.get_expiration()).strftime(COOKIE_DATE_FMT)
+        else:
+            ed = ''
         cookies = [fmt % (i, cv[i*m:i*m+m], ed) for i in xrange(num_cookies)]
 
         # expire old cookies which aren't needed anymore
@@ -144,8 +153,13 @@ class Session(object):
         like SSL)."""
         return self.sid is not None and self.sid[-33]=='S'
 
+    def is_accessed(self):
+        """Returns True if any value of this session has been accessed."""
+        return self._accessed
+
     def ensure_data_loaded(self):
         """Fetch the session data if it hasn't been retrieved it yet."""
+        self._accessed = True
         if self.data is None and self.sid:
             self.__retrieve_data()
 
@@ -159,7 +173,7 @@ class Session(object):
     def __make_sid(self, expire_ts=None, ssl_only=False):
         """Returns a new session ID."""
         # make a random ID (random.randrange() is 10x faster but less secure?)
-        if not expire_ts:
+        if expire_ts is None:
             expire_dt = datetime.datetime.now() + self.lifetime
             expire_ts = int(time.mktime((expire_dt).timetuple()))
         else:
@@ -168,7 +182,7 @@ class Session(object):
             sep = 'S'
         else:
             sep = '_'
-        return str(expire_ts) + sep + hashlib.md5(os.urandom(16)).hexdigest()
+        return ('%010d' % expire_ts) + sep + hashlib.md5(os.urandom(16)).hexdigest()
 
     @staticmethod
     def __encode_data(d):
@@ -187,9 +201,13 @@ class Session(object):
     @staticmethod
     def __decode_data(pdump):
         """Returns a data dictionary after decoding it from "pickled+" form."""
-        eP, eO = pickle.loads(pdump)
-        for k,v in eP.iteritems():
-            eO[k] = db.model_from_protobuf(v)
+        try:
+            eP, eO = pickle.loads(pdump)
+            for k,v in eP.iteritems():
+                eO[k] = db.model_from_protobuf(v)
+        except Exception, e:
+            logging.warn("failed to decode session data: %s" % e)
+            eO = {}
         return eO
 
     def regenerate_id(self, expiration_ts=None):
@@ -200,7 +218,7 @@ class Session(object):
         ``expiration_ts`` - The UNIX timestamp the session will expire at. If
         omitted, the session expiration time will not be changed.
         """
-        if self.sid:
+        if self.sid or expiration_ts is not None:
             self.ensure_data_loaded()  # ensure we have the data before we delete it
             if expiration_ts is None:
                 expiration_ts = self.get_expiration()
@@ -434,13 +452,12 @@ class SessionMiddleware(object):
 
     def __call__(self, environ, start_response):
         # initialize a session for the current user
-        global _current_session
-        _current_session = Session(lifetime=self.lifetime, no_datastore=self.no_datastore, cookie_only_threshold=self.cookie_only_thresh, cookie_key=self.cookie_key)
+        _tls.current_session = Session(lifetime=self.lifetime, no_datastore=self.no_datastore, cookie_only_threshold=self.cookie_only_thresh, cookie_key=self.cookie_key)
 
         # create a hook for us to insert a cookie into the response headers
         def my_start_response(status, headers, exc_info=None):
-            _current_session.save() # store the session if it was changed
-            for ch in _current_session.make_cookie_headers():
+            _tls.current_session.save() # store the session if it was changed
+            for ch in _tls.current_session.make_cookie_headers():
                 headers.append(('Set-Cookie', ch))
             return start_response(status, headers, exc_info)
 
@@ -468,6 +485,10 @@ class DjangoSessionMiddleware(object):
             for k,v in session_headers:
                 response[k] = v
             self.response_handler = None
+        if request.session.is_accessed():
+            from django.utils.cache import patch_vary_headers
+            logging.info("Varying")
+            patch_vary_headers(response, ('Cookie',))
         return response
 
 def delete_expired_sessions():
