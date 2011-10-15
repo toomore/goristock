@@ -1,5 +1,5 @@
 application: goristock
-version: gae
+version: gae-dev-10
 runtime: python
 api_version: 1
 
@@ -66,9 +66,9 @@ handlers:
 
 inbound_services:
 - xmpp_message
-- xmpp_presence
 - mail
 - warmup
+#- xmpp_presence
 
 builtins:
 - appstats: on

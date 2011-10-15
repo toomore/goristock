@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 # http://code.google.com/apis/newssearch/v1/jsondevguide.html
-# Copyright (c) 2010 Toomore Chiang, http://toomore.net/
+# Copyright (c) 2010,2011 Toomore Chiang, http://toomore.net/
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal

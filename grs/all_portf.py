@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright (c) 2010 Toomore Chiang, http://toomore.net/
+# Copyright (c) 2010,2011 Toomore Chiang, http://toomore.net/
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -44,3 +44,74 @@ class all_portf(object):
   def ck_portf_005(self):
     ''' 6日均價大於18日均價，大於3日均價。（預備黃金交叉） '''
     return self.a.MA(6) > self.a.MA(18) > self.a.MA(3) and self.a.MAC(3) == '↑'.decode('utf-8') and self.a.stock_vol[-1] > 1000*1000 and self.a.raw_data[-1] > 10
+
+class B4P(object):
+  ''' 四大買點組合 '''
+  def __init__(self, a):
+    self.a = a
+
+  def GLI(self, pm=False):
+    ''' 判斷乖離 '''
+    return list(self.a.ckMAO(self.a.MAO(3,6)[0][1], pm=pm))[0]
+
+  @property
+  def ckPlusGLI(self):
+    ''' 正乖離扣至最大 '''
+    return self.GLI(True)
+
+  @property
+  def ckMinsGLI(self):
+    ''' 負乖離扣至最大 '''
+    return self.GLI()
+
+  ##### 四大買點 #####
+  @property
+  def B1(self):
+    ''' 量大收紅 '''
+    return self.a.stock_vol[-1] > self.a.stock_vol[-2] and self.a.PUPTY
+
+  @property
+  def B2(self):
+    ''' 量縮價不跌 '''
+    return self.a.stock_vol[-1] < self.a.stock_vol[-2] and self.a.PUPTY
+
+  @property
+  def B3(self):
+    ''' 三日均價由下往上 '''
+    return self.a.MAC(3,rev=1) and self.a.MA_serial(3)[0] <= 2
+
+  @property
+  def B4(self):
+    ''' 三日均價大於六日均價 '''
+    return self.a.MA(3) > self.a.MA(6)
+
+  ##### 四大賣點 #####
+  @property
+  def S1(self):
+    ''' 量大收黑 '''
+    return self.a.stock_vol[-1] > self.a.stock_vol[-2] and not self.a.PUPTY
+
+  @property
+  def S2(self):
+    ''' 量縮價跌 '''
+    return self.a.stock_vol[-1] < self.a.stock_vol[-2] and not self.a.PUPTY
+
+  @property
+  def S3(self):
+    ''' 三日均價由上往下 '''
+    return not self.a.MAC(3,rev=1) and self.a.MA_serial(3)[0] <= 2
+
+  @property
+  def S4(self):
+    ''' 三日均價小於六日均價 '''
+    return self.a.MA(3) < self.a.MA(6)
+
+  @property
+  def B4PB(self):
+    ''' 判斷是否為四大買點 '''
+    return self.ckMinsGLI and (self.B1 or self.B2 or self.B3 or self.B4)
+
+  @property
+  def B4PS(self):
+    ''' 判斷是否為四大賣點 '''
+    return self.ckPlusGLI and (self.S1 or self.S2 or self.S3 or self.S4)

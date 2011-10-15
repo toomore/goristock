@@ -20,45 +20,52 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import time
-import datetime
+class BSR(object):
+  ''' 買賣進出紀錄 '''
+  def __init__(self,init_money=0):
+    '''
+      init_money 期初金額
+      store 庫存
+      avgprice 買賣價格紀錄
+    '''
+    self.money = init_money
+    self.store = {}
+    self.avgprice = {}
 
-class TWTime(object):
-  ''' Transform localtime to Taiwan time in UTF+8
-      轉換當地時間到台灣時間 UTF+8
-  '''
-  def __init__(self,tz = 8):
+  def buy(self, no, price, value):
+    ''' 買 '''
+    self.money += -price*value
     try:
-      self.TimeZone = float(tz)
+      self.store[no] += value
     except:
-      self.TimeZone = 8
+      self.store[no] = value
+    try:
+      self.avgprice[no]['buy'] += [price]
+    except:
+      try:
+        self.avgprice[no]['buy'] = [price]
+      except:
+        self.avgprice[no] = {}
+        self.avgprice[no]['buy'] = [price]
 
-  @property
-  def now(self):
-    ''' Display Taiwan Time now
-        顯示台灣此刻時間
-    '''
-    localtime = datetime.datetime.now()
-    return localtime + datetime.timedelta(hours = time.timezone/60/60 + self.TimeZone)
+  def sell(self, no, price, value):
+    ''' 賣 '''
+    self.money += price*value
+    try:
+      self.store[no] += -value
+    except:
+      self.store[no] = -value
+    try:
+      self.avgprice[no]['sell'] += [price]
+    except:
+      try:
+        self.avgprice[no]['sell'] = [price]
+      except:
+        self.avgprice[no] = {}
+        self.avgprice[no]['sell'] = [price]
 
-  @property
-  def date(self):
-    ''' Display Taiwan date now
-        顯示台灣此刻日期
-    '''
-    localtime = datetime.date.today()
-    return localtime + datetime.timedelta(hours = time.timezone/60/60 + self.TimeZone)
-
-  @property
-  def localtime(self):
-    ''' Display localtime now
-        顯示當地此刻時間
-    '''
-    return datetime.datetime.now()
-
-  @property
-  def localdate(self):
-    ''' Display localdate now
-        顯示當地此刻日期
-    '''
-    return datetime.date.today()
+  def showinfo(self):
+    ''' 總覽顯示 '''
+    print 'money:',self.money
+    print 'store:',self.store
+    print 'avgprice:',self.avgprice
