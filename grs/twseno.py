@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright (c) 2010 Toomore Chiang, http://toomore.net/
+# Copyright (c) 2010,2011 Toomore Chiang, http://toomore.net/
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -27,6 +27,7 @@ class twseno(object):
   def __init__(self):
     self.allstockno = self.importcsv()
     self.ind_code = self.industry_code()
+    self.indcomps = self.loadindcomps()
 
   def importcsv(self):
     f = csv.reader(open('./%s/stock_no.csv' % _CSVFILEPATH, 'r'))
@@ -48,6 +49,19 @@ class twseno(object):
     for i in f:
       re[int(i[0])] = i[1]
 
+    return re
+
+  def loadindcomps(self):
+    f = csv.reader(open('./%s/stock_no.csv' % _CSVFILEPATH, 'r'))
+    re = {}
+    for i in f:
+      try:
+        re[int(i[2])].append(i[0])
+      except:
+        try:
+          re[int(i[2])] = [i[0]]
+        except:
+          pass
     return re
 
   @property
