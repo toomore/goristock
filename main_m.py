@@ -51,6 +51,8 @@ import time
 from datetime import datetime
 from datetime import timedelta
 
+session = get_current_session()
+
 def create_openid_url(self, continue_url):
   continue_url = urlparse.urljoin(self.request.url, continue_url)
   return "/_ah/login_required?continue=%s" % urllib.quote(continue_url)
@@ -70,7 +72,7 @@ def loginornot(self, user, continue_url):
 class mobile(webapp2.RequestHandler):
   def get(self):
     #user = users.get_current_user()
-    session = get_current_session()
+    #session = get_current_session()
 
     if not session.has_key('me') or self.request.GET.get('r'):
       if session.has_key('me'):
@@ -107,7 +109,7 @@ class udataconfig(webapp2.RequestHandler):
   def get(self):
     #user = users.get_current_user()
     try:
-      session = get_current_session()
+      #session = get_current_session()
       user = session['me']
       user_key_name = session['key_name']
     except:
@@ -126,7 +128,7 @@ class udataconfig(webapp2.RequestHandler):
   def post(self):
     #user = users.get_current_user()
     try:
-      session = get_current_session()
+      #session = get_current_session()
       user = session['me']
       user_key_name = session['key_name']
     except:
@@ -157,7 +159,7 @@ class udataconfig(webapp2.RequestHandler):
 class detail(webapp2.RequestHandler):
   def __init__(self):
     #self.user = users.get_current_user()
-    session = get_current_session()
+    #session = get_current_session()
     self.login = session.has_key('me')
 
   def get(self, no):
@@ -228,7 +230,7 @@ class newskeywords(webapp2.RequestHandler):
 class note(webapp2.RequestHandler):
   def get(self,mode,no):
     #self.user = users.get_current_user()
-    session = get_current_session()
+    #session = get_current_session()
     try:
       user = session['me']
       user_key_name = session['key_name']
@@ -295,7 +297,7 @@ class notef(webapp2.RequestHandler):
   def post(self):
     #self.user = users.get_current_user()
     try:
-      session = get_current_session()
+      #session = get_current_session()
       user = session['me']
       user_key_name = session['key_name']
       userkey = datamodel.userdata.get_by_key_name(user_key_name)
