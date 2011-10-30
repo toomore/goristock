@@ -85,6 +85,15 @@
 {{ tv|safe }}
 </div>
 <br>
+{% if login %}
+<div class="newstitle">
+  近日參考買賣點
+</div>
+<div class="mdetail">
+{{ BSP|safe }}
+</div>
+<br>
+{% endif %}
 <table class="nav">
   <tr>
     <td><a href="/m">←Back</a></td>

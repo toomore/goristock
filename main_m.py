@@ -36,6 +36,7 @@ from google.appengine.ext.webapp.util import run_wsgi_app
 from grs import goristock
 from grs import mobileapi
 from grs.gnews import gnews
+from grs.all_portf import B4P
 from grs import twseno
 
 from gaesessions import get_current_session
@@ -183,7 +184,40 @@ class detail(webapp.RequestHandler):
         stockname = twseno.twseno().allstockno.get(str(no)).decode('utf-8')
       except:
         stockname = ''
-      mhh_mdetail = template.render('./template/mhh_mdetail.htm', {'tv': ooop, 'real': real, 'no': no, 'stockname': stockname, 'login': self.login})
+
+      if self.login:
+        grs = goristock.goristock(no)
+
+        bspre = ''
+        for i in range(5):
+          BSP = B4P(grs)
+          if BSP.B4PB:
+            if BSP.B1:
+              whyB = '量大收紅'
+            elif BSP.B2:
+              whyB = '量縮價不跌'
+            elif BSP.B3:
+              whyB = '三日均價由下往上'
+            elif BSP.B4:
+              whyB = '三日均價大於六日均價'
+            bspre += '<font color="red">%s 買 （%s）</font>\r' % (grs.data_date[-1], whyB)
+          elif BSP.B4PS:
+            if BSP.S1:
+              whyS = '量大收黑'
+            elif BSP.S2:
+              whyS = '量縮價跌'
+            elif BSP.S3:
+              whyS = '三日均價由上往下'
+            elif BSP.S4:
+              whyS = '三日均價小於六日均價'
+            bspre += '<font color="green">%s 賣 （%s）</font>\r' % (grs.data_date[-1], whyS)
+          else:
+            bspre += '%s 無 （不作為）\r' % grs.data_date[-1]
+          grs.goback(1)
+        bspre = bspre.replace('\r','<br>')
+      else:
+        bspre = None
+      mhh_mdetail = template.render('./template/mhh_mdetail.htm', {'tv': ooop, 'real': real, 'no': no, 'stockname': stockname, 'login': self.login, 'BSP': bspre})
       self.response.out.write(mhh_mdetail)
     except IndexError:
       self.redirect('/m')
