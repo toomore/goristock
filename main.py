@@ -20,6 +20,12 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
+from django.conf import settings
+#settings.configure()
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+from django.shortcuts import render_to_response
+
 ## GAE lib
 from google.appengine.api import mail
 from google.appengine.api import memcache
@@ -27,7 +33,7 @@ from google.appengine.api import users
 from google.appengine.api import xmpp
 from google.appengine.api.taskqueue import Task
 #from google.appengine.ext import webapp
-from google.appengine.ext.webapp import template
+#from google.appengine.ext.webapp import template
 from google.appengine.ext.webapp.util import login_required
 #from google.appengine.ext.webapp.util import run_wsgi_app
 
@@ -77,9 +83,9 @@ class MainPage(webapp2.RequestHandler):
     if hh_index:
       pass
     else:
-      hh_index = template.render('./template/hh_index.htm',{})
+      hh_index = render_to_response('hh_index.htm',{}).content
       memcache.set('hh_index', hh_index, 60*60*6)
-    self.response.out.write(hh_index)
+    self.response.write(hh_index)
 
     """
     #url = 'http://www.twse.com.tw/ch/trading/exchange/STOCK_DAY_AVG/STOCK_DAY_AVG2.php?STK_NO=2363&myear=2010&mmon=06&type=csv'
@@ -88,7 +94,7 @@ class MainPage(webapp2.RequestHandler):
     cc = urllib2.urlopen(url)
     csv_read = csv.reader(cc)
 
-    self.response.out.write('Go Ri Stock')
+    self.response.write('Go Ri Stock')
     #csv_read.next
     getr = []
     for i in csv_read:
@@ -127,9 +133,9 @@ class howitwork(webapp2.RequestHandler):
     if hh_howitwork:
       pass
     else:
-      hh_howitwork = template.render('./template/hh_howitwork.htm',{})
+      hh_howitwork = render_to_response('hh_howitwork.htm',{}).content
       memcache.set('hh_howitwork', hh_howitwork, 60*60*6)
-    self.response.out.write(hh_howitwork)
+    self.response.write(hh_howitwork)
 
 ############## dev - webapp Models ###################
 class getindev(webapp2.RequestHandler):
@@ -138,9 +144,9 @@ class getindev(webapp2.RequestHandler):
     if hh_dev:
       pass
     else:
-      hh_dev = template.render('./template/hh_dev.htm',{})
+      hh_dev = render_to_response('hh_dev.htm',{}).content
       memcache.set('hh_dev', hh_dev, 60*60*6)
-    self.response.out.write(hh_dev)
+    self.response.write(hh_dev)
 
 ############## webapp Models ###################
 class getinvite(webapp2.RequestHandler):
@@ -149,9 +155,9 @@ class getinvite(webapp2.RequestHandler):
     if hh_getinvite:
       pass
     else:
-      hh_getinvite = template.render('./template/hh_getinvite.htm',{})
+      hh_getinvite = render_to_response('hh_getinvite.htm',{}).content
       memcache.set('hh_getinvite', hh_getinvite, 60*60*6)
-    self.response.out.write(hh_getinvite)
+    self.response.write(hh_getinvite)
 
 class xmpp_invite(webapp2.RequestHandler):
   @login_required
@@ -168,7 +174,7 @@ class xmpp_invite(webapp2.RequestHandler):
     logging.info('#NEWUSER %s' % umail)
     ## todo: send a guild mail to the first time invited user.
     tv = {'umail': umail}
-    self.response.out.write(template.render('./template/hh_invite.htm',{'tv': tv}))
+    self.response.write(render_to_response('hh_invite.htm',{'tv': tv})).content
 
 class xmpp_pagex(webapp2.RequestHandler):
   def post(self):
@@ -626,7 +632,7 @@ class cron_mail_test(webapp2.RequestHandler):
 class flush(webapp2.RequestHandler):
   def get(self):
     m = memcache.flush_all()
-    self.response.out.write('%s<br>%s' % (m, memcache.get_stats()))
+    self.response.write('%s<br>%s' % (m, memcache.get_stats()))
 
 class flush_lsdata(webapp2.RequestHandler):
   def get(self):
@@ -636,7 +642,7 @@ class flush_lsdata(webapp2.RequestHandler):
       memlist.append('%(stock)s%(year)d%(mon)02d' % {'year': nowdatetime.year, 'mon': nowdatetime.month,'stock': i})
 
     m = memcache.delete_multi(memlist)
-    self.response.out.write('%s<br>%s' % (m, memcache.get_stats()))
+    self.response.write('%s<br>%s' % (m, memcache.get_stats()))
 
 ############## redirect Models ##############
 class rewrite(webapp2.RequestHandler):
