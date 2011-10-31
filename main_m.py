@@ -27,11 +27,20 @@
 #import django
 ## some issue http://code.google.com/p/googleappengine/issues/detail?id=1758
 
+from gaesessions import get_current_session
+#session = get_current_session()
+
+from django.conf import settings
+#settings.configure()
+import os
+os.environ['DJANGO_SETTINGS_MODULE'] = 'settings'
+from django.shortcuts import render_to_response
+
 ## GAE lib
 #from google.appengine.ext import webapp
-from google.appengine.ext.webapp import template
+#from google.appengine.ext.webapp import template
 #from google.appengine.ext.webapp.util import run_wsgi_app
-#from google.appengine.api import users
+from google.appengine.api import users
 
 #Third Libraries
 import webapp2
@@ -41,8 +50,6 @@ from grs import mobileapi
 from grs.gnews import gnews
 from grs import twseno
 
-from gaesessions import get_current_session
-
 import urlparse
 import urllib
 import datamodel
@@ -50,8 +57,6 @@ import random
 import time
 from datetime import datetime
 from datetime import timedelta
-
-session = get_current_session()
 
 def create_openid_url(self, continue_url):
   continue_url = urlparse.urljoin(self.request.url, continue_url)
@@ -71,8 +76,8 @@ def loginornot(self, user, continue_url):
 ############## webapp Models ##############
 class mobile(webapp2.RequestHandler):
   def get(self):
-    #user = users.get_current_user()
-    #session = get_current_session()
+    session = get_current_session()
+    user = users.get_current_user()
 
     if not session.has_key('me') or self.request.GET.get('r'):
       if session.has_key('me'):
@@ -102,14 +107,14 @@ class mobile(webapp2.RequestHandler):
       except:
         d.append({'stock_no': i})
 
-    mhh_mobile = template.render('./template/mhh_mobile.htm',{'tv': d, 'user': greeting[0], 'config': greeting[1], 'login': user, 'r': r})
-    self.response.out.write(mhh_mobile)
+    mhh_mobile = render_to_response('mhh_mobile.htm',{'tv': d, 'user': greeting[0], 'config': greeting[1], 'login': user, 'r': r}).content
+    self.response.write(mhh_mobile)
 
 class udataconfig(webapp2.RequestHandler):
   def get(self):
-    #user = users.get_current_user()
+    user = users.get_current_user()
     try:
-      #session = get_current_session()
+      session = get_current_session()
       user = session['me']
       user_key_name = session['key_name']
     except:
@@ -122,13 +127,13 @@ class udataconfig(webapp2.RequestHandler):
       stlist = ud.stock
       usd = {'nickname': user_key_name, 'provider': user.openid_provider}
       logout = "自動登入將在 %s 過期，或是直接<a href=\"/_ah/openidlogout\">登出 OpenID.</a>" % datetime.fromtimestamp(session.get_expiration())
-      mhh_mconfig = template.render('./template/mhh_mconfig.htm', {'tv': stlist, 'usd': usd, 'logout': logout})
-      self.response.out.write(mhh_mconfig)
+      mhh_mconfig = render_to_response('mhh_mconfig.htm', {'tv': stlist, 'usd': usd, 'logout': logout}).content
+      self.response.write(mhh_mconfig)
 
   def post(self):
-    #user = users.get_current_user()
+    user = users.get_current_user()
     try:
-      #session = get_current_session()
+      session = get_current_session()
       user = session['me']
       user_key_name = session['key_name']
     except:
@@ -157,12 +162,10 @@ class udataconfig(webapp2.RequestHandler):
         self.redirect('/m')
 
 class detail(webapp2.RequestHandler):
-  def __init__(self):
-    #self.user = users.get_current_user()
-    #session = get_current_session()
-    self.login = session.has_key('me')
-
   def get(self, no):
+    self.user = users.get_current_user()
+    session = get_current_session()
+    self.login = session.has_key('me')
     try:
       real = mobileapi.mapi(no).output
     except:
@@ -188,16 +191,16 @@ class detail(webapp2.RequestHandler):
         stockname = twseno.twseno().allstockno.get(str(no)).decode('utf-8')
       except:
         stockname = ''
-      mhh_mdetail = template.render('./template/mhh_mdetail.htm', {'tv': ooop, 'real': real, 'no': no, 'stockname': stockname, 'login': self.login})
-      self.response.out.write(mhh_mdetail)
+      mhh_mdetail = render_to_response('mhh_mdetail.htm', {'tv': ooop, 'real': real, 'no': no, 'stockname': stockname, 'login': self.login}).content
+      self.response.write(mhh_mdetail)
     except IndexError:
       self.redirect('/m')
 
 class chart(webapp2.RequestHandler):
   def get(self, no):
     chart = goristock.goristock(no).gchart(18,[310,260],10)
-    mhh_mchart = template.render('./template/mhh_mchart.htm', {'no': no, 'chart': chart})
-    self.response.out.write(mhh_mchart)
+    mhh_mchart = render_to_response('mhh_mchart.htm', {'no': no, 'chart': chart}).content
+    self.response.write(mhh_mchart)
 
 class getnews(webapp2.RequestHandler):
   def get(self, q = None, rsz = 8):
@@ -213,8 +216,8 @@ class getnews(webapp2.RequestHandler):
       n[i]['publishedDate'] = datetime.strptime(n[i]['publisheddate'], '%Y-%m-%d %H:%M:%S') - timedelta(hours = 8)
       opn.append(n[i])
 
-    mhh_mnews = template.render('./template/mhh_mnews.htm', {'n': opn, 'q': q})
-    self.response.out.write(mhh_mnews)
+    mhh_mnews = render_to_response('mhh_mnews.htm', {'n': opn, 'q': q}).content
+    self.response.write(mhh_mnews)
 
 class newssearch(webapp2.RequestHandler):
   def get(self):
@@ -224,13 +227,13 @@ class newssearch(webapp2.RequestHandler):
 
 class newskeywords(webapp2.RequestHandler):
   def get(self):
-    mhh_mnewskeywords = template.render('./template/mhh_mnewskeywords.htm', {})
-    self.response.out.write(mhh_mnewskeywords)
+    mhh_mnewskeywords = render_to_response('mhh_mnewskeywords.htm', {}).content
+    self.response.write(mhh_mnewskeywords)
 
 class note(webapp2.RequestHandler):
   def get(self,mode,no):
-    #self.user = users.get_current_user()
-    #session = get_current_session()
+    self.user = users.get_current_user()
+    session = get_current_session()
     try:
       user = session['me']
       user_key_name = session['key_name']
@@ -248,20 +251,20 @@ class note(webapp2.RequestHandler):
       if mode == '/add':
         mod = 'add'
         reurl = 'detail'
-        mhh_mnote = template.render('./template/mhh_mnoteedit.htm', {'no': no, 'mod': mod, 'reurl': reurl})
+        mhh_mnote = render_to_response('mhh_mnoteedit.htm', {'no': no, 'mod': mod, 'reurl': reurl}).content
         t = 'in add'
       elif mode == '/edit':
         mod = 'edit'
         reurl = 'note'
         for i in result:
           text = i.notetext
-        mhh_mnote = template.render('./template/mhh_mnoteedit.htm', {'no': no, 'mod': mod, 'text': text, 'reurl': reurl})
+        mhh_mnote = render_to_response('mhh_mnoteedit.htm', {'no': no, 'mod': mod, 'text': text, 'reurl': reurl}).content
         t = 'in edit'
       elif mode == '/del':
         t = 'in del'
         for i in result:
           key = i.key()
-        mhh_mnote = template.render('./template/mhh_mnotedel.htm', {'no': no, 'key': key})
+        mhh_mnote = render_to_response('mhh_mnotedel.htm', {'no': no, 'key': key}).content
       elif mode == '/list':
         result = datamodel.usernote.gql('where user = :user order by edittime desc', user = userkey)
         listnote = []
@@ -274,11 +277,11 @@ class note(webapp2.RequestHandler):
           if len(i.notetext) > 12:
             l['text'] = l['text'] + ' ...'
           listnote.append(l)
-        mhh_mnote = template.render('./template/mhh_mnotelist.htm', {'no': no, 'note': listnote})
+        mhh_mnote = render_to_response('mhh_mnotelist.htm', {'no': no, 'note': listnote}).content
       elif mode == '':
         if nc == 0:
           t = 'in no note'
-          mhh_mnote = template.render('./template/mhh_mnote.htm', {'no': no, 'nc': nc})
+          mhh_mnote = render_to_response('mhh_mnote.htm', {'no': no, 'nc': nc}).content
         else:
           noteop = {}
           for i in result:
@@ -287,17 +290,17 @@ class note(webapp2.RequestHandler):
             noteop['editdate'] = i.edittime
             noteop['adddate'] = i.addtime
           t = 'in note'
-          mhh_mnote = template.render('./template/mhh_mnote.htm', {'no': no, 'nc': nc, 'noteop': noteop})
+          mhh_mnote = render_to_response('mhh_mnote.htm', {'no': no, 'nc': nc, 'noteop': noteop}).content
         t = 'only no'
       else:
         t = 'in else'
-      self.response.out.write(mhh_mnote)
+      self.response.write(mhh_mnote)
 
 class notef(webapp2.RequestHandler):
   def post(self):
-    #self.user = users.get_current_user()
+    self.user = users.get_current_user()
     try:
-      #session = get_current_session()
+      session = get_current_session()
       user = session['me']
       user_key_name = session['key_name']
       userkey = datamodel.userdata.get_by_key_name(user_key_name)
