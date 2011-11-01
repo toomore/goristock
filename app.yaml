@@ -58,6 +58,7 @@ handlers:
 ## Mobile
 - url: /m.*
   script: main_m.py
+  secure: always
 
 ## Main WSGI
 - url: .*
