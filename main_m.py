@@ -181,7 +181,7 @@ class detail(webapp.RequestHandler):
         else:
           ooop += i + '<br>'
       try:
-        stockname = twseno.twseno().allstockno.get(str(no)).decode('utf-8')
+        stockname = twseno.twseno().allstock.get(int(no)).decode('utf-8')
       except:
         stockname = ''
 
