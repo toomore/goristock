@@ -174,7 +174,7 @@ class xmpp_invite(webapp2.RequestHandler):
     logging.info('#NEWUSER %s' % umail)
     ## todo: send a guild mail to the first time invited user.
     tv = {'umail': umail}
-    self.response.write(render_to_response('hh_invite.htm',{'tv': tv})).content
+    self.response.write(render_to_response('hh_invite.htm',{'tv': tv}).content)
 
 class xmpp_pagex(webapp2.RequestHandler):
   def post(self):

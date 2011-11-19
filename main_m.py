@@ -76,11 +76,17 @@ def loginornot(self, user, continue_url):
 ############## webapp Models ##############
 class mobile(webapp2.RequestHandler):
   def get(self):
-    session = get_current_session()
+    #session = get_current_session()
     user = users.get_current_user()
 
-    if not session.has_key('me') or self.request.GET.get('r'):
-      if session.has_key('me'):
+    try:
+      session = get_current_session()
+      user_has_key = session.has_key('me')
+    except:
+      user_has_key = None
+
+    if not user_has_key or self.request.GET.get('r'):
+      if user_has_key:
         user = True
       else:
         user = False
