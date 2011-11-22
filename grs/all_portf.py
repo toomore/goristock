@@ -68,7 +68,7 @@ class B4P(object):
   @property
   def B1(self):
     ''' 量大收紅 '''
-    return self.a.stock_vol[-1] > self.a.stock_vol[-2] and self.a.PUPTY
+    return self.a.stock_vol[-1] > self.a.stock_vol[-2] and self.a.raw_data[-1] > self.a.stock_open[-1]
 
   @property
   def B2(self):
@@ -89,7 +89,7 @@ class B4P(object):
   @property
   def S1(self):
     ''' 量大收黑 '''
-    return self.a.stock_vol[-1] > self.a.stock_vol[-2] and not self.a.PUPTY
+    return self.a.stock_vol[-1] > self.a.stock_vol[-2] and self.a.raw_data[-1] < self.a.stock_open[-1]
 
   @property
   def S2(self):
