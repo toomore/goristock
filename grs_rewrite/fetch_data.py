@@ -35,7 +35,7 @@ def to_list(csv_file):
     """ [list] 串接每日資料 舊→新"""
     tolist = []
     for i in csv_file:
-        i = [v.replace(' ', '').replace(',', '') for v in i]
+        i = [v.strip().replace(',', '') for v in i]
         tolist.append(i)
     return tolist[2:]
 

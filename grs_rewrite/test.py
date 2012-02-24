@@ -15,11 +15,11 @@ print c_read
 '''
 
 ## 測試串接
-s = serial_fetch(os.sys.argv[1],int(os.sys.argv[2]))
+s = serial_fetch(os.sys.argv[1], int(os.sys.argv[2]))
 print s
 
 ## 顯示擷取的每日筆數
 print len(s)
 
 ## 測試輸出CSV檔
-out_putfile('/dev/shm/f.csv',s)
+out_putfile('/dev/shm/f.csv', s)
