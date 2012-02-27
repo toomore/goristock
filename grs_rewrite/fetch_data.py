@@ -8,10 +8,13 @@ from datetime import datetime
 from datetime import timedelta
 
 
-def fetch_data(stock_no, nowdatetime=datetime.today()):
+def stock_fetch_data(stock_no, nowdatetime=datetime.today()):
     """ Fetch data from twse.com.tw
         return list.
         從 twse.com.tw 下載資料，回傳格式為 csv.reader
+        欄位：
+            日期 成交股數 成交金額 開盤價 最高價 （續）
+            最低價 收盤價 漲跌價差 成交筆數
     """
     url = ('http://www.twse.com.tw/ch/trading/exchange/' +
             'STOCK_DAY/STOCK_DAY_print.php?genpage=genpage/' +
@@ -45,7 +48,7 @@ def serial_fetch(no, month=3):
     re = []
     for i in range(month):
         nowdatetime = datetime.today() - timedelta(30 * i)
-        tolist = to_list(fetch_data(no, nowdatetime))
+        tolist = to_list(stock_fetch_data(no, nowdatetime))
         re = tolist + re
     return re
 
