@@ -44,7 +44,7 @@ def to_list(csv_file):
 
 
 def serial_fetch(no, month=3):
-    """[list] 串接每月資料 舊→新"""
+    """ [list] 串接每月資料 舊→新 """
     re = []
     for i in range(month):
         nowdatetime = datetime.today() - timedelta(30 * i)
@@ -57,3 +57,11 @@ def out_putfile(fpath, csvlist):
     """ 輸出成 CSV 檔 """
     op = csv.writer(open(fpath, 'wt'))
     op.writerows(csvlist)
+
+
+def serial_price(data, row):
+    """ [list] 取出某一價格序列 舊→新
+        序列收盤價 → serial_price(serial_fetch(no), 6)
+    """
+    re = [float(i[row]) for i in data]
+    return re
