@@ -24,6 +24,14 @@ handlers:
   static_files: static/css/\1
   upload: static/css/(.*)
 
+## Mozilla Apps
+- url: /apps
+  static_dir: static/apps
+  mime_type: application/x-web-app-manifest+json
+- url: /apps/(.*)
+  static_files: static/apps/\1
+  upload: static/apps/(.*)
+
 ## admin_console
 - url: /admin_console/.*
   script: $PYTHON_LIB/google/appengine/ext/admin

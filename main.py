@@ -99,6 +99,17 @@ class MainPage(webapp.RequestHandler):
     print "- MA5: %.2f" % float(sum(getr[-5:])/len(getr[-5:]))
     """
 
+class getwebapp(webapp.RequestHandler):
+  def get(self):
+    #hh_index = memcache.get('hh_index')
+    hh_index = 0
+    if hh_index:
+      pass
+    else:
+      hh_index = template.render('./template/hh_mozillaapps.htm',{})
+      #memcache.set('hh_index', hh_index, 60*60*6)
+    self.response.out.write(hh_index)
+
 ############## Test GoRiStock ##############
 class goritest(webapp.RequestHandler):
   def get(self):
@@ -665,6 +676,7 @@ def main():
                   ('/invite', xmpp_invite),
                   ('/howitwork', howitwork),
                   ('/dev', getindev),
+                  ('/getwebapp', getwebapp),
                   ('/_ah/xmpp/message/chat/', xmpp_pagex),
                   ('/_ah/xmpp/presence/available/', xmpp_avail),
                   ('/_ah/xmpp/presence/unavailable/', xmpp_avail),
