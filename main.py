@@ -99,15 +99,33 @@ class MainPage(webapp.RequestHandler):
     print "- MA5: %.2f" % float(sum(getr[-5:])/len(getr[-5:]))
     """
 
+############## Mozilla WebApps ##############
 class getwebapp(webapp.RequestHandler):
   def get(self):
-    #hh_index = memcache.get('hh_index')
     hh_index = 0
     if hh_index:
       pass
     else:
       hh_index = template.render('./template/hh_mozillaapps.htm',{})
-      #memcache.set('hh_index', hh_index, 60*60*6)
+    self.response.out.write(hh_index)
+
+class getwebapps(webapp.RequestHandler):
+  def get(self,no):
+    try:
+      name = twseno().allstockno[int(no)]
+    except:
+      name = no
+    hh_index = template.render('./template/hh_getwebapps.htm',{'no':no,'name':name})
+    self.response.out.write(hh_index)
+
+class webapps(webapp.RequestHandler):
+  def get(self,no):
+    try:
+      name = twseno().allstockno[int(no)]
+    except:
+      name = no
+    hh_index = template.render('./template/grsapp.webapp',{'no':no, 'name':name})
+    self.response.headers['Content-Type'] = 'application/x-web-app-manifest+json'
     self.response.out.write(hh_index)
 
 ############## Test GoRiStock ##############
@@ -677,6 +695,8 @@ def main():
                   ('/howitwork', howitwork),
                   ('/dev', getindev),
                   ('/getwebapp', getwebapp),
+                  ('/getwebapps/(.*)', getwebapps),
+                  ('/webapps/(.*)grs\.webapp', webapps),
                   ('/_ah/xmpp/message/chat/', xmpp_pagex),
                   ('/_ah/xmpp/presence/available/', xmpp_avail),
                   ('/_ah/xmpp/presence/unavailable/', xmpp_avail),

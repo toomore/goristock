@@ -1,0 +1,22 @@
+{% extends "h_infopage.htm" %}
+
+{% block titlename %}取得 {{ no }} {{ name }} Mozilla WebApp - {% endblock %}
+
+{% block javascript %}
+<script type="text/javascript" src="https://myapps.mozillalabs.com/jsapi/include.js"></script>
+<script type="text/javascript" src="http://code.jquery.com/jquery-1.7.1.min.js"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+      navigator.mozApps.install("/webapps/{{ no }}grs.webapp")
+      }
+    );
+</script>
+{% endblock %}
+
+{% block content %}
+<img src="/images/getewbapp.png">
+{% endblock %}
+
+{% block foot %}
+{% include "h_desc.htm" %}
+{% endblock %}
