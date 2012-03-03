@@ -1,14 +1,15 @@
 {
     "version": "0.1",
     "name": "goristock app",
-    "description": "台股資訊",
+    "description": "台灣股市資訊",
+    "launch_path": "/m",
     "icons": {
         "16": "/images/favicon.ico"
     },
     "widget": {
         "path": "/m",
-        "width": 100,
-        "height": 200
+        "width": 300,
+        "height": 400
     },
     "developer": {
         "name": "Toomore Chiang",
@@ -19,17 +20,17 @@
     ],
     "locales": {
         "es": {
-            "description": "TWSC stock info.",
+            "description": "TWSE stock info.",
             "developer": {
                 "url": "http://goristock.appspot.com/"
             }
         },
-        "zh-tw": {
-            "description": "台股資訊",
+        "zh-Hant": {
+            "description": "台灣股市資訊",
             "developer": {
                 "url": "http://goristock.appspot.com/"
             }
         }
     },
-    "default_locale": "zh-tw"
+    "default_locale": "zh-Hant"
 }
