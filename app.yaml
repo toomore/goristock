@@ -47,6 +47,11 @@ handlers:
   script: main.py
   login: admin
 
+## Mozilla WebApps
+- url: /webapps/.*
+  script: main.py
+  secure: always
+
 ## For openID
 - url: /_ah/login_required
   script: openid_login.py

@@ -217,3 +217,29 @@ td {
   border-top: 5px #99a solid;
   background-color: #445;
 }
+.installable {
+  background-color: #fff;
+  border: 1px solid #004607;
+  padding: 3px 15px 3px 11px;
+  font-size: 12px;
+  text-align: center;
+  cursor: pointer;
+  text-shadow: 1px 1px 0 rgba(255, 255, 255, 0.4);
+  color: #004607;
+  background-color: #84C63C;
+  background-image: -moz-linear-gradient(center top , #84C63C 0%, #5EA330 100%);
+  background-image: -webkit-gradient(linear, left top, left bottom, color-stop(0%, #84C63C), color-stop(100%, #5EA330));
+  -webkit-border-radius: 2px;
+     -moz-border-radius: 2px;
+       -o-border-radius: 2px;
+          border-radius: 2px;
+}
+.installable img{
+  vertical-align:text-bottom;
+}
+.installable a{
+  color: #222333;
+}
+.installable a:hover{
+  color: #004607;
+}

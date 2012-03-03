@@ -1,0 +1,36 @@
+{
+    "version": "0.1.0.{{ no }}",
+    "name": "{{ name }} {{ no }} - goristock app",
+    "description": "台灣股市資訊",
+    "launch_path": "/m/detail/{{ no }}",
+    "icons": {
+        "16": "/images/favicon.ico"
+    },
+    "widget": {
+        "path": "/m",
+        "width": 300,
+        "height": 400
+    },
+    "developer": {
+        "name": "Toomore Chiang",
+        "url": "http://toomore.net/"
+    },
+    "installs_allowed_from": [
+        "*"
+    ],
+    "locales": {
+        "es": {
+            "description": "TWSE stock info.",
+            "developer": {
+                "url": "http://goristock.appspot.com/"
+            }
+        },
+        "zh-Hant": {
+            "description": "台灣股市資訊",
+            "developer": {
+                "url": "http://goristock.appspot.com/"
+            }
+        }
+    },
+    "default_locale": "zh-Hant"
+}
