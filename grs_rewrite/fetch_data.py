@@ -62,9 +62,21 @@ class grs_stock(object):
         op = csv.writer(open(fpath, 'wt'))
         op.writerows(csvlist)
 
-    def serial_price(self, row):
+    def serial_price(self, rows=6):
         """ [list] 取出某一價格序列 舊→新
-            序列收盤價 → serial_price(serial_fetch(no), 6)
+            預設序列收盤價 → serial_price(6)
         """
-        re = [float(i[row]) for i in self.row_data]
+        re = [float(i[rows]) for i in self.row_data]
+        return re
+
+    def MA(self, date, row=6):
+        """ 計算移動平均數
+            預設數值為收盤價
+        """
+        cal_data = self.serial_price(row)
+        re = []
+        for i in range(len(cal_data) - int(date) + 1):
+            re.append(round(sum(cal_data[-date:])/date, 2))
+            cal_data.pop()
+        re.reverse()
         return re
