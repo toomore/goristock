@@ -79,4 +79,21 @@ class grs_stock(object):
             re.append(round(sum(cal_data[-date:])/date, 2))
             cal_data.pop()
         re.reverse()
-        return re
+        cont = self.cal_continue(re)
+        return re, cont
+
+    def cal_continue(self, list_data):
+        """ 計算持續天數 """
+        diff_data = []
+        for i in range(1, len(list_data)):
+            if list_data[-i] > list_data[-i-1]:
+                diff_data.append(1)
+            else:
+                diff_data.append(-1)
+        cont = 0
+        for v in diff_data:
+            if v == diff_data[0]:
+                cont += 1
+            else:
+                break
+        return cont * diff_data[0]
