@@ -71,7 +71,11 @@ class grs_stock(object):
 
     def MA(self, date, row=6):
         """ 計算移動平均數
-            預設數值為收盤價
+            預設數值為收盤價(6)
+                      成交量(1)
+            回傳 tuple
+                1.序列 舊→新
+                2.持續天數
         """
         cal_data = self.serial_price(row)
         re = []
@@ -83,7 +87,9 @@ class grs_stock(object):
         return re, cont
 
     def cal_continue(self, list_data):
-        """ 計算持續天數 """
+        """ 計算持續天數
+            向量數值：正數向上、負數向下。
+        """
         diff_data = []
         for i in range(1, len(list_data)):
             if list_data[-i] > list_data[-i-1]:
