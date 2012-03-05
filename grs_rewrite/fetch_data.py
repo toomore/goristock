@@ -1,11 +1,10 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-import logging
-import urllib2
+from datetime import datetime, timedelta
 import csv
+import logging
 import random
-from datetime import datetime
-from datetime import timedelta
+import urllib2
 
 
 class grs_stock(object):
@@ -69,11 +68,10 @@ class grs_stock(object):
         re = [float(i[rows]) for i in self.row_data]
         return re
 
-    def MA(self, date, row=6):
+    def cal_MA(self, date, row):
         """ 計算移動平均數
-            預設數值為收盤價(6)
-                      成交量(1)
-            回傳 tuple
+            row: 收盤價(6)、成交股數(1)
+            回傳 tuple:
                 1.序列 舊→新
                 2.持續天數
         """
@@ -103,3 +101,13 @@ class grs_stock(object):
             else:
                 break
         return cont * diff_data[0]
+
+    def MA(self, date):
+        """ 計算收盤均價與持續天數 """
+        return self.cal_MA(date, 6)
+
+    def MAV(self, date):
+        """ 計算成交股數均量與持續天數 """
+        val, conti = self.cal_MA(date, 1)
+        val = [round(i / 1000, 3) for i in val]
+        return val, conti
