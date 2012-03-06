@@ -1,6 +1,6 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-# Copyright (c) 2012 Toomore Chiang, http://toomore.net/
+# Copyright (c) 2010,2011 Toomore Chiang, http://toomore.net/
 #
 # Permission is hereby granted, free of charge, to any person obtaining a copy
 # of this software and associated documentation files (the "Software"), to deal
@@ -19,11 +19,3 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
-
-__title__ = 'grs'
-__version__ = '0.0.1a0307'
-__author__ = 'Toomore Chiang'
-__license__ = 'MIT'
-__copyright__ = 'Copyright (C) 2012 Toomore Chiang'
-
-from .fetch_data import stock

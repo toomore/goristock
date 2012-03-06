@@ -1,9 +1,9 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
-from fetch_data import grs_stock
+from grs import stock
 
 
-a = grs_stock(2618)
+a = stock(2618)
 '''
 print 'Row Data'
 print a.row_data

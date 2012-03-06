@@ -1,5 +1,25 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
+# Copyright (c) 2012 Toomore Chiang, http://toomore.net/
+#
+# Permission is hereby granted, free of charge, to any person obtaining a copy
+# of this software and associated documentation files (the "Software"), to deal
+# in the Software without restriction, including without limitation the rights
+# to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+# copies of the Software, and to permit persons to whom the Software is
+# furnished to do so, subject to the following conditions:
+#
+# The above copyright notice and this permission notice shall be included in
+# all copies or substantial portions of the Software.
+#
+# THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+# IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+# FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+# AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+# LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+# OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+# THE SOFTWARE.
+
 from datetime import datetime, timedelta
 import csv
 import logging
@@ -7,11 +27,11 @@ import random
 import urllib2
 
 
-class grs_stock(object):
+class stock(object):
     """ grs class """
 
     def __init__(self, stock_no, mons=3):
-        self.row_data = self.serial_fetch(stock_no, mons)
+        self.raw_data = self.serial_fetch(stock_no, mons)
 
     def fetch_data(self, stock_no, nowdatetime=datetime.today()):
         """ Fetch data from twse.com.tw
@@ -56,16 +76,16 @@ class grs_stock(object):
             re = tolist + re
         return re
 
-    def out_putfile(self, fpath, csvlist):
+    def out_putfile(self, fpath):
         """ 輸出成 CSV 檔 """
         op = csv.writer(open(fpath, 'wt'))
-        op.writerows(csvlist)
+        op.writerows(self.raw_data)
 
     def serial_price(self, rows=6):
         """ [list] 取出某一價格序列 舊→新
             預設序列收盤價 → serial_price(6)
         """
-        re = [float(i[rows]) for i in self.row_data]
+        re = [float(i[rows]) for i in self.raw_data]
         return re
 
     def cal_MA(self, date, row):
