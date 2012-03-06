@@ -6,7 +6,7 @@ grs 台灣股市股票股價擷取
 版本資訊
 -----------------------------
 
-:Authors: Toomore
+:Authors: Toomore Chiang
 :Version: 0.0.1x of 2012/03/07
 
 
@@ -16,7 +16,7 @@ Report Issue or get involved
 - goristock-dev → https://groups.google.com/group/goristock-dev
 - Issues → https://github.com/toomore/goristock/issues
 
-Qucik Start
+Quick Start
 -----------------------------
 
 簡單計算
