@@ -31,6 +31,8 @@ class stock(object):
     """ grs class """
 
     def __init__(self, stock_no, mons=3):
+        self.url = []
+        self.info = ()
         self.raw_data = self.serial_fetch(stock_no, mons)
 
     def fetch_data(self, stock_no, nowdatetime=datetime.today()):
@@ -50,13 +52,10 @@ class stock(object):
                                        'stock': stock_no,
                                        'rand': random.randrange(1, 1000000)}
         logging.info(url)
-        stkm = 0
-        if stkm:
-            csv_read = csv.reader(stkm)
-        else:
-            cc = urllib2.urlopen(url)
-            cc_read = cc.readlines()
-            csv_read = csv.reader(cc_read)
+        cc = urllib2.urlopen(url)
+        cc_read = cc.readlines()
+        csv_read = csv.reader(cc_read)
+        self.url.append(url)
         return csv_read
 
     def to_list(self, csv_file):
@@ -65,6 +64,8 @@ class stock(object):
         for i in csv_file:
             i = [v.strip().replace(',', '') for v in i]
             tolist.append(i)
+        self.info = (tolist[0][0].split(' ')[1],
+                     tolist[0][0].split(' ')[2].decode('big5'))
         return tolist[2:]
 
     def serial_fetch(self, no, month):
