@@ -26,4 +26,5 @@ __author__ = 'Toomore Chiang'
 __license__ = 'MIT'
 __copyright__ = 'Copyright (C) 2012 Toomore Chiang'
 
+
 from .fetch_data import stock

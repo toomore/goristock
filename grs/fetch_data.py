@@ -28,14 +28,39 @@ import urllib2
 
 
 class stock(object):
-    """ grs class """
+    """ 擷取股票股價 """
 
     def __init__(self, stock_no, mons=3):
-        self.url = []
-        self.info = ()
-        self.raw_data = self.serial_fetch(stock_no, mons)
+        """ 擷取股票股價
+            :stock_no : 股價代碼
+            :mons : 擷取近 n 個月的資料
+        """
+        self.__url = []
+        self.__info = ()
+        self.__raw_data = self.__serial_fetch(stock_no, mons)
 
-    def fetch_data(self, stock_no, nowdatetime=datetime.today()):
+    @property
+    def url(self):
+        """ [list] 擷取資料網址 """
+        return self.__url
+
+    @property
+    def info(self):
+        """ [tuple] (股票代碼, 股票名稱) """
+        return self.__info
+
+    @property
+    def raw(self):
+        """ [list] 擷取原始檔案 """
+        return self.__raw_data
+
+    def getRawRows(self, rows=6):
+        """ [list] 取出某一價格序列 舊→新
+            預設序列收盤價 → __serial_price(6)
+        """
+        return self.__serial_price(rows)
+
+    def __fetch_data(self, stock_no, nowdatetime=datetime.today()):
         """ Fetch data from twse.com.tw
             return list.
             從 twse.com.tw 下載資料，回傳格式為 csv.reader
@@ -55,57 +80,57 @@ class stock(object):
         cc = urllib2.urlopen(url)
         cc_read = cc.readlines()
         csv_read = csv.reader(cc_read)
-        self.url.append(url)
+        self.__url.append(url)
         return csv_read
 
-    def to_list(self, csv_file):
+    def __to_list(self, csv_file):
         """ [list] 串接每日資料 舊→新"""
         tolist = []
         for i in csv_file:
             i = [v.strip().replace(',', '') for v in i]
             tolist.append(i)
-        self.info = (tolist[0][0].split(' ')[1],
+        self.__info = (tolist[0][0].split(' ')[1],
                      tolist[0][0].split(' ')[2].decode('big5'))
         return tolist[2:]
 
-    def serial_fetch(self, no, month):
+    def __serial_fetch(self, no, month):
         """ [list] 串接每月資料 舊→新 """
         re = []
         for i in range(month):
             nowdatetime = datetime.today() - timedelta(30 * i)
-            tolist = self.to_list(self.fetch_data(no, nowdatetime))
+            tolist = self.__to_list(self.__fetch_data(no, nowdatetime))
             re = tolist + re
         return re
 
     def out_putfile(self, fpath):
         """ 輸出成 CSV 檔 """
         op = csv.writer(open(fpath, 'wt'))
-        op.writerows(self.raw_data)
+        op.writerows(self.__raw_data)
 
-    def serial_price(self, rows=6):
+    def __serial_price(self, rows=6):
         """ [list] 取出某一價格序列 舊→新
-            預設序列收盤價 → serial_price(6)
+            預設序列收盤價 → __serial_price(6)
         """
-        re = [float(i[rows]) for i in self.raw_data]
+        re = [float(i[rows]) for i in self.__raw_data]
         return re
 
-    def cal_MA(self, date, row):
+    def __cal_MA(self, date, row):
         """ 計算移動平均數
             row: 收盤價(6)、成交股數(1)
             回傳 tuple:
                 1.序列 舊→新
                 2.持續天數
         """
-        cal_data = self.serial_price(row)
+        cal_data = self.__serial_price(row)
         re = []
         for i in range(len(cal_data) - int(date) + 1):
             re.append(round(sum(cal_data[-date:])/date, 2))
             cal_data.pop()
         re.reverse()
-        cont = self.cal_continue(re)
+        cont = self.__cal_continue(re)
         return re, cont
 
-    def cal_continue(self, list_data):
+    def __cal_continue(self, list_data):
         """ 計算持續天數
             向量數值：正數向上、負數向下。
         """
@@ -125,10 +150,10 @@ class stock(object):
 
     def MA(self, date):
         """ 計算收盤均價與持續天數 """
-        return self.cal_MA(date, 6)
+        return self.__cal_MA(date, 6)
 
     def MAV(self, date):
         """ 計算成交股數均量與持續天數 """
-        val, conti = self.cal_MA(date, 1)
+        val, conti = self.__cal_MA(date, 1)
         val = [round(i / 1000, 3) for i in val]
         return val, conti
