@@ -60,6 +60,12 @@ class stock(object):
         """
         return self.__serial_price(rows)
 
+    @property
+    def getRawRowsName(self):
+        """ 原始檔案的欄位名稱 """
+        re = [i.decode('big5') for i in self.__RawRowsName]
+        return re
+
     def __fetch_data(self, stock_no, nowdatetime=datetime.today()):
         """ Fetch data from twse.com.tw
             return list.
@@ -90,7 +96,8 @@ class stock(object):
             i = [v.strip().replace(',', '') for v in i]
             tolist.append(i)
         self.__info = (tolist[0][0].split(' ')[1],
-                     tolist[0][0].split(' ')[2].decode('big5'))
+                       tolist[0][0].split(' ')[2].decode('big5'))
+        self.__RawRowsName = tolist[1]
         return tolist[2:]
 
     def __serial_fetch(self, no, month):
