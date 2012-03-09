@@ -94,6 +94,11 @@ class stock(object):
         tolist = []
         for i in csv_file:
             i = [v.strip().replace(',', '') for v in i]
+            try:
+                for v in [1,2,3,4,5,6,8]:
+                    i[v] = float(i[v])
+            except:
+                pass
             tolist.append(i)
         self.__info = (tolist[0][0].split(' ')[1],
                        tolist[0][0].split(' ')[2].decode('big5'))
