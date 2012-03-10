@@ -44,3 +44,16 @@ Quick Start
 ::
 
     g.out_putfile('/dev/shm/2618.csv')
+
+其他功能
+-----------------------------
+
+顯示台灣時間：適用於其他時區查詢台灣當地時間。
+
+::
+
+    from grs import TWTime
+
+    t = TWTime()
+    t.now                 #顯示台灣此刻時間
+    t.localtime           #顯示當地此刻時間
