@@ -29,3 +29,4 @@ __copyright__ = 'Copyright (C) 2012 Toomore Chiang'
 
 from .fetch_data import stock
 from .tw_time import TWTime
+from .twseopen import twseopen
