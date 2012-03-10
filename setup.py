@@ -5,10 +5,12 @@ from setuptools import setup, find_packages
 import grs
 
 long_description = open('./README.rest', 'r').read()
+description = '台灣上市股票價格擷取（Fetch TWSE stock data）' + \
+              '含台灣時間轉換、開休市判斷。'
 
 setup(name='grs',
       version=grs.__version__,
-      description='台灣股市股票股價擷取（Fetch TWSE stock data）',
+      description=description,
       long_description=long_description,
       author='Toomore Chiang',
       author_email='toomore0929@gmail.com',
@@ -16,6 +18,7 @@ setup(name='grs',
       packages=['grs'],
       include_package_data=True,
       license='MIT',
+      keywords = "stock taiwan taipei twse 台灣 股市 台北",
       install_requires=[],
       classifiers=[
           'Development Status :: 3 - Alpha',

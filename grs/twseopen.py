@@ -21,9 +21,8 @@
 # THE SOFTWARE.
 from .tw_time import TWTime
 import csv
+import os
 from datetime import datetime
-
-_CSVFILEPATH = __name__.split('.')[-2]
 
 
 class twseopen(object):
@@ -46,7 +45,8 @@ class twseopen(object):
         ''' 載入檔案
             檔案依據 http://www.twse.com.tw/ch/trading/trading_days.php
         '''
-        ld = csv.reader(open('./%s/opendate.csv' % _CSVFILEPATH, 'r'))
+        ld = csv.reader(
+                open(os.path.join(os.path.dirname(__file__), 'opendate.csv')))
         re = {}
         re['close'] = []
         re['open'] = []
