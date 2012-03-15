@@ -95,7 +95,7 @@ class stock(object):
         for i in csv_file:
             i = [v.strip().replace(',', '') for v in i]
             try:
-                for v in [1,2,3,4,5,6,8]:
+                for v in [1, 2, 3, 4, 5, 6, 8]:
                     i[v] = float(i[v])
             except:
                 pass
@@ -136,7 +136,7 @@ class stock(object):
         cal_data = self.__serial_price(row)
         re = []
         for i in range(len(cal_data) - int(date) + 1):
-            re.append(round(sum(cal_data[-date:])/date, 2))
+            re.append(round(sum(cal_data[-date:]) / date, 2))
             cal_data.pop()
         re.reverse()
         cont = self.__cal_continue(re)
@@ -148,7 +148,7 @@ class stock(object):
         """
         diff_data = []
         for i in range(1, len(list_data)):
-            if list_data[-i] > list_data[-i-1]:
+            if list_data[-i] > list_data[-i - 1]:
                 diff_data.append(1)
             else:
                 diff_data.append(-1)
