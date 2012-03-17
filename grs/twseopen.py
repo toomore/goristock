@@ -19,10 +19,11 @@
 # LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
+
+from datetime import datetime
 from .tw_time import TWTime
 import csv
 import os
-from datetime import datetime
 
 
 class twseopen(object):

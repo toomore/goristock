@@ -63,7 +63,7 @@ class rt_stock(object):
     def __init__(self, no):
         self.__raw = ''
         page = urllib2.urlopen(
-            'http://mis.tse.com.tw/data/{}.csv?r={}'.format(
+            'http://mis.tse.com.tw/data/{0}.csv?r={1}'.format(
                                                 no, random.randrange(1, 10000))
         )
         logging.info('twsk %s' % no)

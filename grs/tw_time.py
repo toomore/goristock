@@ -20,8 +20,8 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 # THE SOFTWARE.
 
-import time
-import datetime
+from datetime import datetime
+from datetime import timedelta
 
 
 class TWTime(object):
@@ -39,29 +39,45 @@ class TWTime(object):
         ''' Display Taiwan Time now
             顯示台灣此刻時間
         '''
-        localtime = datetime.datetime.now()
-        return localtime + datetime.timedelta(
-                           hours=time.timezone / 60 / 60 + self.TimeZone)
+        utcnow = datetime.utcnow()
+        return utcnow + timedelta(hours=self.TimeZone)
 
     @property
     def date(self):
         ''' Display Taiwan date now
             顯示台灣此刻日期
         '''
-        localtime = datetime.date.today()
-        return localtime + datetime.timedelta(
-                           hours=time.timezone / 60 / 60 + self.TimeZone)
+        utcnow = datetime.utcnow()
+        return (utcnow + timedelta(hours=self.TimeZone)).date()
 
     @property
     def localtime(self):
         ''' Display localtime now
             顯示當地此刻時間
         '''
-        return datetime.datetime.now()
+        return datetime.now()
 
     @property
     def localdate(self):
         ''' Display localdate now
             顯示當地此刻日期
         '''
-        return datetime.date.today()
+        return datetime.today().date()
+
+
+class Countdown(object):
+    """ 倒數
+        nextday: 下一個日期
+        countdown: 到達下一個日期的秒數
+        exptime: 下一個日期時間
+        lastmod: 起點日期時間
+    """
+    def __init__(self, h=14, m=30):
+        self.__back = timedelta(hours=h - 8, minutes=m)
+        self.__zero = datetime.utcnow() - self.__back
+        self.nextday = datetime(self.__zero.year,
+                                self.__zero.month,
+                                self.__zero.day + 1)
+        self.countdown = (self.nextday - self.__zero).seconds
+        self.exptime = self.nextday + timedelta(hours=h - 8, minutes=m)
+        self.lastmod = self.exptime - timedelta(days=1)

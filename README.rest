@@ -21,6 +21,12 @@ Report Issue or get involved
 - Github → https://github.com/toomore/goristock/tree/grs_rewrite
 
 -----------------------------
+Web Demo
+-----------------------------
+
+- grs Online → http://heroku.toomore.net/grs/
+
+-----------------------------
 Quick Start
 -----------------------------
 
@@ -76,5 +82,76 @@ Quick Start
 
     t = twseopen()
 
-    t.Dday(datetime.today())       # 判斷今天是否開市，回傳 True or False
-    t.Dday(datetime(2012, 12, 22)) # 判斷 2012/12/22 是否開市
+    t.Dday(datetime.today())        # 判斷今天是否開市，回傳 True or False
+    t.Dday(datetime(2012, 12, 22))  # 判斷 2012/12/22 是否開市
+
+
+各股即時盤資訊：rt_stock
+====================================
+
+::
+
+    from grs import rt_stock
+
+    rl = rt_stock(2618)       # 擷取長榮航即時股價
+    rl.raw                    # 原始資料
+    rl.real                   # 回傳 type: dict（如下表）
+
+
+:name:     股票名稱 Unicode
+:no:       股票代碼
+:range:    漲跌價
+:ranges:   漲跌判斷 True, False
+:time:     取得時間
+:max:      漲停價
+:min:      跌停價
+:unch:     昨日收盤價
+:pp:       漲跌幅 %
+:o:        開盤價
+:h:        當日最高價
+:l:        當日最低價
+:c:        成交價/收盤價
+:value:    累計成交量
+:pvalue:   該盤成交量
+:top5buy:  最佳五檔買進價量資訊
+:top5sell: 最佳五檔賣出價量資訊
+:crosspic: K線圖 by Google Chart
+
+
+大盤即時盤資訊：rt_weight
+====================================
+
+::
+
+    from grs import rt_weight
+
+    w = rt_weight()       # 擷取即時大盤資訊
+    w.raw                 # 原始檔案
+    w.real                # 回傳 type: dict（如下表）
+
+
+原始檔案包含其他資訊請參閱 `對照表 <http://goristock.appspot.com/API#apiweight>`_ 
+
+:no: 編號
+:date: 日期
+:time: 時間
+:c: 加權指數
+:value: 成交金額（億）
+:range: 漲跌指數
+:ud: 回傳漲（True）、跌（False）
+
+
+單日倒數時間：Countdown
+====================================
+
+適用於設定 cache 時間。
+
+::
+
+    from grs import Countdown
+
+    c = Countdown(h=14, m=30)  # 預設為 14:30
+    c.nextday                  # 下一個 14:30 日期
+    c.countdown                # 到數秒數
+    c.exptime                  # 下一個 14:30 日期時間（type: datetime）
+    c.lastmod                  # 前一個 14:30 日期時間（type: datetime）
