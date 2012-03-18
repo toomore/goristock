@@ -21,7 +21,7 @@
 # THE SOFTWARE.
 
 __title__ = 'grs'
-__version__ = '0.0.1a0310'
+__version__ = '0.0.1a0318'
 __author__ = 'Toomore Chiang'
 __license__ = 'MIT'
 __copyright__ = 'Copyright (C) 2012 Toomore Chiang'
@@ -33,4 +33,3 @@ from .realtime import rt_weight
 from .twseopen import twseopen
 from .tw_time import TWTime
 from .tw_time import Countdown
-

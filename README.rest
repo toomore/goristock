@@ -1,5 +1,5 @@
 ============================
-grs 台灣股市股票股價擷取
+grs 台灣上市股票價格擷取
 ============================
 
 主要開發擷取台灣股市（TWSE）股價資料，資料來源 `證券交易所網站 <http://www.twse.com.tw/>`_ 。
@@ -9,7 +9,7 @@ grs 台灣股市股票股價擷取
 -----------------------------
 
 :Authors: Toomore Chiang
-:Version: 0.0.1x of 2012/03/10
+:Version: 0.0.1x of 2012/03/18
 :Python Version: Python 2.6-2.7
 
 -----------------------------
@@ -36,9 +36,9 @@ Quick Start
 
     from grs import stock
 
-    g = stock(2618)       # 擷取長榮航股價
-    print g.MA(5)         # 計算五日均價與持續天數
-    print g.MAV(5)        # 計算五日均量與持續天數
+    g = stock(2618)        # 擷取長榮航股價
+    print g.MA(5)          # 計算五日均價與持續天數
+    print g.MAV(5)         # 計算五日均量與持續天數
 
 
 擷取 12 個月份資料
@@ -68,8 +68,8 @@ Quick Start
     from grs import TWTime
 
     t = TWTime()
-    t.now                 # 顯示台灣此刻時間
-    t.localtime           # 顯示當地此刻時間
+    t.now                   # 顯示台灣此刻時間
+    t.localtime             # 顯示當地此刻時間
 
 
 判斷台灣股市是否開市：twseopen
@@ -125,9 +125,9 @@ Quick Start
 
     from grs import rt_weight
 
-    w = rt_weight()       # 擷取即時大盤資訊
-    w.raw                 # 原始檔案
-    w.real                # 回傳 type: dict（如下表）
+    w = rt_weight()            # 擷取即時大盤資訊
+    w.raw                      # 原始檔案
+    w.real                     # 回傳 type: dict（如下表）
 
 
 原始檔案包含其他資訊請參閱 `對照表 <http://goristock.appspot.com/API#apiweight>`_ 
