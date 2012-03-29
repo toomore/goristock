@@ -2,6 +2,8 @@
 grs 台灣上市股票價格擷取
 ============================
 
+.. image:: https://secure.travis-ci.org/toomore/goristock.png?branch=grs_rewrite
+
 主要開發擷取台灣股市（TWSE）股價資料，資料來源 `證券交易所網站 <http://www.twse.com.tw/>`_ 。
 
 -----------------------------
@@ -152,11 +154,13 @@ Quick Start
 
 
     t = twseno()
-    t.AllStock              # 所有股票代碼 type: dict
+    t.AllStock              # 所有股票名稱、代碼 type: dict
+    t.AllStockNo            # 所有股票代碼 type: list
+    t.AllStockName          # 所有股票名稱 type: list
     t.IndCode               # 回傳類別代碼 type: dict
     t.IndComps              # 回傳類別所屬股票代碼 type: dict
     t.search('中')           # 搜尋股票名稱，回傳 type: dict
-    t.searchbyno(23)        # 搜尋股票名稱，回傳 type: dict
+    t.searchbyno(23)        # 搜尋股票代碼，回傳 type: dict
     t.LastUpdate            # 回傳列表最後更新時間（非同步）type: str
 
 

@@ -98,6 +98,16 @@ class twseno(object):
         return self.__allstockno
 
     @property
+    def AllStockNo(self):
+        """ 回船上市股票代碼 type: list """
+        return self.__allstockno.keys()
+
+    @property
+    def AllStockName(self):
+        """ 回船上市股票名稱 type: list """
+        return self.__allstockno.values()
+
+    @property
     def IndCode(self):
         """ 回傳類別代碼 by dict """
         return self.__industry_code()
