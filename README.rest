@@ -179,3 +179,18 @@ Quick Start
     c.countdown                # 到數秒數
     c.exptime                  # 下一個 14:30 日期時間（type: datetime）
     c.lastmod                  # 前一個 14:30 日期時間（type: datetime）
+
+
+判斷乖離轉折點：stock().ckMAO
+====================================
+
+判斷乖離轉折點
+
+::
+
+    from grs import stock
+
+    s = stock(2618)
+    ma = s.MAO(3,6)[0]               # 取得 3-6 乖離值 type: list
+    c = s.ckMAO(ma, s=5, pm= False)  # 計算五個區間負乖離轉折點
+    print ck                         # (T/F, 第幾轉折日, 乖離轉折點值) type: tuple

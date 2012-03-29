@@ -183,3 +183,29 @@ class stock(object):
         cal_list.reverse()
         cont = self.__cal_continue(cal_list)
         return cal_list, cont
+
+    def __cal_MAOPoint(self, data, s=5, pm=False):
+        """判斷轉折點位置
+           s = 取樣判斷區間
+           pm = True（正）/False（負）轉折
+           return (T/F, 第幾個轉折日, 轉折點值)
+        """
+        c = data[-s:]
+        if pm:  # 正
+            ckvalue = max(c)  # 尋找最大值
+            preckvalue = max(c) > 0 # 區間最大值必須為正
+        else:
+            ckvalue = min(c)  # 尋找最小值
+            preckvalue = max(c) < 0 # 區間最大值必須為負
+        return (s - c.index(ckvalue) < 4 and c.index(ckvalue) != s-1 \
+                and preckvalue,
+                s - c.index(ckvalue) - 1,
+                ckvalue)
+
+    def ckMAO(self, data, s=5, pm=False):
+        """判斷正負乖離轉折點位置
+           s = 取樣判斷區間
+           pm = True（正）/False（負）乖離
+           return (T/F, 第幾轉折日, 乖離轉折點值)
+        """
+        return self.__cal_MAOPoint(data, s, pm)
