@@ -9,7 +9,7 @@ grs 台灣上市股票價格擷取
 -----------------------------
 
 :Authors: Toomore Chiang
-:Version: 0.0.1x of 2012/03/18
+:Version: 0.0.1x of 2012/03/29
 :Python Version: Python 2.6-2.7
 
 -----------------------------
@@ -139,6 +139,25 @@ Quick Start
 :value: 成交金額（億）
 :range: 漲跌指數
 :ud: 回傳漲（True）、跌（False）
+
+
+上市股票代碼列表：twseno
+====================================
+
+回傳上市股票代碼與搜尋
+
+::
+
+    from grs import twseno
+
+
+    t = twseno()
+    t.AllStock              # 所有股票代碼 type: dict
+    t.IndCode               # 回傳類別代碼 type: dict
+    t.IndComps              # 回傳類別所屬股票代碼 type: dict
+    t.search('中')           # 搜尋股票名稱，回傳 type: dict
+    t.searchbyno(23)        # 搜尋股票名稱，回傳 type: dict
+    t.LastUpdate            # 回傳列表最後更新時間（非同步）type: str
 
 
 單日倒數時間：Countdown

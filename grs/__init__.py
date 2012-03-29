@@ -30,6 +30,7 @@ __copyright__ = 'Copyright (C) 2012 Toomore Chiang'
 from .fetch_data import stock
 from .realtime import rt_stock
 from .realtime import rt_weight
+from .twseno import twseno
 from .twseopen import twseopen
-from .tw_time import TWTime
 from .tw_time import Countdown
+from .tw_time import TWTime
