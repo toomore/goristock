@@ -169,3 +169,17 @@ class stock(object):
         val, conti = self.__cal_MA(date, 1)
         val = [round(i / 1000, 3) for i in val]
         return val, conti
+
+    def MAO(self, date1, date2):
+        """ 計算乖離率（均價）
+            date1 - date2
+            回傳 tuple:
+                1.序列 舊→新
+                2.持續天數
+        """
+        a = self.MA(date1)[0]
+        b = self.MA(date2)[0]
+        cal_list = [a[-i] - b[-i] for i in range(1, min(len(a), len(b)) + 1)]
+        cal_list.reverse()
+        cont = self.__cal_continue(cal_list)
+        return cal_list, cont

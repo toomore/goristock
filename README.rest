@@ -41,6 +41,7 @@ Quick Start
     g = stock(2618)        # 擷取長榮航股價
     print g.MA(5)          # 計算五日均價與持續天數
     print g.MAV(5)         # 計算五日均量與持續天數
+    print g.MAO(5,10)      # 計算五日、十日乖離值與持續天數
 
 
 擷取 12 個月份資料
