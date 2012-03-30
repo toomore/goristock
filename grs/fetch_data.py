@@ -184,6 +184,22 @@ class stock(object):
         cont = self.__cal_continue(cal_list)
         return cal_list, cont
 
+    @property
+    def price(self):
+        """ 收盤價股價序列 """
+        return self.__serial_price()
+
+    @property
+    def openprice(self):
+        """ 開盤價股價序列 """
+        return self.__serial_price(3)
+
+    @property
+    def value(self):
+        """ 成交量序列 """
+        val = [round(i / 1000, 3) for i in self.__serial_price(1)]
+        return val
+
     def __cal_MAOPoint(self, data, s=5, pm=False):
         """判斷轉折點位置
            s = 取樣判斷區間
@@ -193,11 +209,11 @@ class stock(object):
         c = data[-s:]
         if pm:  # 正
             ckvalue = max(c)  # 尋找最大值
-            preckvalue = max(c) > 0 # 區間最大值必須為正
+            preckvalue = max(c) > 0  # 區間最大值必須為正
         else:
             ckvalue = min(c)  # 尋找最小值
-            preckvalue = max(c) < 0 # 區間最大值必須為負
-        return (s - c.index(ckvalue) < 4 and c.index(ckvalue) != s-1 \
+            preckvalue = max(c) < 0  # 區間最大值必須為負
+        return (s - c.index(ckvalue) < 4 and c.index(ckvalue) != s - 1 \
                 and preckvalue,
                 s - c.index(ckvalue) - 1,
                 ckvalue)

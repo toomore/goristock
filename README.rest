@@ -3,6 +3,7 @@ grs 台灣上市股票價格擷取
 ============================
 
 .. image:: https://secure.travis-ci.org/toomore/goristock.png?branch=grs_rewrite
+   :target: http://travis-ci.org/toomore/goristock
 
 主要開發擷取台灣股市（TWSE）股價資料，資料來源 `證券交易所網站 <http://www.twse.com.tw/>`_ 。
 
@@ -194,3 +195,37 @@ Quick Start
     ma = s.MAO(3,6)[0]               # 取得 3-6 乖離值 type: list
     c = s.ckMAO(ma, s=5, pm= False)  # 計算五個區間負乖離轉折點
     print ck                         # (T/F, 第幾轉折日, 乖離轉折點值) type: tuple
+
+
+四大買賣點判斷：B4P
+====================================
+
+判斷是否為技術分析的四大買賣點，條件成立，回傳條件結果，判斷結果僅供參考！
+
+::
+
+    from grs import B4P, stock
+
+    s = stock(2618)
+    b = B4P(s)
+    b.B4PB()                    # 判斷是否為四大買點
+    b.B4PS()                    # 判斷是否為四大賣點
+    b.B4Point()                 # 綜合判斷
+
+全部上市股票檢視
+
+::
+
+    from grs import B4P, stock, twseno
+
+    l = twseno().AllStockNo
+
+    for i in l:
+        try:
+            BS, info = B4P(stock(i)).B4Point()
+            if BS:  # 買點
+                print 'B: {0} {1}'.format(i, info)
+            else:   # 賣點
+                print 'S: {0} {1}'.format(i, info)
+        except:     # 不作為或資料不足
+            print 'X: {0}'.format(i)
